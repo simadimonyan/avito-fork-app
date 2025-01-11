@@ -1,4 +1,4 @@
-package samaryanin.avitofork.ui.theme
+package samaryanin.avitofork.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
