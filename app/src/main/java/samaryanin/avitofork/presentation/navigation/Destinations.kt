@@ -3,7 +3,7 @@ package samaryanin.avitofork.presentation.navigation
 import kotlinx.serialization.Serializable
 
 /*
-* Старотовое окно при запуске приложения
+* Стартовое окно при запуске приложения
 */
 @Serializable object StartScreen
 
