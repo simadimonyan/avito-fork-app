@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.0"
+    id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
 }
 
@@ -58,6 +60,7 @@ dependencies {
     implementation(libs.androidx.animation)
 
     implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose.v120)
 
     implementation(libs.androidx.core.ktx)
