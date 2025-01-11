@@ -7,13 +7,13 @@ import kotlinx.serialization.Serializable
 */
 @Serializable object StartScreen
 
+
 /*
 * Вложенный Composable с Bottom Navigation Bar
 * ---------------------------------------------
 * - перекрывается всеми компонентами из StartScreen
 */
 @Serializable object NestedMenuScreen
-
 
 
 
