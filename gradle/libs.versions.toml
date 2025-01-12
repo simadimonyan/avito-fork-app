@@ -10,11 +10,15 @@ activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 hiltAndroid = "2.53.1"
 hiltNavigationComposeVersion = "1.2.0"
+material = "1.7.6"
 navigationCompose = "2.8.5"
 kotlinxSerializationJson = "1.7.3"
 animation = "1.7.6"
+preferenceKtx = "1.2.1"
 
 [libraries]
+androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
