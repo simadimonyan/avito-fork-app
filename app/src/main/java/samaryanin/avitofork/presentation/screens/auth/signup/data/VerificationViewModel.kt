@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.authorization.phone
+package samaryanin.avitofork.presentation.screens.auth.signup.data
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class PhoneVerificationViewModel @Inject constructor() : ViewModel() {
+class VerificationViewModel @Inject constructor() : ViewModel() {
 
     private val _state = MutableStateFlow(PhoneVerificationState())
     val state: StateFlow<PhoneVerificationState> = _state

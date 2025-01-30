@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.authorization.email
+package samaryanin.avitofork.presentation.screens.auth.login.data
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class EmailScreenViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor() : ViewModel() {
 
     private val _state = MutableStateFlow(LoginDataState())
     val state: StateFlow<LoginDataState> = _state

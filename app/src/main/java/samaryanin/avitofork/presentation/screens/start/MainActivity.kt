@@ -19,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import samaryanin.avitofork.presentation.navigation.GlobalGraph
 import samaryanin.avitofork.presentation.screens.start.state.AppEvent
-import samaryanin.avitofork.presentation.screens.start.state.MainViewModel
+import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 
 @AndroidEntryPoint
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                         insetsController.hide(WindowInsetsCompat.Type.navigationBars())
                         insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-                        GlobalGraph(navHostController = globalNavController)
+                        GlobalGraph(mainViewModel = viewModel, navHostController = globalNavController)
 
                     }
                 }

@@ -1,9 +1,7 @@
 package samaryanin.avitofork.presentation.screens.menu.appbar
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
@@ -16,7 +14,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,11 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import samaryanin.avitofork.presentation.screens.start.state.UIAppState
 import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 
 
 @Composable
-fun BottomAppNavigation() {
+fun BottomAppNavigation(appState: UIAppState, onAuthRequest: () -> Unit) {
 
     var selectedIndex by remember { mutableIntStateOf(0) }
 
@@ -74,21 +72,21 @@ fun BottomAppNavigation() {
                 selectedContentColor = Color.White
             )
 
-            // Навигация в меню объявлений
-            BottomNavigationItem(
-                modifier = Modifier.wrapContentSize(),
-                label = { Text("Объявления", fontSize = 9.sp,
-                    maxLines = 1,
-                    color = if (selectedIndex == 2) navigationSelected else Color.Gray) },
-                onClick = {
-                    selectedIndex = 2
-                    //TODO
-                },
-                icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Billboard",
-                    tint = if (selectedIndex == 2) navigationSelected else Color.Gray) },
-                selected = false,
-                selectedContentColor = Color.White
-            )
+//            // Навигация в меню объявлений
+//            BottomNavigationItem(
+//                modifier = Modifier.wrapContentSize(),
+//                label = { Text("Объявления", fontSize = 9.sp,
+//                    maxLines = 1,
+//                    color = if (selectedIndex == 2) navigationSelected else Color.Gray) },
+//                onClick = {
+//                    selectedIndex = 2
+//                    //TODO
+//                },
+//                icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Billboard",
+//                    tint = if (selectedIndex == 2) navigationSelected else Color.Gray) },
+//                selected = false,
+//                selectedContentColor = Color.White
+//            )
 
             // Навигация в меню сообщений
             BottomNavigationItem(
@@ -97,8 +95,16 @@ fun BottomAppNavigation() {
                     maxLines = 1,
                     color = if (selectedIndex == 3) navigationSelected else Color.Gray) },
                 onClick = {
-                    selectedIndex = 3
-                    //TODO
+
+                    // если пользователь неавторизован
+                    if (!appState.isLoggedIn) {
+                        onAuthRequest()
+                    }
+                    else {
+                        selectedIndex = 3
+                        //TODO
+                    }
+
                 },
                 icon = { Icon(Icons.Filled.Email, contentDescription = "Messages",
                     tint = if (selectedIndex == 3) navigationSelected else Color.Gray) },

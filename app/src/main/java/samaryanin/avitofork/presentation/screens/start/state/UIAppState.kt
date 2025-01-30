@@ -8,6 +8,13 @@ data class UIAppState(
     /**
     * Глобальные настройки приложения
     */
-    val isFirstStartUp: Boolean = true
+    val isFirstStartUp: Boolean = true,
+    val isLoggedIn: Boolean = false,
+
+
+    /**
+     * Событийные состояния
+     */
+    val authRequested: Boolean = false
 
 )

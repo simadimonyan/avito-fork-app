@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -26,11 +27,13 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true //R8 compiler
+            isShrinkResources = true //Shrinking
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -56,30 +59,38 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
+
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material)
     implementation(libs.androidx.animation)
 
     implementation(libs.hilt.android)
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose.v120)
 
     implementation(libs.androidx.preference.ktx)
 
+
+    implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.ui.tooling)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

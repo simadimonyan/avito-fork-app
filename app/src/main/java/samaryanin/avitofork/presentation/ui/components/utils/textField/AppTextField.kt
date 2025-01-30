@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.customElements.textField
+package samaryanin.avitofork.presentation.ui.components.utils.textField
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,13 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import samaryanin.avitofork.presentation.ui.theme.lightGrayColor
 
 @Composable
 fun AppDigitsTextField(value: String, onValueChange: (String) -> Unit) {
     TextField(
-        value, onValueChange, shape = RoundedCornerShape(10.dp),
+        value, onValueChange, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp),
+        placeholder = { Text(value, color = Color.Gray) },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White, focusedContainerColor = Color.White,
+            unfocusedContainerColor = lightGrayColor, focusedContainerColor = lightGrayColor,
             unfocusedIndicatorColor = Color.Transparent, focusedIndicatorColor = Color.Transparent
         ),
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
@@ -28,9 +30,9 @@ fun AppDigitsTextField(value: String, onValueChange: (String) -> Unit) {
 fun AppTextFieldPlaceholder(value: String, onValueChange: (String) -> Unit, placeholder: String?) {
     TextField(
         value, onValueChange, shape = RoundedCornerShape(10.dp),
-        placeholder = { Text("$placeholder")},
+        placeholder = { Text("$placeholder", color = Color.Gray)},
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White, focusedContainerColor = Color.White,
+            unfocusedContainerColor = lightGrayColor, focusedContainerColor = lightGrayColor,
             unfocusedIndicatorColor = Color.Transparent, focusedIndicatorColor = Color.Transparent
         ),
         modifier = Modifier.fillMaxWidth()

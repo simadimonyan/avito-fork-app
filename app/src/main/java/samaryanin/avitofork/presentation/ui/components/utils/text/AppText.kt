@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.customElements.text
+package samaryanin.avitofork.presentation.ui.components.utils.text
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

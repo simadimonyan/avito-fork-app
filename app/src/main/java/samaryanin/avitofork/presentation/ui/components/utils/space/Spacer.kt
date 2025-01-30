@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.customElements.space
+package samaryanin.avitofork.presentation.ui.components.utils.space
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
