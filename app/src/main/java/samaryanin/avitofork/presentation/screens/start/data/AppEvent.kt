@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.start.state
+package samaryanin.avitofork.presentation.screens.start.data
 
 sealed class AppEvent {
 

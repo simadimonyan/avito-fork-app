@@ -43,7 +43,7 @@ import samaryanin.avitofork.presentation.screens.auth.login.data.LoginViewModel
 @Preview(showSystemUi = false)
 @Composable
 fun LoginPreview() {
-    EmailScreen { true } // пустой обработчик
+    LoginScreen { true } // пустой обработчик
 }
 
 /**
@@ -52,7 +52,7 @@ fun LoginPreview() {
  * @param onExit внешний обработчик
  */
 @Composable
-fun EmailScreen(onExit: () -> Boolean) {
+fun LoginScreen(onExit: () -> Boolean) {
 
     val viewModel: LoginViewModel = hiltViewModel()
 
@@ -108,7 +108,7 @@ fun EmailScreen(onExit: () -> Boolean) {
                 onValueChange = {
                     email = it
                     viewModel.updateLoginData(email, password)
-                })
+                }, errorListener = false)
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -118,7 +118,8 @@ fun EmailScreen(onExit: () -> Boolean) {
                 onValueChange = {
                     password = it
                     viewModel.updateLoginData(email, password)
-                }
+                },
+                errorListener = false
             )
 
         }

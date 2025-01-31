@@ -11,7 +11,7 @@ import samaryanin.avitofork.presentation.navigation.NestedGraph
 import samaryanin.avitofork.presentation.navigation.SignUp
 import samaryanin.avitofork.presentation.screens.auth.login.components.AuthBottomSheet
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
-import samaryanin.avitofork.presentation.screens.start.state.AppEvent
+import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 
 /**

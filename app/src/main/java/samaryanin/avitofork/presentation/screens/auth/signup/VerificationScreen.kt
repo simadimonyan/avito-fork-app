@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.auth.signup
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,29 +18,30 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextBody
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
-import samaryanin.avitofork.presentation.screens.auth.signup.data.VerificationViewModel
-import samaryanin.avitofork.presentation.ui.theme.lightGrayColor
+import samaryanin.avitofork.presentation.ui.theme.greyButton
 
 /**
  * Функция для предпросмотра макета
  */
-@Preview(showSystemUi = true)
+@Preview
 @Composable
 fun VerificationPreview() {
     VerificationCodeScreen { true } // пустой обработчик
@@ -52,27 +54,45 @@ fun VerificationPreview() {
  */
 @Composable
 fun VerificationCodeScreen(onExit: () -> Unit){
-    val viewModel: VerificationViewModel = hiltViewModel()
+    //val viewModel: VerificationViewModel = hiltViewModel()
 
-    val email by viewModel.state.collectAsState()
+    //val email by viewModel.state.collectAsState()
     val smsCode by remember { mutableStateOf("") }
+    val sendCodeState = remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Color.White,
         bottomBar = {
             Column {
-                Button(
-                    onClick = {
+                if (!sendCodeState.value) {
+                    Button(
+                        onClick = {
 
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = lightGrayColor),
-                    shape = RoundedCornerShape(10.dp),
-                    enabled = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp),
-                ) {
-                    Text("02:00", fontSize = 15.sp)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = greyButton),
+                        shape = RoundedCornerShape(10.dp),
+                        enabled = false,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp),
+                    ) {
+                        CountdownTimer {sendCodeState.value = true}
+                    }
+                }
+                else {
+                    Button(
+                        onClick = {
+                            sendCodeState.value = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = greyButton),
+                        shape = RoundedCornerShape(10.dp),
+                        enabled = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp),
+                    ) {
+                        Text("Отправить код", color = Color.Black, fontSize = 15.sp)
+                    }
                 }
 
                 Button(
@@ -96,8 +116,8 @@ fun VerificationCodeScreen(onExit: () -> Unit){
         Column(
             modifier = Modifier
                 .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
-                .fillMaxSize()
                 .padding(innerPadding)
+                .fillMaxSize()
         ) {
 
             Image(
@@ -116,17 +136,45 @@ fun VerificationCodeScreen(onExit: () -> Unit){
 
             Space()
 
-            AppTextBody("Укажите проверочный код - он придет на ${email.phone} в течение 2 минут.")
+            AppTextBody("Укажите проверочный код - он придет на в течение 2 минут.")
 
             Space()
 
             AppTextFieldPlaceholder(
                 value = smsCode,
                 placeholder = "Код",
-                onValueChange = {}
+                onValueChange = {},
+                errorListener = false
             )
 
         }
 
     }
+}
+
+@SuppressLint("DefaultLocale")
+@Composable
+fun CountdownTimer(
+    totalTime: Int = 120, // 2 минуты
+    onTimerFinished: () -> Unit = {}
+) {
+    var timeLeft by remember { mutableIntStateOf(totalTime) }
+    
+    LaunchedEffect(key1 = timeLeft) {
+        if (timeLeft > 0) {
+            delay(1000L)
+            timeLeft -= 1
+        } else {
+            onTimerFinished()
+        }
+    }
+
+    val minutes = timeLeft / 60
+    val seconds = timeLeft % 60
+    val formattedTime = String.format("%02d:%02d", minutes, seconds)
+
+    Text(
+        text = formattedTime,
+        fontSize = 18.sp
+    )
 }

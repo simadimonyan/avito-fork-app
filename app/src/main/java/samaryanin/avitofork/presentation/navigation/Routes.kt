@@ -3,13 +3,19 @@ package samaryanin.avitofork.presentation.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import samaryanin.avitofork.presentation.screens.auth.login.EmailScreen
-import samaryanin.avitofork.presentation.screens.auth.signup.NumberScreen
+import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
+import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.VerificationCodeScreen
+import samaryanin.avitofork.presentation.screens.auth.signup.data.SignUpEvent
+import samaryanin.avitofork.presentation.screens.auth.signup.data.SignUpState
+import samaryanin.avitofork.presentation.screens.auth.signup.data.SignUpViewModel
 import samaryanin.avitofork.presentation.screens.start.StartScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 
@@ -18,6 +24,8 @@ import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 */
 @Composable
 fun GlobalGraph(mainViewModel: MainViewModel, navHostController: NavHostController) {
+
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
 
     NavHost(
         navController = navHostController,
@@ -50,7 +58,7 @@ fun GlobalGraph(mainViewModel: MainViewModel, navHostController: NavHostControll
                 navHostController.popBackStack()
             }
 
-            EmailScreen(onExit)
+            LoginScreen(onExit)
         }
         composable<SignUp>(
             enterTransition = {
@@ -91,7 +99,16 @@ fun GlobalGraph(mainViewModel: MainViewModel, navHostController: NavHostControll
                 }
             }
 
-            NumberScreen(onExit, navigateTo)
+            @Composable
+            fun getState(): State<SignUpState> {
+                return signUpViewModel.state.collectAsState()
+            }
+
+            fun setState(state: SignUpState) {
+                signUpViewModel.handleEvent(SignUpEvent.UpdateState(state))
+            }
+
+            SignUpScreen(onExit, navigateTo, signUpViewModel::handleEvent, getState(), ::setState)
 
         }
         composable<VerificationNumScreen>(

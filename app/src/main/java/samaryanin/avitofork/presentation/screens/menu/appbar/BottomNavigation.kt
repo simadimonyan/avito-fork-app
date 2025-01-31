@@ -25,12 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import samaryanin.avitofork.presentation.screens.start.state.UIAppState
+import samaryanin.avitofork.presentation.screens.start.data.AppState
 import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 
 
 @Composable
-fun BottomAppNavigation(appState: UIAppState, onAuthRequest: () -> Unit) {
+fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
 
     var selectedIndex by remember { mutableIntStateOf(0) }
 

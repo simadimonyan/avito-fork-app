@@ -18,7 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import samaryanin.avitofork.presentation.navigation.GlobalGraph
-import samaryanin.avitofork.presentation.screens.start.state.AppEvent
+import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 

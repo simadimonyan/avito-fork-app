@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import samaryanin.avitofork.data.cache.CacheManager
-import samaryanin.avitofork.presentation.screens.start.state.AppEvent
-import samaryanin.avitofork.presentation.screens.start.state.UIAppState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,8 +13,8 @@ class MainViewModel @Inject constructor(
     private val cacheManager: CacheManager
 ) : ViewModel() {
 
-    private val _appState = MutableStateFlow(UIAppState())
-    val appState: StateFlow<UIAppState> = _appState
+    private val _appState = MutableStateFlow(AppState())
+    val appState: StateFlow<AppState> = _appState
 
     fun handleEvent(event: AppEvent) {
         when(event) {

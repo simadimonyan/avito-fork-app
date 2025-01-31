@@ -1,9 +1,9 @@
-package samaryanin.avitofork.presentation.screens.start.state
+package samaryanin.avitofork.presentation.screens.start.data
 
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class UIAppState(
+data class AppState(
 
     /**
     * Глобальные настройки приложения

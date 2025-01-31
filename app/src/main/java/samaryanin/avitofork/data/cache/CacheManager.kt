@@ -3,7 +3,7 @@ package samaryanin.avitofork.data.cache
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import samaryanin.avitofork.presentation.screens.start.state.UIAppState
+import samaryanin.avitofork.presentation.screens.start.data.AppState
 import javax.inject.Inject
 
 class CacheManager @Inject constructor(
@@ -13,21 +13,21 @@ class CacheManager @Inject constructor(
     private val gson = Gson()
 
     // основная конфигурация состояния приложения
-    fun getAppState(): UIAppState {
+    fun getAppState(): AppState {
         val json =  preferences.getString("uiAppState", null)
 
-        val type = object : TypeToken<UIAppState>() {}.type
+        val type = object : TypeToken<AppState>() {}.type
 
-        val state: UIAppState = try {
+        val state: AppState = try {
             gson.fromJson(json, type)
         } catch (e: Exception) {
             e.printStackTrace()
-            return UIAppState()
+            return AppState()
         }
         return state
     }
 
-    fun saveAppState(appState: UIAppState) {
+    fun saveAppState(appState: AppState) {
         val json = gson.toJson(appState)
         preferences.edit().putString("uiAppState", json).apply()
     }

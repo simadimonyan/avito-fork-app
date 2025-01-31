@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.ui.components.utils.textField
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,14 +28,51 @@ fun AppDigitsTextField(value: String, onValueChange: (String) -> Unit) {
 }
 
 @Composable
-fun AppTextFieldPlaceholder(value: String, onValueChange: (String) -> Unit, placeholder: String?) {
+fun AppTextFieldPlaceholder(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String?,
+    errorListener: Boolean
+) {
+
     TextField(
-        value, onValueChange, shape = RoundedCornerShape(10.dp),
-        placeholder = { Text("$placeholder", color = Color.Gray)},
+
+        value,
+        onValueChange,
+        isError = errorListener,
+
+        shape = RoundedCornerShape(10.dp),
+        placeholder = {
+            Text("$placeholder", color = Color.Gray)
+        },
+
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = lightGrayColor, focusedContainerColor = lightGrayColor,
-            unfocusedIndicatorColor = Color.Transparent, focusedIndicatorColor = Color.Transparent
+
+            unfocusedContainerColor = lightGrayColor,
+            unfocusedIndicatorColor = Color.Transparent,
+
+            focusedContainerColor = lightGrayColor,
+            focusedIndicatorColor = Color.Transparent,
+
+            errorPlaceholderColor = lightGrayColor,
+            errorContainerColor = lightGrayColor,
+            errorIndicatorColor = Color.Transparent,
+            errorCursorColor = Color.Red,
+            errorLabelColor = Color.Red
+
         ),
-        modifier = Modifier.fillMaxWidth()
+
+        modifier = if (errorListener) {
+            Modifier.fillMaxWidth()
+                .border(
+                    1.dp,
+                    color = Color.Red,
+                    shape = RoundedCornerShape(10.dp)
+                )
+        }
+        else
+            Modifier.fillMaxWidth()
+
     )
+
 }

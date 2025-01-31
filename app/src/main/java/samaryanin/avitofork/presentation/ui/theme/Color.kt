@@ -13,3 +13,4 @@ val Pink40 = Color(0xFF7D5260)
 val navigationSelected = Color(76, 168, 246)
 
 val lightGrayColor = Color(242, 241, 239)
+val greyButton = Color(227, 227, 228)

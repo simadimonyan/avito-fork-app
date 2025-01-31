@@ -103,7 +103,7 @@ fun AuthBottomSheet(navigateTo: (Int) -> Unit, onToggleAuthRequest: () -> Unit) 
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                text = annotatedText, //"При входе в приложение вы соглашаетесь с условиями использования TODO и политикой конфиденциальности.",
+                text = annotatedText, //"При входе в приложение вы соглашаетесь с условиями использования [Название] и политикой конфиденциальности.",
                 color = Color.Gray,
                 fontSize = 13.sp,
             )
