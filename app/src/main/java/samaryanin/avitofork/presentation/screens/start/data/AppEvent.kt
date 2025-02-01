@@ -18,8 +18,17 @@ sealed class AppEvent {
     object RestoreCache : AppEvent()
 
 
-    //-----------Auth-------------
 
+    //-----------AUTH-------------
+
+    /**
+     * Пользователь авторизовался в профиль
+     */
+    object ProfileHasLoggedIn : AppEvent()
+
+    /**
+     * Вызвать окно для авторизации
+     */
     object ToggleAuthRequest : AppEvent()
 
 }

@@ -22,9 +22,9 @@ import kotlinx.serialization.Serializable
 
 
 /**
- * Окно для верификации номера телефона при регистрации
+ * Окно для верификации почты при регистрации
  */
-@Serializable object VerificationNumScreen
+@Serializable object VerificationScreen
 
 
 /**

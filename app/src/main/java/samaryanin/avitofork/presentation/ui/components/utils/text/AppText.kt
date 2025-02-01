@@ -3,6 +3,7 @@ package samaryanin.avitofork.presentation.ui.components.utils.text
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -12,7 +13,7 @@ fun AppTextTitle(text: String){
 }
 
 @Composable
-fun AppTextBody(text: String){
+fun AppTextBody(text: AnnotatedString){
     Text(text, fontSize = 16.sp)
 }
 

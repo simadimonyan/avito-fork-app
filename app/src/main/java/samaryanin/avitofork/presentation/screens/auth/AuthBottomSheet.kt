@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.auth.login.components
+package samaryanin.avitofork.presentation.screens.auth
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

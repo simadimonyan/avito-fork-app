@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.auth.signup
+package samaryanin.avitofork.presentation.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,7 +17,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,14 +28,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.screens.auth.signup.data.SignUpEvent
-import samaryanin.avitofork.presentation.screens.auth.signup.data.SignUpState
+import samaryanin.avitofork.presentation.navigation.VerificationScreen
+import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
+import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
+import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
-import kotlin.reflect.KFunction1
 
 /**
  * Функция для предпросмотра макета
@@ -44,38 +44,67 @@ import kotlin.reflect.KFunction1
 @Preview(showSystemUi = false)
 @Composable
 fun SignUpPreview() {
+    SignUpContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
+}
 
-    fun mockEventHandler(event: SignUpEvent) {} // заглушка
+/**
+ * State Hoisting паттерн
+ * -------------------------------------
+ * @param authViewModel модель обработки состояний регистрации
+ * @param navHostController контроллер навигации
+ */
+@Composable
+fun SignUpScreen(
+    authViewModel: AuthViewModel,
+    navHostController: NavHostController
+) {
 
-    @Composable
-    fun mockGetState(): State<SignUpState> { // заглушка
-        return MutableStateFlow(SignUpState()).collectAsState()
+    val state by authViewModel.state.collectAsState()
+
+    // обработчик выхода
+    val onExit = {
+        navHostController.popBackStack()
     }
 
-    fun setMockState(state: SignUpState) {} // заглушка
+    // обработчик авторизации
+    val onLogin = {
+        navHostController.navigate(VerificationScreen) {
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
 
-    SignUpScreen({ true }, {}, ::mockEventHandler, mockGetState(), ::setMockState)
+    // обработчик событий
+    val handleEvent = { event: AuthUpEvent ->
+        authViewModel.handleEvent(event)
+    }
+
+    SignUpContent(
+        onExit = onExit,
+        onLogin = onLogin,
+        state = { state },
+        handleEvent = handleEvent,
+    )
+
 }
 
 /**
  * Встраиваемый компонент окна
  * -------------------------------------
- * @param onExit внешний обработчик
- * @param navigateTo функция навигации
- * @param eventHandler обработчик событий
- * -------------------------------------
+ * @param onExit обработчик навигации выхода
+ * @param onLogin обработчик авторизации
+ * @param state получение состояния
+ * @param handleEvent обработчик событий
  */
 @Composable
-fun SignUpScreen(
+fun SignUpContent(
     onExit: () -> Boolean,
-    navigateTo: (Int) -> Unit,
-    eventHandler: KFunction1<SignUpEvent, Unit>,
-    getState: State<SignUpState>,
-    setState: KFunction1<SignUpState, Unit>
+    onLogin: () -> Unit,
+    state: () -> AuthUpState,
+    handleEvent: (AuthUpEvent) -> Unit,
 ) {
 
-    val state by getState
-    var email by remember { mutableStateOf(state.email) }
+    var email by remember { mutableStateOf(state.invoke().email) }
     var errorFrame by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -83,9 +112,9 @@ fun SignUpScreen(
         bottomBar = {
             Button(
                 onClick = {
-                    eventHandler(SignUpEvent.CheckEmailFormValidation(email))
-                    if (state.emailIsValid) {
-                        navigateTo(0) // 0 - индекс экрана верификации номера телефона
+                    handleEvent(AuthUpEvent.CheckEmailFormValidation(email))
+                    if (state.invoke().emailIsValid) {
+                        onLogin()
                     }
                     else
                         errorFrame = true // ошибка валидации
@@ -126,12 +155,12 @@ fun SignUpScreen(
 
             AppTextFieldPlaceholder(
                 value = email,
-                placeholder = "helloworld@test.ru",
                 onValueChange = {
                     email = it
                     errorFrame = false
-                    setState(state.copy(email = email))
+                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(email = email)))
                 },
+                placeholder = "helloworld@test.ru",
                 errorListener = errorFrame
             )
             Spacer(modifier = Modifier.padding(2.dp))

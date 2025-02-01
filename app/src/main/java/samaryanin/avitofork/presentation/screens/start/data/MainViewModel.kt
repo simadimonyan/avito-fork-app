@@ -22,11 +22,17 @@ class MainViewModel @Inject constructor(
             is AppEvent.RestoreCache -> restoreCache()
             is AppEvent.FirstStartUp -> setFirstStartUpSettings(event.isFirstStartUp)
             is AppEvent.ToggleAuthRequest -> toggleAuthRequest()
+            AppEvent.ProfileHasLoggedIn -> authorizeProfile()
         }
     }
 
     private fun setFirstStartUpSettings(isFirstStartUp: Boolean) {
         _appState.update { it.copy(isFirstStartUp = isFirstStartUp) }
+        saveAppState()
+    }
+
+    private fun authorizeProfile() {
+        _appState.update { it.copy(isLoggedIn = true) }
         saveAppState()
     }
 

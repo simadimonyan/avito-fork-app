@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import samaryanin.avitofork.presentation.navigation.Login
 import samaryanin.avitofork.presentation.navigation.NestedGraph
 import samaryanin.avitofork.presentation.navigation.SignUp
-import samaryanin.avitofork.presentation.screens.auth.login.components.AuthBottomSheet
+import samaryanin.avitofork.presentation.screens.auth.AuthBottomSheet
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
