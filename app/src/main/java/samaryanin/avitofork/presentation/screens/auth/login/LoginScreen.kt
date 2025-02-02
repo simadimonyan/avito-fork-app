@@ -1,8 +1,10 @@
-package samaryanin.avitofork.presentation.screens.auth
+package samaryanin.avitofork.presentation.screens.auth.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.VerificationScreen
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
@@ -43,8 +44,8 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
  */
 @Preview(showSystemUi = false)
 @Composable
-fun SignUpPreview() {
-    SignUpContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
+fun LoginPreview() {
+    LoginContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
 }
 
 /**
@@ -54,7 +55,7 @@ fun SignUpPreview() {
  * @param navHostController контроллер навигации
  */
 @Composable
-fun SignUpScreen(
+fun LoginScreen(
     authViewModel: AuthViewModel,
     navHostController: NavHostController
 ) {
@@ -68,7 +69,7 @@ fun SignUpScreen(
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(VerificationScreen) {
+        navHostController.navigate("verification/${false}") {
             launchSingleTop = true
             restoreState = true
         }
@@ -79,13 +80,13 @@ fun SignUpScreen(
         authViewModel.handleEvent(event)
     }
 
-    SignUpContent(
+    // содержимое окна
+    LoginContent(
         onExit = onExit,
         onLogin = onLogin,
         state = { state },
-        handleEvent = handleEvent,
+        handleEvent = handleEvent
     )
-
 }
 
 /**
@@ -97,27 +98,48 @@ fun SignUpScreen(
  * @param handleEvent обработчик событий
  */
 @Composable
-fun SignUpContent(
+fun LoginContent(
     onExit: () -> Boolean,
     onLogin: () -> Unit,
     state: () -> AuthUpState,
-    handleEvent: (AuthUpEvent) -> Unit,
+    handleEvent: (AuthUpEvent) -> Unit
 ) {
 
     var email by remember { mutableStateOf(state.invoke().email) }
-    var errorFrame by remember { mutableStateOf(false) }
+    var password by remember { mutableStateOf("") }
+    var errorEmailBlank by remember { mutableStateOf(false) }
+    var errorPassBlank by remember { mutableStateOf(false) }
+    var emailErrorFrame by remember { mutableStateOf(false) }
+    var errorWrongPass by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Color.White,
         bottomBar = {
             Button(
                 onClick = {
-                    handleEvent(AuthUpEvent.CheckEmailFormValidation(email))
-                    if (state.invoke().emailIsValid) {
-                        onLogin()
+                    if (email.isBlank()) {
+                        errorEmailBlank = true // ошибка пустого поля email
                     }
-                    else
-                        errorFrame = true // ошибка валидации
+                    else {
+                        handleEvent(AuthUpEvent.CheckEmailFormValidation(email))
+                        if (!state.invoke().emailIsValid) {
+                            emailErrorFrame = true // ошибка валидации email
+                        }
+                    }
+
+                    if (!(emailErrorFrame || errorEmailBlank)) {
+                        if (password.isBlank()) {
+                            errorPassBlank = true // ошибка пустого поля пароля
+                        } else {
+                            handleEvent(AuthUpEvent.VerifyAccountCredentials(email, password))
+
+                            if (state.invoke().credentialsAreValid) {
+                                onLogin()
+                            } else {
+                                errorWrongPass = true // ошибка авторизации
+                            }
+                        }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                 shape = RoundedCornerShape(10.dp),
@@ -127,54 +149,93 @@ fun SignUpContent(
                     .imePadding()
                     .navigationBarsPadding(),
             ) {
-                Text("Продолжить", fontSize = 15.sp)
+                Text("Войти", fontSize = 15.sp)
             }
         }
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
                 .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_close),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {
-                        onExit()
-                    }
-            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Image(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            onExit()
+                        })
+                Text("Забыли пароль?", modifier = Modifier.clickable { })
+            }
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            AppTextTitle("Введите электронную почту")
-
+            AppTextTitle("Вход")
             Space()
 
             AppTextFieldPlaceholder(
                 value = email,
                 onValueChange = {
                     email = it
-                    errorFrame = false
+                    emailErrorFrame = false
+                    errorEmailBlank = false
                     handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(email = email)))
                 },
-                placeholder = "helloworld@test.ru",
-                errorListener = errorFrame
+                placeholder = "Почта",
+                errorListener = emailErrorFrame || errorEmailBlank
             )
-            Spacer(modifier = Modifier.padding(2.dp))
 
-            if (errorFrame) {
+            if (emailErrorFrame) {
                 Text(
-                    "Некорректный адрес электронной почты ",
+                    "Некорректный адрес электронной почты",
                     color = Color.Red,
                     fontSize = 13.sp
                 )
             }
 
-            Space()
+            if (errorEmailBlank) {
+                Text(
+                    "Необходимо ввести данные электронной почты",
+                    color = Color.Red,
+                    fontSize = 13.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppTextFieldPlaceholder(
+                value = password,
+                placeholder = "Пароль",
+                isPassword = true,
+                onValueChange = {
+                    password = it
+                    errorWrongPass = false
+                    errorPassBlank = false
+                },
+                errorListener = errorWrongPass || errorPassBlank
+            )
+
+            if (errorWrongPass) {
+                Text(
+                    "Неправильный пароль или адрес электронной почты",
+                    color = Color.Red,
+                    fontSize = 13.sp
+                )
+            }
+
+            if (errorPassBlank) {
+                Text(
+                    "Необходимо ввести пароль",
+                    color = Color.Red,
+                    fontSize = 13.sp
+                )
+            }
 
         }
+
     }
 }

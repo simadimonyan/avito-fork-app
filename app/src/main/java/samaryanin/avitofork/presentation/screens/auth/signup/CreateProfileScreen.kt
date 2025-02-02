@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.auth
+package samaryanin.avitofork.presentation.screens.auth.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,12 +30,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.VerificationScreen
+import samaryanin.avitofork.presentation.navigation.SignUp
+import samaryanin.avitofork.presentation.navigation.StartScreen
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.start.data.AppEvent
+import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
@@ -45,19 +49,21 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
  */
 @Preview(showSystemUi = false)
 @Composable
-fun LoginPreview() {
-    LoginContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
+fun CreateProfilePreview() {
+    CreateProfileContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
 }
 
 /**
  * State Hoisting паттерн
  * -------------------------------------
  * @param authViewModel модель обработки состояний регистрации
+ * @param mainViewModel модель глобальной обработки состояний приложения
  * @param navHostController контроллер навигации
  */
 @Composable
-fun LoginScreen(
+fun CreateProfileScreen(
     authViewModel: AuthViewModel,
+    mainViewModel: MainViewModel,
     navHostController: NavHostController
 ) {
 
@@ -65,15 +71,19 @@ fun LoginScreen(
 
     // обработчик выхода
     val onExit = {
-        navHostController.popBackStack()
+        navHostController.popBackStack(route = SignUp, inclusive = false)
     }
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(VerificationScreen) {
+        navHostController.navigate(StartScreen) {
+            popUpTo(navHostController.graph.findStartDestination().id) {
+                saveState = true
+            }
             launchSingleTop = true
             restoreState = true
         }
+        mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
     }
 
     // обработчик событий
@@ -82,7 +92,7 @@ fun LoginScreen(
     }
 
     // содержимое окна
-    LoginContent(
+    CreateProfileContent(
         onExit = onExit,
         onLogin = onLogin,
         state = { state },
@@ -99,45 +109,44 @@ fun LoginScreen(
  * @param handleEvent обработчик событий
  */
 @Composable
-fun LoginContent(
+fun CreateProfileContent(
     onExit: () -> Boolean,
     onLogin: () -> Unit,
     state: () -> AuthUpState,
     handleEvent: (AuthUpEvent) -> Unit
 ) {
 
-    var email by remember { mutableStateOf(state.invoke().email) }
+    var profile by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorEmailBlank by remember { mutableStateOf(false) }
+    var repeatPassword by remember { mutableStateOf("") }
+    var errorProfileBlank by remember { mutableStateOf(false) }
     var errorPassBlank by remember { mutableStateOf(false) }
-    var emailErrorFrame by remember { mutableStateOf(false) }
-    var errorWrongPass by remember { mutableStateOf(false) }
+    var errorRepeatPassBlank by remember { mutableStateOf(false) }
+    var errorPassFormat by remember { mutableStateOf(false) }
+    var errorPassNotEquals by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Color.White,
         bottomBar = {
             Button(
                 onClick = {
-                    if (email.isBlank()) {
-                        errorEmailBlank = true // ошибка пустого поля email
-                    }
-                    else {
-                        handleEvent(AuthUpEvent.CheckEmailFormValidation(email))
-                        if (!state.invoke().emailIsValid) {
-                            emailErrorFrame = true // ошибка валидации email
-                        }
-                    }
 
-                    if (!(emailErrorFrame || errorEmailBlank)) {
-                        if (password.isBlank()) {
-                            errorPassBlank = true // ошибка пустого поля пароля
+                    if (profile.isBlank()) {
+                        errorProfileBlank = true // ошибка для пустого поля профиля
+                    } else {
+                        handleEvent(AuthUpEvent.CheckPasswordFormValidation(password))
+
+                        if (!state.invoke().passwordFormIsValid) {
+                            errorPassFormat = true // ошибка на неверный формат пароля
                         } else {
-                            handleEvent(AuthUpEvent.VerifyAccountCredentials(email, password))
-
-                            if (state.invoke().credentialsAreValid) {
-                                onLogin()
+                            if (repeatPassword.isBlank()) {
+                                errorRepeatPassBlank = true // ошибка на пустой повтор пароля
                             } else {
-                                errorWrongPass = true // ошибка авторизации
+                                if (password != repeatPassword) {
+                                    errorPassNotEquals = true // ошибка на несовпадение паролей
+                                } else {
+                                    onLogin()
+                                }
                             }
                         }
                     }
@@ -150,7 +159,7 @@ fun LoginContent(
                     .imePadding()
                     .navigationBarsPadding(),
             ) {
-                Text("Войти", fontSize = 15.sp)
+                Text("Зарегистрироваться", fontSize = 15.sp)
             }
         }
     ) { innerPadding ->
@@ -163,44 +172,35 @@ fun LoginContent(
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Image(
-                    painter = painterResource(R.drawable.ic_close),
+                    painter = painterResource(R.drawable.ic_arrow),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(32.dp)
                         .clickable {
                             onExit()
-                        })
-                Text("Забыли пароль?", modifier = Modifier.clickable { })
+                        }
+                )
             }
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            AppTextTitle("Вход")
+            AppTextTitle("Регистрация")
             Space()
 
             AppTextFieldPlaceholder(
-                value = email,
+                value = profile,
                 onValueChange = {
-                    email = it
-                    emailErrorFrame = false
-                    errorEmailBlank = false
-                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(email = email, password = password)))
+                    profile = it
+                    errorProfileBlank = false
+                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(profile = profile)))
                 },
-                placeholder = "Почта",
-                errorListener = emailErrorFrame || errorEmailBlank
+                placeholder = "Имя для профиля",
+                errorListener = errorProfileBlank
             )
 
-            if (emailErrorFrame) {
+            if (errorProfileBlank) {
                 Text(
-                    "Некорректный адрес электронной почты",
-                    color = Color.Red,
-                    fontSize = 13.sp
-                )
-            }
-
-            if (errorEmailBlank) {
-                Text(
-                    "Необходимо ввести данные электронной почты",
+                    "Необходимо ввести имя аккаунта",
                     color = Color.Red,
                     fontSize = 13.sp
                 )
@@ -214,16 +214,15 @@ fun LoginContent(
                 isPassword = true,
                 onValueChange = {
                     password = it
-                    errorWrongPass = false
+                    errorPassFormat = false
                     errorPassBlank = false
-                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(email = email, password = password)))
                 },
-                errorListener = errorWrongPass || errorPassBlank
+                errorListener = errorPassFormat || errorPassBlank
             )
 
-            if (errorWrongPass) {
+            if (errorPassFormat) {
                 Text(
-                    "Неправильный пароль или адрес электронной почты",
+                    "Пароль должен содержать минимум 8 символов, включая одну заглавную букву, одну цифру и один специальный символ",
                     color = Color.Red,
                     fontSize = 13.sp
                 )
@@ -232,6 +231,36 @@ fun LoginContent(
             if (errorPassBlank) {
                 Text(
                     "Необходимо ввести пароль",
+                    color = Color.Red,
+                    fontSize = 13.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppTextFieldPlaceholder(
+                value = repeatPassword,
+                placeholder = "Повторите пароль",
+                isPassword = true,
+                onValueChange = {
+                    repeatPassword = it
+                    errorRepeatPassBlank = false
+                    errorPassNotEquals = false
+                },
+                errorListener = errorRepeatPassBlank || errorPassNotEquals
+            )
+
+            if (errorPassNotEquals) {
+                Text(
+                    "Введенные пароли не равны",
+                    color = Color.Red,
+                    fontSize = 13.sp
+                )
+            }
+
+            if (errorRepeatPassBlank) {
+                Text(
+                    "Необходимо повторить пароль",
                     color = Color.Red,
                     fontSize = 13.sp
                 )

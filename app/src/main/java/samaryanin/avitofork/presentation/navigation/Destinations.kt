@@ -20,12 +20,10 @@ import kotlinx.serialization.Serializable
  */
 @Serializable object SignUp
 
-
 /**
- * Окно для верификации почты при регистрации
+ * Окно для регистрации профиля
  */
-@Serializable object VerificationScreen
-
+@Serializable object CreateProfileScreen
 
 /**
 * Вложенный Composable с Bottom Navigation Bar

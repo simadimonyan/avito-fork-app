@@ -5,8 +5,9 @@ data class AuthUpState(
     /**
      * Персональные данные от аккаунта
      */
+    val profile: String = "",
     val email: String = "",
-    val password: String? = "", //хеш
+    //val password: String? = "", //хеш
     val code: String = "",
 
     /**
@@ -22,6 +23,11 @@ data class AuthUpState(
     /**
      * Состояние валидации кода подтверждения
      */
-    var emailCodeIsValid: Boolean = false
+    var emailCodeIsValid: Boolean = false,
+
+    /**
+     * Состояние валидации сложности пароля
+     */
+    var passwordFormIsValid: Boolean = false
 
 )

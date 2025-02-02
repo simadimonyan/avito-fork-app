@@ -38,6 +38,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.navigation.CreateProfileScreen
 import samaryanin.avitofork.presentation.navigation.StartScreen
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
@@ -65,12 +66,14 @@ fun VerificationPreview() {
  * @param authViewModel модель обработки состояний регистрации
  * @param mainViewModel модель глобальной обработки состояний приложения
  * @param navHostController контроллер навигации
+ * @param profileCreating условие для регистрации профиля
  */
 @Composable
 fun VerificationScreen(
     authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    profileCreating: Boolean = false
 ) {
 
     val state by authViewModel.state.collectAsState()
@@ -82,14 +85,16 @@ fun VerificationScreen(
 
     // обработчик навигации входа
     val onLogin = {
-        navHostController.navigate(StartScreen) {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
+        navHostController.navigate(if (profileCreating) CreateProfileScreen else StartScreen) {
+            if (!profileCreating) {
+                popUpTo(navHostController.graph.findStartDestination().id) {
+                    saveState = true
+                }
             }
             launchSingleTop = true
             restoreState = true
         }
-        mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
+        if (!profileCreating) mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
     }
 
     // обработчик событий

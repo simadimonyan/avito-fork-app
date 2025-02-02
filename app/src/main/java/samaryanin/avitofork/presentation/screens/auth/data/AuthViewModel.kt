@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.auth.data
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,16 +17,23 @@ class AuthViewModel @Inject constructor() : ViewModel() {
 
     fun handleEvent(event: AuthUpEvent) {
         when (event) {
-            is AuthUpEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.data)
+            is AuthUpEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.email)
             is AuthUpEvent.UpdateState -> updateState(event.state)
             is AuthUpEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.code)
             is AuthUpEvent.SendVerificationCode -> sendVerificationCode()
             is AuthUpEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.hash)
+            is AuthUpEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
         }
     }
 
     private fun updateState(state: AuthUpState) {
         _state.update { state }
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        val regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!~%_*?&:,№\\\"\\[\\]{}\\-;^<>\\\\|.#()+=])[A-Za-zА-Яа-я\\d@\$~\\\"!%'’_*?&:№,\\[\\]{}\\-;^<>\\\\|.#()+=]{8,}\$".toRegex()
+        Log.i("test", "password: ${password.matches(regex)}")
+        return password.matches(regex)
     }
 
     // TODO(подключить бекенд сервис для авторизации) --тестовый пароль 1111

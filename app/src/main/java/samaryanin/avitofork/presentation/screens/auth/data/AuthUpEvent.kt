@@ -5,7 +5,12 @@ sealed class AuthUpEvent {
     /**
      * Валидация данных как электронную почту
      */
-    data class CheckEmailFormValidation(val data: String) : AuthUpEvent()
+    data class CheckEmailFormValidation(val email: String) : AuthUpEvent()
+
+    /**
+     * Валидация пароля по форме сложности
+     */
+    data class CheckPasswordFormValidation(val password: String) : AuthUpEvent()
 
     /**
      * Валидация кода подтверждения
