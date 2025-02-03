@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -127,25 +129,30 @@ fun CreateProfileContent(
 
     Scaffold(
         containerColor = Color.White,
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             Button(
                 onClick = {
-
                     if (profile.isBlank()) {
                         errorProfileBlank = true // ошибка для пустого поля профиля
                     } else {
-                        handleEvent(AuthUpEvent.CheckPasswordFormValidation(password))
+                        if (password.isBlank()) {
+                            errorPassBlank = true // ошибка для пустого поля пароля
+                        }
+                        else {
+                            handleEvent(AuthUpEvent.CheckPasswordFormValidation(password))
 
-                        if (!state.invoke().passwordFormIsValid) {
-                            errorPassFormat = true // ошибка на неверный формат пароля
-                        } else {
-                            if (repeatPassword.isBlank()) {
-                                errorRepeatPassBlank = true // ошибка на пустой повтор пароля
+                            if (!state.invoke().passwordFormIsValid) {
+                                errorPassFormat = true // ошибка на неверный формат пароля
                             } else {
-                                if (password != repeatPassword) {
-                                    errorPassNotEquals = true // ошибка на несовпадение паролей
+                                if (repeatPassword.isBlank()) {
+                                    errorRepeatPassBlank = true // ошибка на пустой повтор пароля
                                 } else {
-                                    onLogin()
+                                    if (password != repeatPassword) {
+                                        errorPassNotEquals = true // ошибка на несовпадение паролей
+                                    } else {
+                                        onLogin()
+                                    }
                                 }
                             }
                         }
@@ -156,8 +163,16 @@ fun CreateProfileContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
-                    .imePadding()
-                    .navigationBarsPadding(),
+                    .padding(
+                        bottom = maxOf(
+                            WindowInsets.ime
+                                .asPaddingValues()
+                                .calculateBottomPadding() - WindowInsets.navigationBars
+                                .asPaddingValues()
+                                .calculateBottomPadding(),
+                            0.dp
+                        )
+                    )
             ) {
                 Text("Зарегистрироваться", fontSize = 15.sp)
             }
@@ -166,7 +181,7 @@ fun CreateProfileContent(
 
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 16.dp)
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
@@ -220,17 +235,17 @@ fun CreateProfileContent(
                 errorListener = errorPassFormat || errorPassBlank
             )
 
-            if (errorPassFormat) {
+            if (errorPassBlank) {
                 Text(
-                    "Пароль должен содержать минимум 8 символов, включая одну заглавную букву, одну цифру и один специальный символ",
+                    "Необходимо ввести пароль",
                     color = Color.Red,
                     fontSize = 13.sp
                 )
             }
 
-            if (errorPassBlank) {
+            if (errorPassFormat) {
                 Text(
-                    "Необходимо ввести пароль",
+                    "Пароль должен содержать минимум 8 символов, включая одну заглавную букву, одну цифру и один специальный символ",
                     color = Color.Red,
                     fontSize = 13.sp
                 )
@@ -250,17 +265,17 @@ fun CreateProfileContent(
                 errorListener = errorRepeatPassBlank || errorPassNotEquals
             )
 
-            if (errorPassNotEquals) {
+            if (errorRepeatPassBlank) {
                 Text(
-                    "Введенные пароли не равны",
+                    "Необходимо повторить пароль",
                     color = Color.Red,
                     fontSize = 13.sp
                 )
             }
 
-            if (errorRepeatPassBlank) {
+            if (errorPassNotEquals) {
                 Text(
-                    "Необходимо повторить пароль",
+                    "Введенные пароли не совпадают",
                     color = Color.Red,
                     fontSize = 13.sp
                 )

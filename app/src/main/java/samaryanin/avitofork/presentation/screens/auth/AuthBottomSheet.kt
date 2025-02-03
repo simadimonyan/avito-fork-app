@@ -1,7 +1,9 @@
 package samaryanin.avitofork.presentation.screens.auth
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import samaryanin.avitofork.presentation.ui.theme.lightGrayColor
 
@@ -47,67 +50,88 @@ fun AuthBottomSheetPreview() {
 @Composable
 fun AuthBottomSheet(navigateTo: (Int) -> Unit, onToggleAuthRequest: () -> Unit) {
 
-    ModalBottomSheet(
-        modifier = Modifier.wrapContentHeight(),
-        sheetState = rememberModalBottomSheetState(),
-        shape = RoundedCornerShape(17.dp),
-        contentColor = Color.White,
-        containerColor = Color.White,
-        dragHandle = { BottomSheetDefaults.DragHandle(color = Color.Black) },
-        onDismissRequest = onToggleAuthRequest
-    ) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        val annotatedText = buildAnnotatedString {
-            append("При входе в приложение вы соглашаетесь с ")
+        val maxWidth = this.maxWidth
 
-            pushStyle(
-                SpanStyle(
-                    color = Color.Gray,
-                    textDecoration = TextDecoration.Underline
+        ModalBottomSheet(
+            modifier = Modifier.wrapContentHeight(),
+            sheetState = rememberModalBottomSheetState(),
+            shape = RoundedCornerShape(17.dp),
+            contentColor = Color.White,
+            containerColor = Color.White,
+            dragHandle = { BottomSheetDefaults.DragHandle(color = Color.Black) },
+            onDismissRequest = onToggleAuthRequest
+        ) {
+
+            val annotatedText = buildAnnotatedString {
+                append("При входе в приложение вы соглашаетесь с ")
+
+                pushStyle(
+                    SpanStyle(
+                        color = Color.Gray,
+                        textDecoration = TextDecoration.Underline
+                    )
                 )
-            )
-            append("условиями использования")
-            pop()
+                append("условиями использования")
+                pop()
 
-            append(" и ")
+                append(" и ")
 
-            pushStyle(
-                SpanStyle(
-                    color = Color.Gray,
-                    textDecoration = TextDecoration.Underline
+                pushStyle(
+                    SpanStyle(
+                        color = Color.Gray,
+                        textDecoration = TextDecoration.Underline
+                    )
                 )
-            )
-            append("политикой конфиденциальности.")
-        }
+                append("политикой конфиденциальности")
+                pop()
+                append(".")
+            }
 
-        Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, end = 10.dp),
-                content = { Text(text = "Войти по почте", color = Color.White, fontSize = 16.sp) },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-                onClick = { navigateTo(0) } // 0 - индекс экрана входа через телефон или почту
-            )
-            Spacer(modifier = Modifier.height(1.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, end = 10.dp),
-                content = { Text(text = "Зарегистрироваться", color = Color.Black, fontSize = 16.sp) },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = lightGrayColor),
-                onClick = { navigateTo(1) } // 1 - индекс экрана регистрации
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                text = annotatedText, //"При входе в приложение вы соглашаетесь с условиями использования [Название] и политикой конфиденциальности.",
-                color = Color.Gray,
-                fontSize = 13.sp,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+            Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp),
+                    content = {
+                        Text(
+                            text = "Войти по почте",
+                            color = Color.White,
+                            fontSize = 16.sp
+                        )
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                    onClick = { navigateTo(0) } // 0 - индекс экрана входа через телефон или почту
+                )
+                Spacer(modifier = Modifier.height(1.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp),
+                    content = {
+                        Text(
+                            text = "Зарегистрироваться",
+                            color = Color.Black,
+                            fontSize = 16.sp
+                        )
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = lightGrayColor),
+                    onClick = { navigateTo(1) } // 1 - индекс экрана регистрации
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                    text = annotatedText, //"При входе в приложение вы соглашаетесь с условиями использования [Название] и политикой конфиденциальности.",
+                    color = Color.Gray,
+                    lineHeight = 1.em,
+                    fontSize = if (maxWidth > 400.dp) 13.sp else 11.sp,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
         }
 
     }

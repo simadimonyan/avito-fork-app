@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -114,6 +116,7 @@ fun LoginContent(
 
     Scaffold(
         containerColor = Color.White,
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             Button(
                 onClick = {
@@ -146,8 +149,16 @@ fun LoginContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
-                    .imePadding()
-                    .navigationBarsPadding(),
+                    .padding(
+                        bottom = maxOf(
+                            WindowInsets.ime
+                                .asPaddingValues()
+                                .calculateBottomPadding() - WindowInsets.navigationBars
+                                .asPaddingValues()
+                                .calculateBottomPadding(),
+                            0.dp
+                        )
+                    )
             ) {
                 Text("Войти", fontSize = 15.sp)
             }
@@ -156,7 +167,7 @@ fun LoginContent(
 
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 16.dp)
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {

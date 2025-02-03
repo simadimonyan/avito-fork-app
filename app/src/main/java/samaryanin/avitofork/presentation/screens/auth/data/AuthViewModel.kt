@@ -1,6 +1,5 @@
 package samaryanin.avitofork.presentation.screens.auth.data
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,10 +29,9 @@ class AuthViewModel @Inject constructor() : ViewModel() {
         _state.update { state }
     }
 
-    private fun isPasswordValid(password: String): Boolean {
-        val regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!~%_*?&:,№\\\"\\[\\]{}\\-;^<>\\\\|.#()+=])[A-Za-zА-Яа-я\\d@\$~\\\"!%'’_*?&:№,\\[\\]{}\\-;^<>\\\\|.#()+=]{8,}\$".toRegex()
-        Log.i("test", "password: ${password.matches(regex)}")
-        return password.matches(regex)
+    private fun isPasswordValid(password: String) {
+        val bool = password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!~%_*?&:,№\\\"\\[\\]{}\\-;^<>\\\\|.#()+=])[A-Za-zА-Яа-я\\d@\$~\\\"!%'’_*?&:№,\\[\\]{}\\-;^<>\\\\|.#()+=]{8,}\$".toRegex())
+        _state.value.passwordFormIsValid = bool
     }
 
     // TODO(подключить бекенд сервис для авторизации) --тестовый пароль 1111

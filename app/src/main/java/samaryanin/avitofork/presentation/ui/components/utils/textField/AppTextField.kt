@@ -2,7 +2,6 @@ package samaryanin.avitofork.presentation.ui.components.utils.textField
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -39,6 +38,7 @@ fun AppDigitsTextField(
         onValueChange,
         isError = errorListener,
         maxLines = 1,
+        singleLine = true,
 
         shape = RoundedCornerShape(10.dp),
         placeholder = {
@@ -92,6 +92,7 @@ fun AppTextFieldPlaceholder(
         onValueChange,
         isError = errorListener,
         maxLines = 1,
+        singleLine = true,
 
         visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation()
             else VisualTransformation.None,

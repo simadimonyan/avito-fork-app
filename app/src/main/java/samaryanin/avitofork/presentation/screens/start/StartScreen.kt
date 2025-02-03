@@ -1,8 +1,14 @@
 package samaryanin.avitofork.presentation.screens.start
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -34,7 +40,7 @@ fun StartScreen(
     val navigateTo = { index: Int ->
         floatArrayOf()
         when (index) {
-            0 -> { // 0 - индекс экрана входа через телефон или почту
+            0 -> { // 0 - индекс экрана входа через почту
                 onToggleAuthRequest.invoke()
                 globalGraph.navigate(Login) {
                     popUpTo(globalGraph.graph.findStartDestination().id) {
@@ -57,12 +63,17 @@ fun StartScreen(
         }
     }
 
-    // внутренний навигационный граф
-    NestedGraph(navHostController = nestedGraph)
+    Scaffold(modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets(0)) {
+        innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            // внутренний навигационный граф
+            NestedGraph(navHostController = nestedGraph)
 
-    if (uiAppState.authRequested) {
-        AuthBottomSheet(navigateTo, onToggleAuthRequest)
+            if (uiAppState.authRequested) {
+                AuthBottomSheet(navigateTo, onToggleAuthRequest)
+            }
+
+            BottomAppNavigation(uiAppState, onToggleAuthRequest)
+        }
     }
-
-    BottomAppNavigation(uiAppState, onToggleAuthRequest)
 }

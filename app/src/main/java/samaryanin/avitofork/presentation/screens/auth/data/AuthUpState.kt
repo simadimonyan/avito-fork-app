@@ -7,8 +7,6 @@ data class AuthUpState(
      */
     val profile: String = "",
     val email: String = "",
-    //val password: String? = "", //хеш
-    val code: String = "",
 
     /**
      * Проверка существования аккаунта и соответствия пароля
