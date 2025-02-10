@@ -17,7 +17,6 @@ import samaryanin.avitofork.presentation.navigation.NestedGraph
 import samaryanin.avitofork.presentation.navigation.SignUp
 import samaryanin.avitofork.presentation.screens.auth.AuthBottomSheet
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
-import samaryanin.avitofork.presentation.screens.poster.MarketplaceScreen
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 
@@ -66,16 +65,16 @@ fun StartScreen(
 
     Scaffold(modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets(0)) {
         innerPadding ->
-        MarketplaceScreen()
-//        Box(modifier = Modifier.padding(innerPadding)) {
+//        MarketplaceScreen()
+        Box(modifier = Modifier.padding(innerPadding)) {
 //            // внутренний навигационный граф
-//            NestedGraph(navHostController = nestedGraph)
-//
-//            if (uiAppState.authRequested) {
-//                AuthBottomSheet(navigateTo, onToggleAuthRequest)
-//            }
-//
-//            BottomAppNavigation(uiAppState, onToggleAuthRequest)
-//        }
+            NestedGraph(navHostController = nestedGraph)
+
+            if (uiAppState.authRequested) {
+                AuthBottomSheet(navigateTo, onToggleAuthRequest)
+            }
+
+            BottomAppNavigation(uiAppState, onToggleAuthRequest)
+        }
     }
 }
