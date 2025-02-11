@@ -30,7 +30,11 @@ import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 
 
 @Composable
-fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
+fun BottomAppNavigation(
+    appState: AppState,
+    mainScreenNavigateTo: (Int) -> Unit,
+    onAuthRequest: () -> Unit
+) {
 
     var selectedIndex by remember { mutableIntStateOf(0) }
 
@@ -48,7 +52,7 @@ fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
                     color = if (selectedIndex == 0) navigationSelected else Color.Gray) },
                 onClick = {
                     selectedIndex = 0
-                    //TODO
+                    mainScreenNavigateTo(0)
                 },
                 icon = { Icon(Icons.Filled.Search, contentDescription = "Search",
                     tint = if (selectedIndex == 0) navigationSelected else Color.Gray) },
@@ -64,7 +68,7 @@ fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
                     color = if (selectedIndex == 1) navigationSelected else Color.Gray) },
                 onClick = {
                     selectedIndex = 1
-                    //TODO
+                    mainScreenNavigateTo(1)
                 },
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = "Like",
                     tint = if (selectedIndex == 1) navigationSelected else Color.Gray) },
@@ -93,7 +97,7 @@ fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
                 modifier = Modifier.wrapContentSize(),
                 label = { Text("Сообщения", fontSize = 9.sp,
                     maxLines = 1,
-                    color = if (selectedIndex == 3) navigationSelected else Color.Gray) },
+                    color = if (selectedIndex == 2) navigationSelected else Color.Gray) },
                 onClick = {
 
                     // если пользователь неавторизован
@@ -101,13 +105,13 @@ fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
                         onAuthRequest()
                     }
                     else {
-                        selectedIndex = 3
-                        //TODO
+                        selectedIndex = 2
+                        mainScreenNavigateTo(2)
                     }
 
                 },
                 icon = { Icon(Icons.Filled.Email, contentDescription = "Messages",
-                    tint = if (selectedIndex == 3) navigationSelected else Color.Gray) },
+                    tint = if (selectedIndex == 2) navigationSelected else Color.Gray) },
                 selected = false,
                 selectedContentColor = Color.White
             )
@@ -117,13 +121,13 @@ fun BottomAppNavigation(appState: AppState, onAuthRequest: () -> Unit) {
                 modifier = Modifier.wrapContentSize(),
                 label = { Text("Профиль", fontSize = 9.sp,
                     maxLines = 1,
-                    color = if (selectedIndex == 4) navigationSelected else Color.Gray) },
+                    color = if (selectedIndex == 3) navigationSelected else Color.Gray) },
                 onClick = {
-                    selectedIndex = 4
-                    //TODO
+                    selectedIndex = 3
+                    mainScreenNavigateTo(3) // 3 - индекс профиля и управления объявлениями
                 },
                 icon = { Icon(Icons.Filled.Person, contentDescription = "Profile",
-                    tint = if (selectedIndex == 4) navigationSelected else Color.Gray) },
+                    tint = if (selectedIndex == 3) navigationSelected else Color.Gray) },
                 selected = false,
                 selectedContentColor = Color.White
             )

@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.SignUp
-import samaryanin.avitofork.presentation.navigation.StartScreen
+import samaryanin.avitofork.presentation.navigation.AuthRoutes
+import samaryanin.avitofork.presentation.navigation.MainRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
@@ -73,12 +73,12 @@ fun CreateProfileScreen(
 
     // обработчик выхода
     val onExit = {
-        navHostController.popBackStack(route = SignUp, inclusive = false)
+        navHostController.popBackStack(route = AuthRoutes.SignUp, inclusive = false)
     }
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(StartScreen) {
+        navHostController.navigate(MainRoutes.MainScreen) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }

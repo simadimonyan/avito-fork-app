@@ -40,8 +40,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.CreateProfileScreen
-import samaryanin.avitofork.presentation.navigation.StartScreen
+import samaryanin.avitofork.presentation.navigation.AuthRoutes
+import samaryanin.avitofork.presentation.navigation.MainRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
@@ -87,7 +87,7 @@ fun VerificationScreen(
 
     // обработчик навигации входа
     val onLogin = {
-        navHostController.navigate(if (profileCreating) CreateProfileScreen else StartScreen) {
+        navHostController.navigate(if (profileCreating) AuthRoutes.CreateProfile else MainRoutes.MainScreen) {
             if (!profileCreating) {
                 popUpTo(navHostController.graph.findStartDestination().id) {
                     saveState = true

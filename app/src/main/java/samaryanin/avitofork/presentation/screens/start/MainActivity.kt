@@ -1,7 +1,6 @@
 package samaryanin.avitofork.presentation.screens.start
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,8 +14,6 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import samaryanin.avitofork.presentation.navigation.GlobalGraph
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
@@ -33,7 +30,6 @@ class MainActivity : ComponentActivity() {
 
             AvitoForkTheme {
 
-                val globalNavController: NavHostController = rememberNavController()
                 val viewModel: MainViewModel = hiltViewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -54,7 +50,7 @@ class MainActivity : ComponentActivity() {
                         insetsController.hide(WindowInsetsCompat.Type.navigationBars())
                         insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-                        GlobalGraph(mainViewModel = viewModel, navHostController = globalNavController)
+                        GlobalGraph(viewModel)
 
                     }
                 }

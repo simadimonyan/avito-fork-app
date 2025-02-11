@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Avito Fork</string>
+
+    <string name="unauthorized_profile">Войдите или зарегистрируйтесь, чтобы \n пользоваться всеми функциями.</string>
 </resources>
