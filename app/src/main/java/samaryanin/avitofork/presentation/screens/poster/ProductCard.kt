@@ -14,9 +14,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,10 +43,16 @@ fun ProductCardScreenPreview() {
 
 @Composable
 fun ProductCard(product: Product) {
+    var expanded by remember { mutableStateOf(false) }
+    var isFav by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .aspectRatio(1f),
+            .aspectRatio(1f)
+            .clickable {
+                // переход на экран с доп информацией
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -89,10 +101,15 @@ fun ProductCard(product: Product) {
                     horizontalAlignment = Alignment.End
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.like_non_act),
+                        painter = painterResource(
+                            if (isFav) R.drawable.like_act else
+                                R.drawable.like_non_act
+                        ),
                         contentDescription = "",
                         modifier = Modifier
-                            .clickable {}
+                            .clickable {
+                                isFav = !isFav
+                            }
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -100,9 +117,28 @@ fun ProductCard(product: Product) {
                         painter = painterResource(R.drawable.more),
                         contentDescription = "",
                         modifier = Modifier
-                            .clickable {}
+                            .clickable {
+                                expanded = true
+                            }
                             .size(24.dp)
                     )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Поделиться") },
+                            onClick = { }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Действие") },
+                            onClick = { }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Действие") },
+                            onClick = { }
+                        )
+                    }
                 }
             }
         }

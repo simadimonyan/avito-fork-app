@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SelectableLazyRow() {
-    val items = listOf("Рекомендации", "Свежие", "Рядом")
+    val items = listOf("Рекомендации", "Свежие", "Рядом", "Тест", "Еще поле")
     var selectedItem by remember { mutableStateOf(items.first()) }
 
     LazyRow(
