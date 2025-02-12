@@ -33,48 +33,47 @@ fun MarketplaceScreenPreview() {
 @Composable
 fun MarketplaceScreen() {
     var search by remember { mutableStateOf("") }
-
-    val ads = listOf(
-        Product("мерседес S", "1200$", "New York", "url"),
-        Product("Phone", "800$", "Los Angeles", "url"),
-        Product("Bike", "400$", "Chicago" , "url"),
-        Product("Camera", "600$", "Miami", "url"),
-    )
+    val ads = List(10) { Product("Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
 
     Scaffold { paddingValues ->
         Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterEnd) {
-                AppTextFieldPlaceholder(
-                    placeholder = "Поиск", value = search,
-                    onValueChange = { search = it }, isPassword = false, errorListener = false
-                )
-                Row (modifier = Modifier.padding(end = 8.dp)){
-                    Image(
-                        modifier = Modifier.
-                        clickable {  }
-                            .size(24.dp)
-                            .padding(end = 8.dp),
-                        painter = painterResource(R.drawable.search),
-                        contentDescription = ""
-                    )
-                    Image(
-                        modifier = Modifier.
-                        clickable {  }
-                            .size(24.dp),
-                        painter = painterResource(R.drawable.filter),
-                        contentDescription = ""
-                    )
-                }
-
-            }
+            SearchBar(search) { search = it }
+            SelectableLazyRow()
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 150.dp),
                 modifier = Modifier.padding(paddingValues)
             ) {
-                items(ads.size) { index ->
-                    ProductCard(ads[index])
-                }
+                items(ads.size) { index -> ProductCard(ads[index]) }
             }
         }
     }
+}
+
+@Composable
+fun SearchBar(search: String, onSearchChange: (String) -> Unit) {
+    Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterEnd) {
+        AppTextFieldPlaceholder(
+            placeholder = "Поиск",
+            value = search,
+            onValueChange = onSearchChange,
+            isPassword = false,
+            errorListener = false
+        )
+        Row(modifier = Modifier.padding(end = 8.dp)) {
+            IconButton(R.drawable.search) {}
+            IconButton(R.drawable.filter) {}
+        }
+    }
+}
+
+@Composable
+fun IconButton(iconRes: Int, onClick: () -> Unit) {
+    Image(
+        painter = painterResource(iconRes),
+        contentDescription = null,
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .size(24.dp)
+            .padding(end = 8.dp)
+    )
 }
