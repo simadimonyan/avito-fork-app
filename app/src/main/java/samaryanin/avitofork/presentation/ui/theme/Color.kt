@@ -16,3 +16,4 @@ val alphaLightBlue = Color(76, 168, 246, 100)
 
 val lightGrayColor = Color(242, 241, 239)
 val greyButton = Color(227, 227, 228)
+val veryLightGray = Color(250, 250, 250)

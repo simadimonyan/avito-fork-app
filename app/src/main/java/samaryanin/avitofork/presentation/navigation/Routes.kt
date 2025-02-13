@@ -1,6 +1,8 @@
 package samaryanin.avitofork.presentation.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +47,7 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
         composable<MainRoutes.MainScreen> {
             MainScreen(
                 mainViewModel,
+                authViewModel,
                 globalNavController
             )
         }
@@ -63,12 +66,14 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
  * Вложенный Navigation Host Graph экранов
  * ----------------------------------------------
  * @param screenNavController контроллер навигации между экранами
+ * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 @Composable
 fun NestedScreenGraph(
     screenNavController: NavHostController,
+    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -79,13 +84,21 @@ fun NestedScreenGraph(
         navController = screenNavController,
         startDestination = MainRoutes.Search
     ) {
-        composable<MainRoutes.Search> {
+        composable<MainRoutes.Search>(
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
+            }
+        ) {
             Box(modifier = Modifier.fillMaxWidth()) { //TODO (заглушка)
                 Text(text = "")
             }
         }
         profileGraph(
             profileViewModel,
+            authViewModel,
             mainViewModel,
             globalNavController
         )
@@ -96,17 +109,27 @@ fun NestedScreenGraph(
  * Вложенный Navigation Graph профиля
  * ----------------------------------------------
  * @param profileViewModel модель экрана профиля
+ * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.profileGraph(
     profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
     navigation(startDestination = ProfileRoutes.Profile.route, route = ProfileRoutes.RouteID.route) {
-        composable(route = ProfileRoutes.Profile.route) {
-            ProfileScreen(profileViewModel, mainViewModel, globalNavController)
+        composable(
+            route = ProfileRoutes.Profile.route,
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
+            }
+        ) {
+            ProfileScreen(profileViewModel, authViewModel, mainViewModel, globalNavController)
         }
     }
 }

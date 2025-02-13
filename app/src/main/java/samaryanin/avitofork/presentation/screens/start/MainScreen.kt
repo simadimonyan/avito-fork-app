@@ -17,6 +17,7 @@ import samaryanin.avitofork.presentation.navigation.MainRoutes
 import samaryanin.avitofork.presentation.navigation.NestedScreenGraph
 import samaryanin.avitofork.presentation.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.screens.auth.AuthBottomSheet
+import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -27,6 +28,7 @@ import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
+    authViewModel: AuthViewModel,
     globalNavHostController: NavHostController
 ) {
     val uiAppState by viewModel.appState.collectAsState()
@@ -109,7 +111,7 @@ fun MainScreen(
         innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
 
-            NestedScreenGraph(screenController, viewModel, globalNavHostController)
+            NestedScreenGraph(screenController, authViewModel, viewModel, globalNavHostController)
 
             if (uiAppState.authRequested) {
                 AuthBottomSheet(navigateTo, onToggleAuthRequest)

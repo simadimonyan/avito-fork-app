@@ -3,6 +3,7 @@ package samaryanin.avitofork.presentation.screens.menu.profile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,11 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -26,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -35,10 +41,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
+import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.AppState
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
+import samaryanin.avitofork.presentation.screens.menu.profile.components.AddProfile
+import samaryanin.avitofork.presentation.screens.menu.profile.components.DefaultAvatar
+import samaryanin.avitofork.presentation.screens.menu.profile.components.ProfileTabLayout
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.theme.alphaLightBlue
 import samaryanin.avitofork.presentation.ui.theme.lightBlue
@@ -50,36 +61,39 @@ import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 @Preview
 @Composable
 fun ProfilePreview() {
-    ProfileContent({ AppState() }, {})
+    ProfileContent({ AppState() }, {}, { AuthUpState() })
 }
 
 /**
  * State Hoisting паттерн
  * -------------------------------------
  * @param profileViewModel модуль обработки профиля
+ * @param authViewModel модель экрана авторизации
  * @param mainViewModel модель глобальной обработки состояний приложения
  * @param globalNavController глобальный контроллер навигации
  */
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavController
 ) {
 
     val appState by mainViewModel.appState.collectAsState()
+    val authState by authViewModel.state.collectAsState()
 
     // обработчик событий для AuthBottomSheet
     val authRequest = {
         mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
-    ProfileContent({ appState }, authRequest)
+    ProfileContent({ appState }, authRequest, { authState })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit) {
+fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit, authState: () -> AuthUpState) {
     Scaffold(
         modifier = Modifier,
         contentWindowInsets = WindowInsets(0),
@@ -87,12 +101,12 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit) {
         containerColor = Color.White,
         topBar = {
             TopAppBar(
-                modifier = Modifier,
+                modifier = Modifier.shadow(3.dp),
                 windowInsets = WindowInsets(0),
                 title = {
                     Text(
                         text = "Профиль",
-                        fontSize = 17.sp,
+                        fontSize = 20.sp,
                         color = Color.Black,
                         fontWeight = FontWeight.Normal
                     )
@@ -100,7 +114,7 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 actions = {
                     IconButton(onClick = {
-                        // TODO( навигация на окно уведомлений)
+                        // TODO( навигация на окно уведомлений )
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Notifications,
@@ -126,8 +140,8 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit) {
             .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            if (appState.invoke().isLoggedIn) {
-                ProfileAuthorized()
+            if (!appState.invoke().isLoggedIn) {
+                ProfileAuthorized(authState)
             }
             else {
                 ProfileUnauthorized(authRequest)
@@ -140,16 +154,89 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit) {
  * Состояние экрана профиля когда пользователь авторизован
  */
 @Composable
-fun ProfileAuthorized() {
+fun ProfileAuthorized(authState: () -> AuthUpState) {
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(),
+        .fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(0),
+        ) {
+            var name = authState.invoke().profile
+            name = if (name != "") name else "Тестовое имя"
 
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 20.dp)) {
+                DefaultAvatar(name = name)
+                Space()
+                AddProfile()
+            }
 
+            Space(10.dp)
 
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = name,
+                fontSize = 24.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Space()
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = "На Avito Fork с 2010 года",
+                fontSize = 16.sp,
+                color = Color.Black,
+            )
+
+            Space(2.dp)
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = "Частное лицо",
+                fontSize = 16.sp,
+                color = Color.Black,
+            )
+
+            Space(2.dp)
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = "ID: 123456789",
+                fontSize = 16.sp,
+                color = Color.Black,
+            )
+
+            Space()
+        }
+
+        ProfileTabLayout()
+
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        FloatingActionButton(
+            onClick = {
+                // TODO ( добавить объявление )
+            },
+            modifier = Modifier
+                .padding(bottom = 70.dp)
+                .align(Alignment.BottomEnd),
+            containerColor = navigationSelected
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Добавить")
+        }
     }
 
 }
