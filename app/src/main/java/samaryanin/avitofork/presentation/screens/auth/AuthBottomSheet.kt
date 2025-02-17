@@ -35,7 +35,7 @@ import samaryanin.avitofork.presentation.ui.theme.lightGrayColor
 @Preview(showSystemUi = false)
 @Composable
 fun AuthBottomSheetPreview() {
-    AuthBottomSheet(navigateTo = {}) {} // пустой обработчик
+    AuthBottomSheet(navigateTo = {}, {}) // пустой обработчик
 }
 
 /**
@@ -48,7 +48,10 @@ fun AuthBottomSheetPreview() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthBottomSheet(navigateTo: (Int) -> Unit, onToggleAuthRequest: () -> Unit) {
+fun AuthBottomSheet(
+    navigateTo: (Int) -> Unit,
+    onToggleAuthRequest: () -> Unit,
+) {
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 

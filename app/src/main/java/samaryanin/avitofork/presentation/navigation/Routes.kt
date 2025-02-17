@@ -26,6 +26,7 @@ import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
+import samaryanin.avitofork.presentation.screens.poster.MarketplaceScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -89,9 +90,19 @@ fun NestedScreenGraph(
 
     NavHost(
         navController = screenNavController,
-        startDestination = MainRoutes.Search
+        startDestination = SearchRoutes.Search
     ) {
-        composable<MainRoutes.Search>(
+        composable<SearchRoutes.Search>(
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
+            }
+        ) {
+            MarketplaceScreen()
+        }
+        composable<SearchRoutes.ShoppingCart>(
             enterTransition = {
                 EnterTransition.None
             },

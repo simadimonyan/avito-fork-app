@@ -7,17 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
-import samaryanin.avitofork.presentation.navigation.MainRoutes
 import samaryanin.avitofork.presentation.navigation.NestedScreenGraph
 import samaryanin.avitofork.presentation.navigation.ProfileRoutes
+import samaryanin.avitofork.presentation.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.auth.AuthBottomSheet
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
@@ -35,6 +39,14 @@ fun MainScreen(
 ) {
     val uiAppState by viewModel.appState.collectAsState()
     val screenController = rememberNavController()
+    var currentRoute by remember { mutableStateOf("search") }
+
+    // обработчик событий изменения пути навигации
+    LaunchedEffect(screenController) {
+        screenController.addOnDestinationChangedListener { _, destination, _ ->
+            currentRoute = destination.route.toString()
+        }
+    }
 
     // обработчик событий для AuthBottomSheet
     val onToggleAuthRequest = {
@@ -45,7 +57,7 @@ fun MainScreen(
     val mainScreenNavigateTo = { screen: Int ->
         when (screen) {
             0 -> { // 0 - индекс поиска объявлений
-                screenController.navigate(MainRoutes.Search) { // TODO (поиск)
+                screenController.navigate(SearchRoutes.Search) {
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -54,7 +66,7 @@ fun MainScreen(
                 }
             }
             1 -> { // 1 - индекс избранного
-                screenController.navigate(MainRoutes.Search) { // TODO (избранное)
+                screenController.navigate(SearchRoutes.ShoppingCart) { // TODO (избранное)
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -63,7 +75,7 @@ fun MainScreen(
                 }
             }
             2 -> { // 2 - индекс сообщений
-                screenController.navigate(MainRoutes.Search) { // TODO (сообщения)
+                screenController.navigate(SearchRoutes.ShoppingCart) { // TODO (сообщения)
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -119,7 +131,7 @@ fun MainScreen(
                 AuthBottomSheet(navigateTo, onToggleAuthRequest)
             }
 
-            BottomAppNavigation(uiAppState, mainScreenNavigateTo, onToggleAuthRequest)
+            BottomAppNavigation(uiAppState, mainScreenNavigateTo, onToggleAuthRequest, currentRoute)
         }
     }
 }

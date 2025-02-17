@@ -68,6 +68,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.profileinstaller)
+    implementation(libs.androidx.foundation.android)
     "baselineProfile"(project(":baselineprofile"))
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose.v120)

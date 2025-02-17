@@ -18,13 +18,17 @@ class CacheManager @Inject constructor(
 
         val type = object : TypeToken<AppState>() {}.type
 
-        val state: AppState = try {
-            gson.fromJson(json, type)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return AppState()
+        if (json != null) {
+            val state: AppState = try {
+                gson.fromJson(json, type)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return AppState()
+            }
+            return state
         }
-        return state
+        else
+            return AppState()
     }
 
     fun saveAppState(appState: AppState) {

@@ -1,6 +1,5 @@
 package samaryanin.avitofork.presentation.screens.start.data
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +45,8 @@ class MainViewModel @Inject constructor(
     }
 
     private fun restoreCache() {
-        _appState.update { cacheManager.getAppState() }
+        val cachedState = cacheManager.getAppState()
+        _appState.update { cachedState }
     }
 
 }

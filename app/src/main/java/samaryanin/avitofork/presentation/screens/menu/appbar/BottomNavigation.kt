@@ -33,7 +33,8 @@ import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 fun BottomAppNavigation(
     appState: AppState,
     mainScreenNavigateTo: (Int) -> Unit,
-    onAuthRequest: () -> Unit
+    onAuthRequest: () -> Unit,
+    currentScreen: String
 ) {
 
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -57,7 +58,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Search, contentDescription = "Search",
                     tint = if (selectedIndex == 0) navigationSelected else Color.Gray) },
-                selected = true,
+                selected = selectedIndex == 0,
                 selectedContentColor = Color.White
             )
 
@@ -73,7 +74,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = "Like",
                     tint = if (selectedIndex == 1) navigationSelected else Color.Gray) },
-                selected = false,
+                selected = selectedIndex == 1,
                 selectedContentColor = Color.White
             )
 
@@ -113,7 +114,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Email, contentDescription = "Messages",
                     tint = if (selectedIndex == 2) navigationSelected else Color.Gray) },
-                selected = false,
+                selected = selectedIndex == 2,
                 selectedContentColor = Color.White
             )
 
@@ -129,7 +130,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Person, contentDescription = "Profile",
                     tint = if (selectedIndex == 3) navigationSelected else Color.Gray) },
-                selected = false,
+                selected = selectedIndex == 3,
                 selectedContentColor = Color.White
             )
 

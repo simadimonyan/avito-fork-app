@@ -11,14 +11,29 @@ sealed class MainRoutes(val route: String) {
     @Serializable object MainScreen : MainRoutes("main")
 
     /**
-     * Меню для поиска актуальных объявлений
-     */
-    @Serializable object Search : MainRoutes("search")
-
-    /**
      * Идентификатор дополненной навигации
      */
     @Serializable object UtilRouteID : MainRoutes("utils_id")
+
+}
+
+@Serializable
+sealed class SearchRoutes(val route: String) {
+
+    /**
+     * Идентификатор вложенной навигации
+     */
+    @Serializable object RouteID : SearchRoutes("search_id")
+
+    /**
+     * Меню для поиска актуальных объявлений
+     */
+    @Serializable object Search : SearchRoutes("search")
+
+    /**
+     * Меню корзины покупок
+     */
+    @Serializable object ShoppingCart : SearchRoutes("cart")
 
 }
 
