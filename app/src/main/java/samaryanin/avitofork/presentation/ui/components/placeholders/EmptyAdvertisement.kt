@@ -25,7 +25,7 @@ import samaryanin.avitofork.presentation.ui.theme.lightGrayColor
 @Composable
 fun ProfileEmptyAdvertisement() {
     Card(
-        modifier = Modifier.width(220.dp),
+        modifier = Modifier.width(200.dp),
         shape = RoundedCornerShape(7.dp),
         border = BorderStroke(0.dp, lightGrayColor),
         elevation = CardDefaults.elevatedCardElevation(2.dp)
@@ -37,7 +37,7 @@ fun ProfileEmptyAdvertisement() {
         ) {
             Box(
                 modifier = Modifier
-                    .size(70.dp)
+                    .size(60.dp)
                     .background(lightGrayColor)
             )
 

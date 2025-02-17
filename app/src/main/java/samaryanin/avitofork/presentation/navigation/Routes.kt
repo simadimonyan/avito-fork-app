@@ -25,6 +25,8 @@ import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
+import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
+import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 
@@ -51,6 +53,11 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
                 globalNavController
             )
         }
+
+        utilGraph(
+            mainViewModel,
+            globalNavController
+        )
 
         authGraph(
             authViewModel,
@@ -102,6 +109,62 @@ fun NestedScreenGraph(
             mainViewModel,
             globalNavController
         )
+    }
+}
+
+/**
+ * Вложенный дополненный Navigation Graph
+ * ----------------------------------------------
+ * @param mainViewModel главная модель приложения
+ * @param globalNavController глобальный контроллер навигации
+ */
+fun NavGraphBuilder.utilGraph(
+    mainViewModel: MainViewModel,
+    globalNavController: NavHostController
+) {
+    navigation(startDestination = ProfileRoutes.Notifications.route, route = MainRoutes.UtilRouteID.route) {
+        composable(
+            route = ProfileRoutes.Notifications.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            NotificationsScreen(globalNavController)
+        }
+        composable(
+            route = SettingsRoutes.Settings.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            SettingsScreen(globalNavController)
+        }
     }
 }
 

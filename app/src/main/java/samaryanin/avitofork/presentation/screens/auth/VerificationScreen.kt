@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -59,7 +60,7 @@ import samaryanin.avitofork.presentation.ui.theme.greyButton
 @Preview
 @Composable
 fun VerificationPreview() {
-    VerificationContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
+    VerificationContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
 }
 
 /**
@@ -79,10 +80,12 @@ fun VerificationScreen(
 ) {
 
     val state by authViewModel.state.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик навигации выхода
     val onExit = {
         navHostController.popBackStack()
+        keyboardController?.hide()
     }
 
     // обработчик навигации входа
@@ -96,6 +99,7 @@ fun VerificationScreen(
             launchSingleTop = true
             restoreState = true
         }
+        keyboardController?.hide()
         if (!profileCreating) mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
     }
 
@@ -124,7 +128,7 @@ fun VerificationScreen(
  */
 @Composable
 fun VerificationContent(
-    onExit: () -> Boolean,
+    onExit: () -> Unit?,
     onLogin: () -> Unit,
     state: () -> AuthUpState,
     handleEvent: (AuthUpEvent) -> Unit

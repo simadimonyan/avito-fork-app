@@ -15,6 +15,11 @@ sealed class MainRoutes(val route: String) {
      */
     @Serializable object Search : MainRoutes("search")
 
+    /**
+     * Идентификатор дополненной навигации
+     */
+    @Serializable object UtilRouteID : MainRoutes("utils_id")
+
 }
 
 @Serializable
@@ -58,7 +63,7 @@ sealed class AuthRoutes(val route: String) {
     /**
      * Идентификатор вложенной навигации
      */
-    @Serializable object RouteID : AuthRoutes("auth")
+    @Serializable object RouteID : AuthRoutes("auth_id")
 
     /**
      * Окно для входа по номеру или почте

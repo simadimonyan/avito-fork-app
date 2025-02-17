@@ -40,7 +40,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.navigation.ProfileRoutes
+import samaryanin.avitofork.presentation.navigation.SettingsRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
@@ -61,7 +64,7 @@ import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 @Preview
 @Composable
 fun ProfilePreview() {
-    ProfileContent({ AppState() }, {}, { AuthUpState() })
+    ProfileContent({ AppState() }, {}, {}, { AuthUpState() })
 }
 
 /**
@@ -83,17 +86,45 @@ fun ProfileScreen(
     val appState by mainViewModel.appState.collectAsState()
     val authState by authViewModel.state.collectAsState()
 
+    val navigateTo = { index: Int ->
+        when (index) {
+            0 -> { // 0 - индекс навигации на экран уведомлений
+                globalNavController.navigate(ProfileRoutes.Notifications.route) {
+                    popUpTo(globalNavController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    restoreState = true
+                    launchSingleTop = true
+                }
+            }
+            1 -> { // 1 - индекс навигации на экран настроек
+                globalNavController.navigate(SettingsRoutes.Settings.route) {
+                    popUpTo(globalNavController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    restoreState = true
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
+
     // обработчик событий для AuthBottomSheet
     val authRequest = {
         mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
-    ProfileContent({ appState }, authRequest, { authState })
+    ProfileContent({ appState }, navigateTo, authRequest, { authState })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit, authState: () -> AuthUpState) {
+fun ProfileContent(
+    appState: () -> AppState,
+    navigateTo: (Int) -> Unit,
+    authRequest: () -> Unit,
+    authState: () -> AuthUpState
+) {
     Scaffold(
         modifier = Modifier,
         contentWindowInsets = WindowInsets(0),
@@ -114,7 +145,7 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit, authState:
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 actions = {
                     IconButton(onClick = {
-                        // TODO( навигация на окно уведомлений )
+                        navigateTo(0) // 0 - индекс навигации на экран уведомлений
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Notifications,
@@ -123,7 +154,7 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit, authState:
                         )
                     }
                     IconButton(onClick = {
-                        // TODO( навигация в окно настроек )
+                        navigateTo(1) // 1 - индекс навигации на экран настроек
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
@@ -140,7 +171,7 @@ fun ProfileContent(appState: () -> AppState, authRequest: () -> Unit, authState:
             .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            if (!appState.invoke().isLoggedIn) {
+            if (appState.invoke().isLoggedIn) {
                 ProfileAuthorized(authState)
             }
             else {
@@ -181,7 +212,7 @@ fun ProfileAuthorized(authState: () -> AuthUpState) {
             Text(
                 modifier = Modifier.padding(start = 20.dp),
                 text = name,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -192,7 +223,7 @@ fun ProfileAuthorized(authState: () -> AuthUpState) {
             Text(
                 modifier = Modifier.padding(start = 20.dp),
                 text = "На Avito Fork с 2010 года",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 color = Color.Black,
             )
 
@@ -201,7 +232,7 @@ fun ProfileAuthorized(authState: () -> AuthUpState) {
             Text(
                 modifier = Modifier.padding(start = 20.dp),
                 text = "Частное лицо",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 color = Color.Black,
             )
 
@@ -210,7 +241,7 @@ fun ProfileAuthorized(authState: () -> AuthUpState) {
             Text(
                 modifier = Modifier.padding(start = 20.dp),
                 text = "ID: 123456789",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 color = Color.Black,
             )
 

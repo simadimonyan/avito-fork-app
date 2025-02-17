@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.start
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -109,7 +111,7 @@ fun MainScreen(
 
     Scaffold(modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets(0)) {
         innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(innerPadding).background(Color.White)) {
 
             NestedScreenGraph(screenController, authViewModel, viewModel, globalNavHostController)
 

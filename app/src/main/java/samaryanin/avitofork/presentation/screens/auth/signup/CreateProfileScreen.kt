@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
 @Preview(showSystemUi = false)
 @Composable
 fun CreateProfilePreview() {
-    CreateProfileContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
+    CreateProfileContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
 }
 
 /**
@@ -70,10 +71,12 @@ fun CreateProfileScreen(
 ) {
 
     val state by authViewModel.state.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
     val onExit = {
         navHostController.popBackStack(route = AuthRoutes.SignUp, inclusive = false)
+        keyboardController?.hide()
     }
 
     // обработчик авторизации
@@ -85,6 +88,7 @@ fun CreateProfileScreen(
             launchSingleTop = true
             restoreState = true
         }
+        keyboardController?.hide()
         mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
     }
 
@@ -112,7 +116,7 @@ fun CreateProfileScreen(
  */
 @Composable
 fun CreateProfileContent(
-    onExit: () -> Boolean,
+    onExit: () -> Unit?,
     onLogin: () -> Unit,
     state: () -> AuthUpState,
     handleEvent: (AuthUpEvent) -> Unit

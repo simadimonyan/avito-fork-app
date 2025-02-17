@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.start.data
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ class MainViewModel @Inject constructor(
             is AppEvent.RestoreCache -> restoreCache()
             is AppEvent.FirstStartUp -> setFirstStartUpSettings(event.isFirstStartUp)
             is AppEvent.ToggleAuthRequest -> toggleAuthRequest()
-            AppEvent.ProfileHasLoggedIn -> authorizeProfile()
+            is AppEvent.ProfileHasLoggedIn -> authorizeProfile()
         }
     }
 
@@ -41,7 +42,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun saveAppState() {
-        cacheManager.saveAppState(appState.value)
+        cacheManager.saveAppState(_appState.value)
     }
 
     private fun restoreCache() {

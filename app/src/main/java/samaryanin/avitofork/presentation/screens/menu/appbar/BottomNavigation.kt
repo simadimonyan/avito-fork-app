@@ -1,6 +1,7 @@
 package samaryanin.avitofork.presentation.screens.menu.appbar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import samaryanin.avitofork.presentation.screens.start.data.AppState
 import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 
-
 @Composable
 fun BottomAppNavigation(
     appState: AppState,
@@ -40,6 +40,7 @@ fun BottomAppNavigation(
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         BottomNavigation(
+            windowInsets = WindowInsets(0),
             backgroundColor = Color.White,
             elevation = 0.dp
         ) {

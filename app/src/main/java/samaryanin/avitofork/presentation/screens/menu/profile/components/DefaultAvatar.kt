@@ -30,7 +30,7 @@ fun DefaultAvatar(name: String, modifier: Modifier = Modifier) {
 
     Box(
         modifier = modifier
-            .size(80.dp)
+            .size(70.dp)
             .clip(CircleShape)
             .background(pastelDarkColors),
         contentAlignment = Alignment.Center
@@ -48,7 +48,7 @@ fun DefaultAvatar(name: String, modifier: Modifier = Modifier) {
 fun AddProfile(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(80.dp)
+            .size(70.dp)
             .clip(CircleShape)
             .background(lightGrayColor),
         contentAlignment = Alignment.Center

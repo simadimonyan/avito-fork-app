@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
 @Preview(showSystemUi = false)
 @Composable
 fun LoginPreview() {
-    LoginContent({ true }, {}, { AuthUpState() }, {}) // пустой обработчик
+    LoginContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
 }
 
 /**
@@ -63,10 +64,12 @@ fun LoginScreen(
 ) {
 
     val state by authViewModel.state.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
     val onExit = {
         navHostController.popBackStack()
+        keyboardController?.hide()
     }
 
     // обработчик авторизации
@@ -75,6 +78,7 @@ fun LoginScreen(
             launchSingleTop = true
             restoreState = true
         }
+        keyboardController?.hide()
     }
 
     // обработчик событий
@@ -101,8 +105,8 @@ fun LoginScreen(
  */
 @Composable
 fun LoginContent(
-    onExit: () -> Boolean,
-    onLogin: () -> Unit,
+    onExit: () -> Unit?,
+    onLogin: () -> Unit?,
     state: () -> AuthUpState,
     handleEvent: (AuthUpEvent) -> Unit
 ) {

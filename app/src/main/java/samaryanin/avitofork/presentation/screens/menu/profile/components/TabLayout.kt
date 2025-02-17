@@ -3,8 +3,10 @@ package samaryanin.avitofork.presentation.screens.menu.profile.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
@@ -50,7 +52,7 @@ fun ProfileTabLayout() {
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
     val coroutineScope = rememberCoroutineScope()
 
-    Column {
+    Column(modifier = Modifier.windowInsetsPadding(WindowInsets(0))) {
         // Tabs
         TabRow(
             containerColor = Color.White,
@@ -74,7 +76,7 @@ fun ProfileTabLayout() {
                     text = {
                         Text(
                             text = tab.title,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (isSelected) Color.Black else Color.Gray // Серый для неактивных
                         )
