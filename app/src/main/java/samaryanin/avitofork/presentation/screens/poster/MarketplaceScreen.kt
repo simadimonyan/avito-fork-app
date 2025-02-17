@@ -60,8 +60,12 @@ fun SearchBar(search: String, onSearchChange: (String) -> Unit) {
             errorListener = false
         )
         Row(modifier = Modifier.padding(end = 8.dp)) {
-            IconButton(R.drawable.search) {}
-            IconButton(R.drawable.filter) {}
+            IconButton(R.drawable.search) {
+                //click
+            }
+            IconButton(R.drawable.filter) {
+                //click
+            }
         }
     }
 }
