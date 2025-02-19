@@ -90,7 +90,7 @@ fun VerificationScreen(
 
     // обработчик навигации входа
     val onLogin = {
-        navHostController.navigate(if (profileCreating) AuthRoutes.CreateProfile else MainRoutes.MainScreen) {
+        navHostController.navigate(if (profileCreating) AuthRoutes.CreateProfile.route else MainRoutes.MainScreen.route) {
             if (!profileCreating) {
                 popUpTo(navHostController.graph.findStartDestination().id) {
                     saveState = true

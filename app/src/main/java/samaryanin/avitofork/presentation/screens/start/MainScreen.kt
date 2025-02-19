@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.start
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,13 +42,22 @@ fun MainScreen(
     val uiAppState by viewModel.appState.collectAsState()
     val screenController = rememberNavController()
     var currentRoute by remember { mutableStateOf("search") }
+    var selectedIndex by remember { mutableIntStateOf(0) }
 
     // обработчик событий изменения пути навигации
     LaunchedEffect(screenController) {
-        screenController.addOnDestinationChangedListener { _, destination, _ ->
-            currentRoute = destination.route.toString()
-        }
-    }
+       screenController.addOnDestinationChangedListener { _, destination, _ ->
+           currentRoute = destination.route.toString()
+           selectedIndex = when (currentRoute) {
+               SearchRoutes.Search.route -> 0
+               SearchRoutes.ShoppingCart.route -> 1
+               ProfileRoutes.Profile.route -> 3
+               else -> {
+                   selectedIndex
+               }
+           }
+       }
+   }
 
     // обработчик событий для AuthBottomSheet
     val onToggleAuthRequest = {
@@ -57,7 +68,7 @@ fun MainScreen(
     val mainScreenNavigateTo = { screen: Int ->
         when (screen) {
             0 -> { // 0 - индекс поиска объявлений
-                screenController.navigate(SearchRoutes.Search) {
+                screenController.navigate(SearchRoutes.Search.route) {
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -66,7 +77,7 @@ fun MainScreen(
                 }
             }
             1 -> { // 1 - индекс избранного
-                screenController.navigate(SearchRoutes.ShoppingCart) { // TODO (избранное)
+                screenController.navigate(SearchRoutes.ShoppingCart.route) { // TODO (избранное)
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -75,7 +86,7 @@ fun MainScreen(
                 }
             }
             2 -> { // 2 - индекс сообщений
-                screenController.navigate(SearchRoutes.ShoppingCart) { // TODO (сообщения)
+                screenController.navigate(SearchRoutes.ShoppingCart.route) { // TODO (сообщения)
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -100,7 +111,7 @@ fun MainScreen(
         when (index) {
             0 -> { // 0 - индекс экрана входа через почту
                 onToggleAuthRequest.invoke()
-                globalNavHostController.navigate(AuthRoutes.Login) {
+                globalNavHostController.navigate(AuthRoutes.Login.route) {
                     popUpTo(globalNavHostController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -110,7 +121,7 @@ fun MainScreen(
             }
             1 -> { // 1 - индекс экрана регистрации
                 onToggleAuthRequest.invoke()
-                globalNavHostController.navigate(AuthRoutes.SignUp) {
+                globalNavHostController.navigate(AuthRoutes.SignUp.route) {
                     popUpTo(globalNavHostController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -131,7 +142,7 @@ fun MainScreen(
                 AuthBottomSheet(navigateTo, onToggleAuthRequest)
             }
 
-            BottomAppNavigation(uiAppState, mainScreenNavigateTo, onToggleAuthRequest, currentRoute)
+            BottomAppNavigation(uiAppState, mainScreenNavigateTo, onToggleAuthRequest, selectedIndex)
         }
     }
 }

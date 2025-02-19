@@ -94,7 +94,11 @@ sealed class AuthRoutes(val route: String) {
      * Окно для верификации кода
      * - /{createProfile} условие навигации окна создания профиля
      */
-    @Serializable object Verification : AuthRoutes("verification/{createProfile}")
+    @Serializable object Verification : AuthRoutes("verification/{createProfile}") {
+        fun createRoute(createProfile: Boolean): String {
+            return route.replace("{createProfile}", createProfile.toString())
+        }
+    }
 
     /**
      * Окно для создания профиля

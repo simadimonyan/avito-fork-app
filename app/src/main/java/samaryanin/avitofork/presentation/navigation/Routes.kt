@@ -44,10 +44,12 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
 
     NavHost(
         navController = globalNavController,
-        startDestination = MainRoutes.MainScreen
+        startDestination = MainRoutes.MainScreen.route
     ) {
 
-        composable<MainRoutes.MainScreen> {
+        composable(
+            route = MainRoutes.MainScreen.route
+        ) {
             MainScreen(
                 mainViewModel,
                 authViewModel,
@@ -90,9 +92,10 @@ fun NestedScreenGraph(
 
     NavHost(
         navController = screenNavController,
-        startDestination = SearchRoutes.Search
+        startDestination = SearchRoutes.Search.route
     ) {
-        composable<SearchRoutes.Search>(
+        composable(
+            route = SearchRoutes.Search.route,
             enterTransition = {
                 EnterTransition.None
             },
@@ -102,7 +105,8 @@ fun NestedScreenGraph(
         ) {
             MarketplaceScreen()
         }
-        composable<SearchRoutes.ShoppingCart>(
+        composable(
+            route = SearchRoutes.ShoppingCart.route,
             enterTransition = {
                 EnterTransition.None
             },
@@ -221,7 +225,8 @@ fun NavGraphBuilder.authGraph(
     globalNavController: NavHostController,
 ) {
     navigation(startDestination = AuthRoutes.Login.route, route = AuthRoutes.RouteID.route) {
-        composable<AuthRoutes.Login>(
+        composable(
+            route = AuthRoutes.Login.route,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -241,7 +246,8 @@ fun NavGraphBuilder.authGraph(
         ) {
             LoginScreen(authViewModel, globalNavController)
         }
-        composable<AuthRoutes.SignUp>(
+        composable(
+            route = AuthRoutes.SignUp.route,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -288,7 +294,8 @@ fun NavGraphBuilder.authGraph(
             val createProfile = backStackEntry.arguments?.getBoolean("createProfile") ?: false
             VerificationScreen(authViewModel, mainViewModel, globalNavController, createProfile)
         }
-        composable<AuthRoutes.CreateProfile>(
+        composable(
+            route = AuthRoutes.CreateProfile.route,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
@@ -72,7 +73,7 @@ fun SignUpScreen(
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate("verification/${true}") {
+        navHostController.navigate(AuthRoutes.Verification.createRoute(true)) {
             launchSingleTop = true
             restoreState = true
         }

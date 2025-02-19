@@ -34,10 +34,10 @@ fun BottomAppNavigation(
     appState: AppState,
     mainScreenNavigateTo: (Int) -> Unit,
     onAuthRequest: () -> Unit,
-    currentScreen: String
+    currentScreen: Int
 ) {
 
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    var selectedIndex = currentScreen
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         BottomNavigation(
@@ -58,7 +58,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Search, contentDescription = "Search",
                     tint = if (selectedIndex == 0) navigationSelected else Color.Gray) },
-                selected = selectedIndex == 0,
+                selected = currentScreen == 0,
                 selectedContentColor = Color.White
             )
 
@@ -74,7 +74,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = "Like",
                     tint = if (selectedIndex == 1) navigationSelected else Color.Gray) },
-                selected = selectedIndex == 1,
+                selected = currentScreen == 1,
                 selectedContentColor = Color.White
             )
 
@@ -114,7 +114,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Email, contentDescription = "Messages",
                     tint = if (selectedIndex == 2) navigationSelected else Color.Gray) },
-                selected = selectedIndex == 2,
+                selected = currentScreen == 2,
                 selectedContentColor = Color.White
             )
 
@@ -130,7 +130,7 @@ fun BottomAppNavigation(
                 },
                 icon = { Icon(Icons.Filled.Person, contentDescription = "Profile",
                     tint = if (selectedIndex == 3) navigationSelected else Color.Gray) },
-                selected = selectedIndex == 3,
+                selected = currentScreen == 3,
                 selectedContentColor = Color.White
             )
 

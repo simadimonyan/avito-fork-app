@@ -75,13 +75,13 @@ fun CreateProfileScreen(
 
     // обработчик выхода
     val onExit = {
-        navHostController.popBackStack(route = AuthRoutes.SignUp, inclusive = false)
+        navHostController.popBackStack(route = AuthRoutes.SignUp.route, inclusive = false)
         keyboardController?.hide()
     }
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(MainRoutes.MainScreen) {
+        navHostController.navigate(MainRoutes.MainScreen.route) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }
