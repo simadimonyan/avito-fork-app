@@ -38,8 +38,8 @@ import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.navigation.MainRoutes
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
+import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
+import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -53,7 +53,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
 @Preview(showSystemUi = false)
 @Composable
 fun CreateProfilePreview() {
-    CreateProfileContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
+    CreateProfileContent({}, {}, { AuthState() }, {}) // пустой обработчик
 }
 
 /**
@@ -70,7 +70,7 @@ fun CreateProfileScreen(
     navHostController: NavHostController
 ) {
 
-    val state by authViewModel.state.collectAsState()
+    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
@@ -93,7 +93,7 @@ fun CreateProfileScreen(
     }
 
     // обработчик событий
-    val handleEvent = { event: AuthUpEvent ->
+    val handleEvent = { event: AuthEvent ->
         authViewModel.handleEvent(event)
     }
 
@@ -118,8 +118,8 @@ fun CreateProfileScreen(
 fun CreateProfileContent(
     onExit: () -> Unit?,
     onLogin: () -> Unit,
-    state: () -> AuthUpState,
-    handleEvent: (AuthUpEvent) -> Unit
+    state: () -> AuthState,
+    handleEvent: (AuthEvent) -> Unit
 ) {
 
     var profile by remember { mutableStateOf("") }
@@ -144,7 +144,7 @@ fun CreateProfileContent(
                             errorPassBlank = true // ошибка для пустого поля пароля
                         }
                         else {
-                            handleEvent(AuthUpEvent.CheckPasswordFormValidation(password))
+                            handleEvent(AuthEvent.CheckPasswordFormValidation(password))
 
                             if (!state.invoke().passwordFormIsValid) {
                                 errorPassFormat = true // ошибка на неверный формат пароля
@@ -211,7 +211,8 @@ fun CreateProfileContent(
                 onValueChange = {
                     profile = it
                     errorProfileBlank = false
-                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(profile = profile)))
+                    handleEvent(AuthEvent.UpdateProfileState(profile = profile))
+                    handleEvent(AuthEvent.CheckPasswordFormValidation(password))
                 },
                 placeholder = "Имя для профиля",
                 errorListener = errorProfileBlank
@@ -233,6 +234,7 @@ fun CreateProfileContent(
                 isPassword = true,
                 onValueChange = {
                     password = it
+                    handleEvent(AuthEvent.CheckPasswordFormValidation(password))
                     errorPassFormat = false
                     errorPassBlank = false
                 },

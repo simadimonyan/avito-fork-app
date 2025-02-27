@@ -2,42 +2,36 @@ package samaryanin.avitofork.presentation.screens.auth.data
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import samaryanin.avitofork.presentation.state.AppStateStore
 import java.security.MessageDigest
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor() : ViewModel() {
+class AuthViewModel @Inject constructor(
+    val appStateStore: AppStateStore
+) : ViewModel() {
 
-    private val _state = MutableStateFlow(AuthUpState())
-    val state: StateFlow<AuthUpState> = _state
-
-    fun handleEvent(event: AuthUpEvent) {
+    fun handleEvent(event: AuthEvent) {
         when (event) {
-            is AuthUpEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.email)
-            is AuthUpEvent.UpdateState -> updateState(event.state)
-            is AuthUpEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.code)
-            is AuthUpEvent.SendVerificationCode -> sendVerificationCode()
-            is AuthUpEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.hash)
-            is AuthUpEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
+            is AuthEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.email)
+            is AuthEvent.UpdateEmailState -> appStateStore.authStateHolder.updateEmail(event.email)
+            is AuthEvent.UpdateProfileState -> appStateStore.authStateHolder.updateProfile(event.profile)
+            is AuthEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.code)
+            is AuthEvent.SendVerificationCode -> sendVerificationCode()
+            is AuthEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.hash)
+            is AuthEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
         }
-    }
-
-    private fun updateState(state: AuthUpState) {
-        _state.update { state }
     }
 
     private fun isPasswordValid(password: String) {
         val bool = password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!~%_*?&:,№\\\"\\[\\]{}\\-;^<>\\\\|.#()+=])[A-Za-zА-Яа-я\\d@\$~\\\"!%'’_*?&:№,\\[\\]{}\\-;^<>\\\\|.#()+=]{8,}\$".toRegex())
-        _state.value.passwordFormIsValid = bool
+        appStateStore.authStateHolder.setPasswordValid(bool)
     }
 
     // TODO(подключить бекенд сервис для авторизации) --тестовый пароль 1111
     private fun verifyCredentials(email: String, pass: String) {
         val bool = hash("$email $pass") == hash("$email 1111")
-        _state.value.credentialsAreValid = bool
+        appStateStore.authStateHolder.setCredentialsValid(bool)
     }
 
     // TODO(подключить бекенд сервис для получения кода)
@@ -46,13 +40,13 @@ class AuthViewModel @Inject constructor() : ViewModel() {
     // TODO(подключить бекенд сервис для проверки кода)
     private fun emailFieldCodeVerify(code: String) {
         val bool = code.matches("^\\d{4}\$".toRegex())
-        _state.value.emailCodeIsValid = bool
+        appStateStore.authStateHolder.setEmailCodeValid(bool)
     }
 
     // TODO(подключить бекенд сервис для отправки кода)
     private fun emailFieldFormVerify(email: String) {
         val bool = email.matches("^[a-zA-Zа-яА-ЯёЁ0-9._%+-]+@[a-zA-Zа-яА-ЯёЁ0-9.-]+\\.[a-zA-Zа-яА-ЯёЁ]{2,}\$".toRegex())
-        _state.value.emailIsValid = bool
+        appStateStore.authStateHolder.setEmailFieldValid(bool)
     }
 
     private fun hash(data: String): String {

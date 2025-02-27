@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
+import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
+import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
@@ -47,7 +47,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
 @Preview(showSystemUi = false)
 @Composable
 fun SignUpPreview() {
-    SignUpContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
+    SignUpContent({}, {}, { AuthState() }, {}) // пустой обработчик
 }
 
 /**
@@ -62,7 +62,7 @@ fun SignUpScreen(
     navHostController: NavHostController
 ) {
 
-    val state by authViewModel.state.collectAsState()
+    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
@@ -81,7 +81,7 @@ fun SignUpScreen(
     }
 
     // обработчик событий
-    val handleEvent = { event: AuthUpEvent ->
+    val handleEvent = { event: AuthEvent ->
         authViewModel.handleEvent(event)
     }
 
@@ -106,8 +106,8 @@ fun SignUpScreen(
 fun SignUpContent(
     onExit: () -> Unit?,
     onLogin: () -> Unit?,
-    state: () -> AuthUpState,
-    handleEvent: (AuthUpEvent) -> Unit,
+    state: () -> AuthState,
+    handleEvent: (AuthEvent) -> Unit,
 ) {
 
     var email by remember { mutableStateOf(state.invoke().email) }
@@ -119,7 +119,7 @@ fun SignUpContent(
         bottomBar = {
             Button(
                 onClick = {
-                    handleEvent(AuthUpEvent.CheckEmailFormValidation(email))
+                    handleEvent(AuthEvent.CheckEmailFormValidation(email))
                     if (state.invoke().emailIsValid) {
                         onLogin()
                     }
@@ -173,7 +173,8 @@ fun SignUpContent(
                 onValueChange = {
                     email = it
                     errorFrame = false
-                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(email = email)))
+                    handleEvent(AuthEvent.UpdateEmailState(email = email))
+                    handleEvent(AuthEvent.CheckEmailFormValidation(email))
                 },
                 placeholder = "helloworld@test.ru",
                 errorListener = errorFrame

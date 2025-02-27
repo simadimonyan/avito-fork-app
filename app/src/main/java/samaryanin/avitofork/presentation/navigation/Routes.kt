@@ -52,7 +52,6 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
         ) {
             MainScreen(
                 mainViewModel,
-                authViewModel,
                 globalNavController
             )
         }
@@ -76,14 +75,12 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
  * Вложенный Navigation Host Graph экранов
  * ----------------------------------------------
  * @param screenNavController контроллер навигации между экранами
- * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 @Composable
 fun NestedScreenGraph(
     screenNavController: NavHostController,
-    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -120,7 +117,6 @@ fun NestedScreenGraph(
         }
         profileGraph(
             profileViewModel,
-            authViewModel,
             mainViewModel,
             globalNavController
         )
@@ -187,13 +183,11 @@ fun NavGraphBuilder.utilGraph(
  * Вложенный Navigation Graph профиля
  * ----------------------------------------------
  * @param profileViewModel модель экрана профиля
- * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.profileGraph(
     profileViewModel: ProfileViewModel,
-    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -207,7 +201,7 @@ fun NavGraphBuilder.profileGraph(
                 ExitTransition.None
             }
         ) {
-            ProfileScreen(profileViewModel, authViewModel, mainViewModel, globalNavController)
+            ProfileScreen(profileViewModel, mainViewModel, globalNavController)
         }
     }
 }

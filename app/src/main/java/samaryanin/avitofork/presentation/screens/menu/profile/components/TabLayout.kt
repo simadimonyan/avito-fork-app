@@ -35,12 +35,12 @@ sealed class TabItem(val index: Int, val title: String) {
     /**
      * Вкладка опубликованных объявлений в профиле
      */
-    object Publications : TabItem(0, "Объявления")
+    data object Publications : TabItem(0, "Объявления")
 
     /**
      * Вкладка архивных объявлений в профиле
      */
-    object Archive : TabItem(1, "Архив")
+    data object Archive : TabItem(1, "Архив")
 
 }
 

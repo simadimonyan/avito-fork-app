@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,8 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
+import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
+import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
@@ -49,7 +50,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
 @Preview(showSystemUi = false)
 @Composable
 fun LoginPreview() {
-    LoginContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
+    LoginContent({}, {}, { AuthState() }, {}) // пустой обработчик
 }
 
 /**
@@ -64,7 +65,7 @@ fun LoginScreen(
     navHostController: NavHostController
 ) {
 
-    val state by authViewModel.state.collectAsState()
+    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
@@ -83,7 +84,7 @@ fun LoginScreen(
     }
 
     // обработчик событий
-    val handleEvent = { event: AuthUpEvent ->
+    val handleEvent = { event: AuthEvent ->
         authViewModel.handleEvent(event)
     }
 
@@ -108,11 +109,12 @@ fun LoginScreen(
 fun LoginContent(
     onExit: () -> Unit?,
     onLogin: () -> Unit?,
-    state: () -> AuthUpState,
-    handleEvent: (AuthUpEvent) -> Unit
+    state: () -> AuthState,
+    handleEvent: (AuthEvent) -> Unit
 ) {
 
-    var email by remember { mutableStateOf(state.invoke().email) }
+    val authState = rememberUpdatedState(newValue = state())
+
     var password by remember { mutableStateOf("") }
     var errorEmailBlank by remember { mutableStateOf(false) }
     var errorPassBlank by remember { mutableStateOf(false) }
@@ -125,26 +127,25 @@ fun LoginContent(
         bottomBar = {
             Button(
                 onClick = {
-                    if (email.isBlank()) {
-                        errorEmailBlank = true // ошибка пустого поля email
-                    }
-                    else {
-                        handleEvent(AuthUpEvent.CheckEmailFormValidation(email))
-                        if (!state.invoke().emailIsValid) {
-                            emailErrorFrame = true // ошибка валидации email
+                    if (authState.value.email.isBlank()) {
+                        errorEmailBlank = true
+                    } else {
+                        handleEvent(AuthEvent.CheckEmailFormValidation(authState.value.email))
+                        if (!authState.value.emailIsValid) {
+                            emailErrorFrame = true
                         }
                     }
 
                     if (!(emailErrorFrame || errorEmailBlank)) {
                         if (password.isBlank()) {
-                            errorPassBlank = true // ошибка пустого поля пароля
+                            errorPassBlank = true
                         } else {
-                            handleEvent(AuthUpEvent.VerifyAccountCredentials(email, password))
+                            handleEvent(AuthEvent.VerifyAccountCredentials(authState.value.email, password))
 
-                            if (state.invoke().credentialsAreValid) {
+                            if (authState.value.credentialsAreValid) {
                                 onLogin()
                             } else {
-                                errorWrongPass = true // ошибка авторизации
+                                errorWrongPass = true
                             }
                         }
                     }
@@ -194,12 +195,12 @@ fun LoginContent(
             Space()
 
             AppTextFieldPlaceholder(
-                value = email,
+                value = authState.value.email,
                 onValueChange = {
-                    email = it
+                    handleEvent(AuthEvent.UpdateEmailState(email = it))
+                    handleEvent(AuthEvent.CheckEmailFormValidation(email = it))
                     emailErrorFrame = false
                     errorEmailBlank = false
-                    handleEvent(AuthUpEvent.UpdateState(state.invoke().copy(email = email)))
                 },
                 placeholder = "Почта",
                 errorListener = emailErrorFrame || errorEmailBlank
@@ -229,6 +230,7 @@ fun LoginContent(
                 isPassword = true,
                 onValueChange = {
                     password = it
+                    handleEvent(AuthEvent.VerifyAccountCredentials(authState.value.email, password))
                     errorWrongPass = false
                     errorPassBlank = false
                 },

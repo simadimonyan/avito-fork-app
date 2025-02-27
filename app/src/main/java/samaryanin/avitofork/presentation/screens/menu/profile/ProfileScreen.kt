@@ -44,8 +44,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.navigation.SettingsRoutes
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
-import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.AppState
@@ -64,27 +63,25 @@ import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 @Preview
 @Composable
 fun ProfilePreview() {
-    ProfileContent({ AppState() }, {}, {}, { AuthUpState() })
+    ProfileContent({ AppState() }, {}, {}, { AuthState() })
 }
 
 /**
  * State Hoisting паттерн
  * -------------------------------------
  * @param profileViewModel модуль обработки профиля
- * @param authViewModel модель экрана авторизации
  * @param mainViewModel модель глобальной обработки состояний приложения
  * @param globalNavController глобальный контроллер навигации
  */
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
-    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavController
 ) {
 
-    val appState by mainViewModel.appState.collectAsState()
-    val authState by authViewModel.state.collectAsState()
+    val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
+    val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
 
     val navigateTo = { index: Int ->
         when (index) {
@@ -123,7 +120,7 @@ fun ProfileContent(
     appState: () -> AppState,
     navigateTo: (Int) -> Unit,
     authRequest: () -> Unit,
-    authState: () -> AuthUpState
+    authState: () -> AuthState
 ) {
     Scaffold(
         modifier = Modifier,
@@ -185,7 +182,7 @@ fun ProfileContent(
  * Состояние экрана профиля когда пользователь авторизован
  */
 @Composable
-fun ProfileAuthorized(authState: () -> AuthUpState) {
+fun ProfileAuthorized(authState: () -> AuthState) {
 
     Column(modifier = Modifier
         .fillMaxSize(),

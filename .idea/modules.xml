@@ -3,12 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.main~1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.unitTest~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.unitTest~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AvitoFork.Avito_Fork.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Avito_Fork.iml" filepath="$PROJECT_DIR$/.idea/modules/Avito_Fork.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/baselineprofile/Avito_Fork.baselineprofile.iml" filepath="$PROJECT_DIR$/.idea/modules/baselineprofile/Avito_Fork.baselineprofile.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baselineprofile/baselineprofile.Avito_Fork.baselineprofile.main.iml" filepath="$PROJECT_DIR$/.idea/modules/baselineprofile/baselineprofile.Avito_Fork.baselineprofile.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baselineprofile/Avito_Fork.baselineprofile.main.iml" filepath="$PROJECT_DIR$/.idea/modules/baselineprofile/Avito_Fork.baselineprofile.main.iml" />
     </modules>
   </component>
 </project>

@@ -25,7 +25,6 @@ import samaryanin.avitofork.presentation.navigation.NestedScreenGraph
 import samaryanin.avitofork.presentation.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.auth.AuthBottomSheet
-import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -36,10 +35,9 @@ import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    authViewModel: AuthViewModel,
     globalNavHostController: NavHostController
 ) {
-    val uiAppState by viewModel.appState.collectAsState()
+    val uiAppState by viewModel.appStateStore.appStateHolder.appState.collectAsState()
     val screenController = rememberNavController()
     var currentRoute by remember { mutableStateOf("search") }
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -136,7 +134,7 @@ fun MainScreen(
         innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).background(Color.White)) {
 
-            NestedScreenGraph(screenController, authViewModel, viewModel, globalNavHostController)
+            NestedScreenGraph(screenController, viewModel, globalNavHostController)
 
             if (uiAppState.authRequested) {
                 AuthBottomSheet(navigateTo, onToggleAuthRequest)

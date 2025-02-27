@@ -43,8 +43,8 @@ import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.navigation.MainRoutes
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpEvent
-import samaryanin.avitofork.presentation.screens.auth.data.AuthUpState
+import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
+import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -60,7 +60,7 @@ import samaryanin.avitofork.presentation.ui.theme.greyButton
 @Preview
 @Composable
 fun VerificationPreview() {
-    VerificationContent({}, {}, { AuthUpState() }, {}) // пустой обработчик
+    VerificationContent({}, {}, { AuthState() }, {}) // пустой обработчик
 }
 
 /**
@@ -79,7 +79,7 @@ fun VerificationScreen(
     profileCreating: Boolean = false
 ) {
 
-    val state by authViewModel.state.collectAsState()
+    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик навигации выхода
@@ -104,7 +104,7 @@ fun VerificationScreen(
     }
 
     // обработчик событий
-    val handleEvent = { event: AuthUpEvent ->
+    val handleEvent = { event: AuthEvent ->
         authViewModel.handleEvent(event)
     }
 
@@ -130,12 +130,12 @@ fun VerificationScreen(
 fun VerificationContent(
     onExit: () -> Unit?,
     onLogin: () -> Unit,
-    state: () -> AuthUpState,
-    handleEvent: (AuthUpEvent) -> Unit
+    state: () -> AuthState,
+    handleEvent: (AuthEvent) -> Unit
 ) {
 
     // автоматическая отправка кода подтверждения при переходе на экран
-    handleEvent(AuthUpEvent.SendVerificationCode)
+    handleEvent(AuthEvent.SendVerificationCode)
 
     var code by remember { mutableStateOf("") }
     var errorFrame by remember { mutableStateOf(false) }
@@ -150,7 +150,7 @@ fun VerificationContent(
                 if (!sendCodeState) {
                     Button(
                         onClick = {
-                            handleEvent(AuthUpEvent.SendVerificationCode)
+                            handleEvent(AuthEvent.SendVerificationCode)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = greyButton),
                         shape = RoundedCornerShape(10.dp),
@@ -165,7 +165,7 @@ fun VerificationContent(
                 else {
                     Button(
                         onClick = {
-                            handleEvent(AuthUpEvent.SendVerificationCode)
+                            handleEvent(AuthEvent.SendVerificationCode)
                             sendCodeState = false
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = greyButton),
@@ -184,7 +184,7 @@ fun VerificationContent(
                         if (code.isBlank()) {
                             errorFrame = true
                         } else {
-                            handleEvent(AuthUpEvent.CheckEmailCodeValidation(code))
+                            handleEvent(AuthEvent.CheckEmailCodeValidation(code))
                             errorCodeIsNotValid = !state.invoke().emailCodeIsValid
 
                             if (!errorCodeIsNotValid) {
@@ -259,6 +259,7 @@ fun VerificationContent(
                 placeholder = "Код",
                 onValueChange = {
                     code = it
+                    handleEvent(AuthEvent.CheckEmailCodeValidation(code))
                     errorFrame = false
                     errorCodeIsNotValid = false
                 },
