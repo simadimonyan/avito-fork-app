@@ -18,15 +18,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
-import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.auth.VerificationScreen
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
+import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
-import samaryanin.avitofork.presentation.screens.poster.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.poster.MarketplaceScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -175,6 +175,28 @@ fun NavGraphBuilder.utilGraph(
             }
         ) {
             SettingsScreen(globalNavController)
+        }
+
+        composable(
+            route = SettingsRoutes.Settings.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            MarketplaceScreen()
         }
     }
 }

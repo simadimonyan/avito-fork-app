@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.poster
+package samaryanin.avitofork.presentation.screens.menu.search.poster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
+import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 
 @Preview(showSystemUi = false)
 @Composable
@@ -34,19 +35,21 @@ fun MarketplaceScreenPreview() {
 fun MarketplaceScreen() {
     var search by remember { mutableStateOf("") }
     val ads = List(10) { Product("Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
-
-    Scaffold { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize()) {
-            SearchBar(search) { search = it }
-            SelectableLazyRow()
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp),
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                items(ads.size) { index -> ProductCard(ads[index]) }
+    AvitoForkTheme {
+        Scaffold { paddingValues ->
+            Column(modifier = Modifier.fillMaxSize()) {
+                SearchBar(search) { search = it }
+                SelectableLazyRow()
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 150.dp),
+                    modifier = Modifier.padding(paddingValues)
+                ) {
+                    items(ads.size) { index -> ProductCard(ads[index]) }
+                }
             }
         }
     }
+
 }
 
 @Composable

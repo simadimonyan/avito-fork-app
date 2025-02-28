@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.poster
+package samaryanin.avitofork.presentation.screens.menu.search.poster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -51,7 +51,7 @@ fun ProductCard(product: Product) {
             .padding(8.dp)
             .aspectRatio(1f)
             .clickable {
-                // переход на экран с доп информацией
+
             },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

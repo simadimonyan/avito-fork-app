@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.poster
+package samaryanin.avitofork.presentation.screens.menu.search.poster
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
