@@ -19,20 +19,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 
-@Preview(showSystemUi = false)
-@Composable
-fun MarketplaceScreenPreview() {
-    MarketplaceScreen()
-}
+//@Preview(showSystemUi = false)
+//@Composable
+//fun MarketplaceScreenPreview() {
+//    MarketplaceScreen(globalNavController)
+//}
 
 @Composable
-fun MarketplaceScreen() {
+fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
     val ads = List(10) { Product("Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
     AvitoForkTheme {
@@ -44,7 +44,7 @@ fun MarketplaceScreen() {
                     columns = GridCells.Adaptive(minSize = 150.dp),
                     modifier = Modifier.padding(paddingValues)
                 ) {
-                    items(ads.size) { index -> ProductCard(ads[index]) }
+                    items(ads.size) { index -> ProductCard(ads[index], globalNavController) }
                 }
             }
         }

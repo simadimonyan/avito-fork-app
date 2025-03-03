@@ -28,21 +28,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.navigation.MainRoutes
 
-@Preview(showSystemUi = false)
+//@Preview(showSystemUi = false)
+//@Composable
+//fun ProductCardScreenPreview() {
+//    ProductCard(
+//        Product("мерседес S-19302-s 860", "1200$", "New York", "url"),
+//        globalNavController,
+//    )
+//}
+
+
 @Composable
-fun ProductCardScreenPreview() {
-    ProductCard(
-        Product("мерседес S-19302-s 860", "1200$", "New York", "url"),
-    )
-}
-
-
-@Composable
-fun ProductCard(product: Product) {
+fun ProductCard(product: Product, globalNavController: NavHostController) {
     var expanded by remember { mutableStateOf(false) }
     var isFav by remember { mutableStateOf(false) }
 
@@ -51,7 +53,7 @@ fun ProductCard(product: Product) {
             .padding(8.dp)
             .aspectRatio(1f)
             .clickable {
-
+                globalNavController.navigate(MainRoutes.AdditionalInfoScreen.route)
             },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

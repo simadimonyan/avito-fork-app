@@ -25,8 +25,9 @@ import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
-import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
 import samaryanin.avitofork.presentation.screens.menu.search.poster.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.poster.poster_additional_info.AdditionalInfoScreen
+import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -100,7 +101,7 @@ fun NestedScreenGraph(
                 ExitTransition.None
             }
         ) {
-            MarketplaceScreen()
+            MarketplaceScreen(globalNavController)
         }
         composable<SearchRoutes.ShoppingCart>(
             enterTransition = {
@@ -178,7 +179,7 @@ fun NavGraphBuilder.utilGraph(
         }
 
         composable(
-            route = SettingsRoutes.Settings.route,
+            route = MainRoutes.MarketPlaceScreen.route,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -196,7 +197,29 @@ fun NavGraphBuilder.utilGraph(
                 )
             }
         ) {
-            MarketplaceScreen()
+            MarketplaceScreen(globalNavController)
+        }
+
+        composable(
+            route = MainRoutes.AdditionalInfoScreen.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            AdditionalInfoScreen(globalNavController)
         }
     }
 }
