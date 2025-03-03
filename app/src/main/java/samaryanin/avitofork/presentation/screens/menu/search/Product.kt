@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.poster
+package samaryanin.avitofork.presentation.screens.menu.search
 
 data class Product(
     val title: String,

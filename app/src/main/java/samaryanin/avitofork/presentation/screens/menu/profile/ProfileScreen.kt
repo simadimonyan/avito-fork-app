@@ -256,7 +256,9 @@ fun ProfileAuthorized(authState: () -> AuthState) {
     ) {
         FloatingActionButton(
             onClick = {
-                // TODO ( добавить объявление )
+
+
+
             },
             modifier = Modifier
                 .padding(bottom = 70.dp)

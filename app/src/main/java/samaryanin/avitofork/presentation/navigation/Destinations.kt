@@ -38,6 +38,26 @@ sealed class SearchRoutes(val route: String) {
 }
 
 @Serializable
+sealed class GoodRoutes(val route: String) {
+
+    /**
+     * Идентификатор вложенной навигации
+     */
+    @Serializable object RouteID : GoodRoutes("goods_id")
+
+    /**
+     * Меню выбора категории товара или услуги
+     */
+    @Serializable object GoodCategories : GoodRoutes("good_categories")
+
+    /**
+     * Экран создания объявления о товаре или услуге
+     */
+    @Serializable object GoodCreate : GoodRoutes("good_create")
+
+}
+
+@Serializable
 sealed class ProfileRoutes(val route: String) {
 
     /**
