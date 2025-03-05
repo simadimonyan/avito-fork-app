@@ -2,8 +2,10 @@ package samaryanin.avitofork.domain.usecase.auth
 
 import android.util.Log
 import samaryanin.avitofork.data.network.Result
+import samaryanin.avitofork.data.network.dto.auth.account.AccountResponse
 import samaryanin.avitofork.domain.repository.Repository
 import samaryanin.avitofork.data.network.dto.auth.account.RefreshRequest
+import samaryanin.avitofork.domain.model.auth.AuthStatus
 import samaryanin.avitofork.domain.state.DomainStateStore
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,9 +26,15 @@ class RefreshUseCase @Inject constructor(
             when (val result = authService.refresh(serviceToken, RefreshRequest(refreshToken))) {
 
                 is Result.Success -> {
-                    state.authTokenStateHolder.updateServiceToken("")
-                    state.authTokenStateHolder.updateAccessToken(result.data.accessToken)
-                    state.authTokenStateHolder.updateRefreshToken(result.data.refreshToken)
+
+                    if (result.data is AccountResponse.RefreshResponse) {
+
+                        state.authTokenStateHolder.updateServiceToken("")
+                        state.authTokenStateHolder.updateAccessToken(result.data.accessToken)
+                        state.authTokenStateHolder.updateRefreshToken(result.data.refreshToken)
+
+                    }
+
                 }
 
                 is Result.Error -> {

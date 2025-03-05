@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import samaryanin.avitofork.domain.model.auth.AuthStatus
 import samaryanin.avitofork.domain.usecase.AuthUseCase
 import samaryanin.avitofork.presentation.state.AppStateStore
-import java.security.MessageDigest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +35,7 @@ class AuthViewModel @Inject constructor(
     private fun verifyCredentials(email: String, pass: String) {
         viewModelScope.launch {
             val response = auth.loginUseCase.login(email, pass)
-            val result = response !is AuthStatus.CREDENTIALS_ERROR
+            val result = response is AuthStatus.LOGIN_SUCCEED
             appStateStore.authStateHolder.setCredentialsValid(result)
         }
     }
@@ -47,7 +46,7 @@ class AuthViewModel @Inject constructor(
     private fun emailFieldCodeVerify(email: String, code: String) {
         viewModelScope.launch {
             val response = auth.verificationUseCase.verification(email, code)
-            val result = response !is AuthStatus.CREDENTIALS_ERROR
+            val result = response is AuthStatus.EMAIL_VERIFIED
             appStateStore.authStateHolder.setEmailCodeValid(result)
         }
     }

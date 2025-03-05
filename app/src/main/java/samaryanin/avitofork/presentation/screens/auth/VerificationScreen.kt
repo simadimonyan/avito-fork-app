@@ -142,6 +142,20 @@ fun VerificationContent(
     var errorCodeIsNotValid by remember { mutableStateOf(false) }
     var sendCodeState by remember { mutableStateOf(false) }
 
+    var verification by remember { mutableStateOf(false) }
+
+    LaunchedEffect(verification) {
+        if (verification) {
+            errorCodeIsNotValid = !state().emailCodeIsValid
+
+            if (!errorCodeIsNotValid) {
+                onLogin()
+            } else
+                errorFrame = true
+            verification = false
+        }
+    }
+
     Scaffold(
         containerColor = Color.White,
         contentWindowInsets = WindowInsets(0),
@@ -185,12 +199,8 @@ fun VerificationContent(
                             errorFrame = true
                         } else {
                             handleEvent(AuthEvent.CheckEmailCodeValidation(state().email, code))
-                            errorCodeIsNotValid = !state.invoke().emailCodeIsValid
 
-                            if (!errorCodeIsNotValid) {
-                                onLogin()
-                            } else
-                                errorFrame = true
+                            verification = true
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
@@ -259,7 +269,6 @@ fun VerificationContent(
                 placeholder = "Код",
                 onValueChange = {
                     code = it
-                    handleEvent(AuthEvent.CheckEmailCodeValidation(state().email, code))
                     errorFrame = false
                     errorCodeIsNotValid = false
                 },

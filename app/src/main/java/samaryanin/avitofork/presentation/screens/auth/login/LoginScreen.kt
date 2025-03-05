@@ -27,7 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
@@ -52,7 +53,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFi
 @Preview(showSystemUi = false)
 @Composable
 fun LoginPreview() {
-    LoginContent({}, {}, { AuthState() }, {}) // пустой обработчик
+    LoginContent({}, {}, AuthState(), {}) // пустой обработчик
 }
 
 /**
@@ -98,7 +99,7 @@ fun LoginScreen(
     LoginContent(
         onExit = onExit,
         onLogin = onLogin,
-        state = { state },
+        state = state,
         handleEvent = handleEvent
     )
 }
@@ -115,7 +116,7 @@ fun LoginScreen(
 fun LoginContent(
     onExit: () -> Unit?,
     onLogin: () -> Unit?,
-    state: () -> AuthState,
+    state: AuthState,
     handleEvent: (AuthEvent) -> Unit
 ) {
     var password by remember { mutableStateOf("") }
@@ -124,33 +125,56 @@ fun LoginContent(
     var emailErrorFrame by remember { mutableStateOf(false) }
     var errorWrongPass by remember { mutableStateOf(false) }
 
+    var verificationEmail by remember { mutableStateOf(false) }
+    var verificationPass by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
+
+
+    LaunchedEffect(verificationEmail) {
+        if (verificationEmail) {
+            emailErrorFrame = if (state.email.isNotBlank()) !state.emailIsValid else false
+            verificationEmail = false
+        }
+    }
+
+    LaunchedEffect(verificationPass) {
+        if (verificationPass) {
+            if (state.credentialsAreValid) {
+                onLogin()
+            } else {
+                errorWrongPass = true
+            }
+            verificationPass = false
+        }
+    }
+
     Scaffold(
         containerColor = Color.White,
         contentWindowInsets = WindowInsets(0),
         bottomBar = {
             Button(
                 onClick = {
-                    if (state().email.isBlank()) {
-                        errorEmailBlank = true
-                    } else {
-                        handleEvent(AuthEvent.CheckEmailFormValidation(state().email))
-                        if (!state().emailIsValid) {
-                            emailErrorFrame = true
-                        }
-                    }
+                    scope.launch {
 
-                    if (!(emailErrorFrame || errorEmailBlank)) {
-                        if (password.isBlank()) {
-                            errorPassBlank = true
+                        if (state.email.isBlank()) {
+                            errorEmailBlank = true
                         } else {
-                            handleEvent(AuthEvent.VerifyAccountCredentials(state().email, password))
+                            handleEvent(AuthEvent.CheckEmailFormValidation(state.email))
 
-                            if (state().credentialsAreValid) {
-                                onLogin()
+                            verificationEmail = true
+                        }
+
+                        if (!(emailErrorFrame && errorEmailBlank)) {
+                            if (password.isBlank()) {
+                                errorPassBlank = true
                             } else {
-                                errorWrongPass = true
+                                handleEvent(AuthEvent.VerifyAccountCredentials(state.email, password))
+
+                                verificationPass = true
                             }
                         }
+
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
@@ -180,15 +204,17 @@ fun LoginContent(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Image(
                     painter = painterResource(R.drawable.ic_close),
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable {
-                            onExit()
-                        })
+                        .clickable { onExit() }
+                )
                 Text("Забыли пароль?", modifier = Modifier.clickable { })
             }
 
@@ -198,7 +224,7 @@ fun LoginContent(
             Space()
 
             AppTextFieldPlaceholder(
-                value = state().email,
+                value = state.email,
                 onValueChange = {
                     handleEvent(AuthEvent.UpdateEmailState(email = it))
                     emailErrorFrame = false
@@ -253,8 +279,6 @@ fun LoginContent(
                     fontSize = 13.sp
                 )
             }
-
         }
-
     }
 }

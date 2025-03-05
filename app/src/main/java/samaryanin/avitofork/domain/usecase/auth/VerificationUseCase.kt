@@ -2,6 +2,7 @@ package samaryanin.avitofork.domain.usecase.auth
 
 import android.util.Log
 import samaryanin.avitofork.data.network.Result
+import samaryanin.avitofork.data.network.dto.auth.session.SessionResponse
 import samaryanin.avitofork.data.network.dto.auth.session.VerifyRequest
 import samaryanin.avitofork.domain.model.auth.AuthStatus
 import samaryanin.avitofork.domain.repository.Repository
@@ -24,10 +25,17 @@ class VerificationUseCase @Inject constructor(
             when (val result = authService.verify(serviceToken, VerifyRequest(code, email))) {
 
                 is Result.Success -> {
-                    state.authTokenStateHolder.updateServiceToken("")
-                    state.authTokenStateHolder.updateAccessToken(result.data.accessToken)
-                    state.authTokenStateHolder.updateRefreshToken(result.data.refreshToken)
-                    return AuthStatus.LOGIN_SUCCEED
+
+                    if (result.data is SessionResponse.VerifyResponse) {
+                        state.authTokenStateHolder.updateServiceToken("")
+                        state.authTokenStateHolder.updateAccessToken(result.data.accessToken)
+                        state.authTokenStateHolder.updateRefreshToken(result.data.refreshToken)
+                        return AuthStatus.EMAIL_VERIFIED
+                    }
+                    else if (result.data is SessionResponse.SessionErrorResponse) {
+                        return AuthStatus.CREDENTIALS_ERROR
+                    }
+
                 }
 
                 is Result.Error -> {
@@ -42,6 +50,7 @@ class VerificationUseCase @Inject constructor(
             return AuthStatus.ERROR("${e.message}")
         }
 
+        return AuthStatus.ERROR("Unknown error!")
     }
 
 }

@@ -3,6 +3,7 @@ package samaryanin.avitofork.domain.usecase.auth
 import android.util.Log
 import samaryanin.avitofork.data.network.Result
 import samaryanin.avitofork.data.network.dto.auth.session.RegisterRequest
+import samaryanin.avitofork.data.network.dto.auth.session.SessionResponse
 import samaryanin.avitofork.domain.model.auth.AuthStatus
 import samaryanin.avitofork.domain.repository.Repository
 import samaryanin.avitofork.domain.state.DomainStateStore
@@ -23,8 +24,19 @@ class SignUpUseCase @Inject constructor(
             when (val result = authService.register(RegisterRequest(email, password))) {
 
                 is Result.Success -> {
-                    state.authTokenStateHolder.updateServiceToken(result.data.token)
-                    return AuthStatus.SIGNUP_SUCCEED
+
+                    if (result.data is SessionResponse.LoginResponse) {
+                        state.authTokenStateHolder.updateServiceToken(result.data.token)
+                        return AuthStatus.SIGNUP_SUCCEED
+                    }
+                    else if (result.data is SessionResponse.SessionErrorResponse) {
+                        return if (result.data.message.contains("user already exists")) {
+                            AuthStatus.USER_ALREADY_EXISTS_ERROR
+                        } else {
+                            AuthStatus.ERROR(result.data.message)
+                        }
+                    }
+
                 }
 
                 is Result.Error -> {
@@ -39,6 +51,7 @@ class SignUpUseCase @Inject constructor(
             return AuthStatus.ERROR("${e.message}")
         }
 
+        return AuthStatus.ERROR("Unknown error!")
     }
 
 }

@@ -1,12 +1,14 @@
 package samaryanin.avitofork.presentation.screens.auth.data
 
 import android.util.Log
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Stable
 data class AuthState(
 
     /**
@@ -48,7 +50,6 @@ class AuthStateHolder @Inject constructor() {
 
     fun updateEmail(email: String) {
         _authState.update {
-            Log.d("AuthStateHolder", "Updated email: $email")
             it.copy(email = email)
         }
     }
@@ -62,7 +63,6 @@ class AuthStateHolder @Inject constructor() {
     }
 
     fun setCredentialsValid(isValid: Boolean) {
-        Log.d("AuthStateHolder", "Credentials are valid: $isValid")
         _authState.update { it.copy(credentialsAreValid = isValid) }
     }
 
@@ -71,8 +71,6 @@ class AuthStateHolder @Inject constructor() {
     }
 
     fun setEmailFieldValid(isValid: Boolean) {
-        Log.d("AuthStateHolder", "Email is valid: $isValid")
         _authState.update { it.copy(emailIsValid = isValid) }
-        Log.d("AuthStateHolder", "Email is Valid (ОБНОВЛЕН В STATE): ${_authState.value.emailIsValid}")
     }
 }

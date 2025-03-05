@@ -14,11 +14,11 @@ class AppStateStore @Inject constructor() {
     /**
      * Общее состояние приложения
      */
-    @Inject lateinit var appStateHolder: AppStateHolder
+    var appStateHolder: AppStateHolder = AppStateHolder()
 
     /**
      * Состояние авторизации
      */
-    @Inject lateinit var authStateHolder: AuthStateHolder
+     var authStateHolder: AuthStateHolder = AuthStateHolder()
 
 }

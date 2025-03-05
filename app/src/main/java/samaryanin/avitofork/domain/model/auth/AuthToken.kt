@@ -1,5 +1,6 @@
 package samaryanin.avitofork.domain.model.auth
 
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

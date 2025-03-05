@@ -10,7 +10,11 @@ sealed class AuthStatus(val label: String) {
 
     object CREDENTIALS_ERROR : AuthStatus("Credentials are not correct!")
 
-    object USER_ERROR : AuthStatus("User is not found!")
+    object EMAIL_VERIFIED : AuthStatus("Email successfully verified!")
+
+    object USER_NOT_FOUND_ERROR : AuthStatus("User is not found!")
+
+    object USER_ALREADY_EXISTS_ERROR : AuthStatus("User already exists!")
 
     data class ERROR(val message: String) : AuthStatus("Unknown error: $message")
 

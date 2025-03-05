@@ -3,6 +3,7 @@ package samaryanin.avitofork.domain.usecase.auth
 import android.util.Log
 import samaryanin.avitofork.data.network.Result
 import samaryanin.avitofork.data.network.dto.auth.session.LoginRequest
+import samaryanin.avitofork.data.network.dto.auth.session.SessionResponse
 import samaryanin.avitofork.domain.model.auth.AuthStatus
 import samaryanin.avitofork.domain.repository.Repository
 import samaryanin.avitofork.domain.state.DomainStateStore
@@ -23,8 +24,21 @@ class LoginUseCase @Inject constructor(
             when (val result = authService.login(LoginRequest(email, password))) {
 
                 is Result.Success -> {
-                    state.authTokenStateHolder.updateServiceToken(result.data.token)
-                    return AuthStatus.LOGIN_SUCCEED
+
+                    if (result.data is SessionResponse.LoginResponse) {
+                        state.authTokenStateHolder.updateServiceToken(result.data.token)
+                        return AuthStatus.LOGIN_SUCCEED
+                    }
+                    else if (result.data is SessionResponse.SessionErrorResponse) {
+                        return if (result.data.message.contains("invalid password")) {
+                            AuthStatus.CREDENTIALS_ERROR
+                        } else if (result.data.message.contains("user not found")) {
+                            AuthStatus.USER_NOT_FOUND_ERROR
+                        } else {
+                            AuthStatus.ERROR(result.data.message)
+                        }
+                    }
+
                 }
 
                 is Result.Error -> {
@@ -39,6 +53,7 @@ class LoginUseCase @Inject constructor(
             return AuthStatus.ERROR("${e.message}")
         }
 
+        return AuthStatus.ERROR("Unknown error!")
     }
 
 }

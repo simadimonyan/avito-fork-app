@@ -35,19 +35,19 @@ class AuthServiceRepository @Inject constructor() {
         }
     }
 
-    suspend fun refresh(authToken: String, request: RefreshRequest): Result<AccountResponse.RefreshResponse> {
+    suspend fun refresh(authToken: String, request: RefreshRequest): Result<AccountResponse> {
         return executeRequest { client.account.refresh("Bearer $authToken", request) }
     }
 
-    suspend fun login(request: LoginRequest): Result<SessionResponse.LoginResponse> {
+    suspend fun login(request: LoginRequest): Result<SessionResponse> {
         return executeRequest { client.session.login(request) }
     }
 
-    suspend fun register(request: RegisterRequest): Result<SessionResponse.RegisterResponse> {
+    suspend fun register(request: RegisterRequest): Result<SessionResponse> {
         return executeRequest { client.session.register(request) }
     }
 
-    suspend fun verify(authToken: String, request: VerifyRequest): Result<SessionResponse.VerifyResponse> {
+    suspend fun verify(authToken: String, request: VerifyRequest): Result<SessionResponse> {
         return executeRequest { client.session.verify("Bearer $authToken", request) }
     }
 
