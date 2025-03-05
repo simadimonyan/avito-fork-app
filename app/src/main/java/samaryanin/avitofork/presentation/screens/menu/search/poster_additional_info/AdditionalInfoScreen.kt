@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search.poster.poster_additional_info
+package samaryanin.avitofork.presentation.screens.menu.search.poster_additional_info
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

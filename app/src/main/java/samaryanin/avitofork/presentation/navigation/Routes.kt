@@ -25,8 +25,8 @@ import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
-import samaryanin.avitofork.presentation.screens.menu.search.poster.MarketplaceScreen
-import samaryanin.avitofork.presentation.screens.menu.search.poster.poster_additional_info.AdditionalInfoScreen
+import samaryanin.avitofork.presentation.screens.menu.search.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.poster_additional_info.AdditionalInfoScreen
 import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.MainScreen
@@ -51,7 +51,6 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
         composable<MainRoutes.MainScreen> {
             MainScreen(
                 mainViewModel,
-                authViewModel,
                 globalNavController
             )
         }
@@ -75,14 +74,12 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
  * Вложенный Navigation Host Graph экранов
  * ----------------------------------------------
  * @param screenNavController контроллер навигации между экранами
- * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 @Composable
 fun NestedScreenGraph(
     screenNavController: NavHostController,
-    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -117,7 +114,6 @@ fun NestedScreenGraph(
         }
         profileGraph(
             profileViewModel,
-            authViewModel,
             mainViewModel,
             globalNavController
         )
@@ -228,13 +224,11 @@ fun NavGraphBuilder.utilGraph(
  * Вложенный Navigation Graph профиля
  * ----------------------------------------------
  * @param profileViewModel модель экрана профиля
- * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.profileGraph(
     profileViewModel: ProfileViewModel,
-    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -248,7 +242,7 @@ fun NavGraphBuilder.profileGraph(
                 ExitTransition.None
             }
         ) {
-            ProfileScreen(profileViewModel, authViewModel, mainViewModel, globalNavController)
+            ProfileScreen(profileViewModel, mainViewModel, globalNavController)
         }
     }
 }

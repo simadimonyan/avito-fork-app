@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/samaryanin/avitofork/presentation/screens/menu/search/MarketplaceScreen.kt
 package samaryanin.avitofork.presentation.screens.menu.search
-========
-package samaryanin.avitofork.presentation.screens.menu.search.poster
->>>>>>>> refs/remotes/origin/color_fix:app/src/main/java/samaryanin/avitofork/presentation/screens/menu/search/poster/MarketplaceScreen.kt
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

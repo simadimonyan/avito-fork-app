@@ -24,19 +24,8 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Avito Fork.Avito_Fork.app">
+      <SelectionState runConfigName="App.app">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="MarketplaceScreenPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-02-15T10:11:50.164738Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/dimitrisimonyan/.android/avd/Medium_Phone_API_35.avd" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>

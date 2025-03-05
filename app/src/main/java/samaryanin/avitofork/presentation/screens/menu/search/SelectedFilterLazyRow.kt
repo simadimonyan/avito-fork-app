@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/samaryanin/avitofork/presentation/screens/menu/search/SelectedFilterLazyRow.kt
 package samaryanin.avitofork.presentation.screens.menu.search
-========
-package samaryanin.avitofork.presentation.screens.menu.search.poster
->>>>>>>> refs/remotes/origin/color_fix:app/src/main/java/samaryanin/avitofork/presentation/screens/menu/search/poster/SelectedFilterLazyRow.kt
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
