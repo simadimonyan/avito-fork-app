@@ -12,10 +12,6 @@ import samaryanin.avitofork.data.network.dto.auth.account.RefreshRequest
 interface IAccount {
 
     @Headers("Content-Type: application/json")
-    @GET("/access")
-    suspend fun access(@Header("Authorization") authToken: String): Response<AccountResponse.AccessResponse>
-
-    @Headers("Content-Type: application/json")
     @POST("/refresh")
     suspend fun refresh(@Header("Authorization") authToken: String, @Body request: RefreshRequest): Response<AccountResponse.RefreshResponse>
 

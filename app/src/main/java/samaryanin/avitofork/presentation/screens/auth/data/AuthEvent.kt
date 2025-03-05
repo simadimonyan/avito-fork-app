@@ -15,12 +15,12 @@ sealed class AuthEvent {
     /**
      * Валидация кода подтверждения
      */
-    data class CheckEmailCodeValidation(val code: String) : AuthEvent()
+    data class CheckEmailCodeValidation(val email: String, val code: String) : AuthEvent()
 
     /**
      * Проверка существования аккаунта и соответствия пароля
      */
-    data class VerifyAccountCredentials(val email: String, val hash: String) : AuthEvent()
+    data class VerifyAccountCredentials(val email: String, val pass: String) : AuthEvent()
 
     /**
      * Отправить код подтверждения

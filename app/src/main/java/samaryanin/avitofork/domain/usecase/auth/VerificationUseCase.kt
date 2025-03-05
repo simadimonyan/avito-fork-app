@@ -1,0 +1,47 @@
+package samaryanin.avitofork.domain.usecase.auth
+
+import android.util.Log
+import samaryanin.avitofork.data.network.Result
+import samaryanin.avitofork.data.network.dto.auth.session.VerifyRequest
+import samaryanin.avitofork.domain.model.auth.AuthStatus
+import samaryanin.avitofork.domain.repository.Repository
+import samaryanin.avitofork.domain.state.DomainStateStore
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class VerificationUseCase @Inject constructor(
+    private val repository: Repository,
+    private val state: DomainStateStore
+) {
+
+    private val authService = repository.authServiceRepository
+    private val serviceToken = state.authTokenStateHolder.authTokenState.value.serviceToken
+
+    suspend fun verification(email: String, code: String): AuthStatus {
+
+        try {
+            when (val result = authService.verify(serviceToken, VerifyRequest(code, email))) {
+
+                is Result.Success -> {
+                    state.authTokenStateHolder.updateServiceToken("")
+                    state.authTokenStateHolder.updateAccessToken(result.data.accessToken)
+                    state.authTokenStateHolder.updateRefreshToken(result.data.refreshToken)
+                    return AuthStatus.LOGIN_SUCCEED
+                }
+
+                is Result.Error -> {
+                    Log.w("VerificationUseCase", result.exception)
+                    return AuthStatus.NETWORK_ISSUES("${result.exception.message}")
+                }
+
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            return AuthStatus.ERROR("${e.message}")
+        }
+
+    }
+
+}

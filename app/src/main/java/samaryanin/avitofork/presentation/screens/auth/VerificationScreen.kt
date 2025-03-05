@@ -184,7 +184,7 @@ fun VerificationContent(
                         if (code.isBlank()) {
                             errorFrame = true
                         } else {
-                            handleEvent(AuthEvent.CheckEmailCodeValidation(code))
+                            handleEvent(AuthEvent.CheckEmailCodeValidation(state().email, code))
                             errorCodeIsNotValid = !state.invoke().emailCodeIsValid
 
                             if (!errorCodeIsNotValid) {
@@ -259,7 +259,7 @@ fun VerificationContent(
                 placeholder = "Код",
                 onValueChange = {
                     code = it
-                    handleEvent(AuthEvent.CheckEmailCodeValidation(code))
+                    handleEvent(AuthEvent.CheckEmailCodeValidation(state().email, code))
                     errorFrame = false
                     errorCodeIsNotValid = false
                 },

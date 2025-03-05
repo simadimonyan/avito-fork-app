@@ -2,6 +2,7 @@ package samaryanin.avitofork.data.network.repository
 
 import retrofit2.HttpException
 import retrofit2.Response
+import samaryanin.avitofork.data.network.Result
 import samaryanin.avitofork.data.network.RetrofitClient
 import samaryanin.avitofork.data.network.dto.auth.account.AccountResponse
 import samaryanin.avitofork.data.network.dto.auth.account.RefreshRequest
@@ -9,11 +10,15 @@ import samaryanin.avitofork.data.network.dto.auth.session.LoginRequest
 import samaryanin.avitofork.data.network.dto.auth.session.RegisterRequest
 import samaryanin.avitofork.data.network.dto.auth.session.SessionResponse
 import samaryanin.avitofork.data.network.dto.auth.session.VerifyRequest
-import samaryanin.avitofork.data.network.Result
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthServiceRepository(url: String) {
+@Singleton
+class AuthServiceRepository @Inject constructor() {
 
-    private val client: RetrofitClient = RetrofitClient(url)
+    private val client: RetrofitClient = RetrofitClient(
+        "http://10.0.2.2:8080" // TODO(RuStore RemoteConfig)
+    )
 
     private suspend fun <T> executeRequest(request: suspend () -> Response<T>): Result<T> {
         return try {
@@ -28,10 +33,6 @@ class AuthServiceRepository(url: String) {
         } catch (e: Exception) {
             Result.Error(e)
         }
-    }
-
-    suspend fun access(authToken: String): Result<AccountResponse.AccessResponse> {
-        return executeRequest { client.account.access("Bearer $authToken") }
     }
 
     suspend fun refresh(authToken: String, request: RefreshRequest): Result<AccountResponse.RefreshResponse> {

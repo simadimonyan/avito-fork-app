@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.auth.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +70,10 @@ fun LoginScreen(
     val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    LaunchedEffect(state.emailIsValid) {
+        Log.d("UI", "Email валиден? ${state.emailIsValid}")
+    }
+
     // обработчик выхода
     val onExit = {
         navHostController.popBackStack()
@@ -112,9 +118,6 @@ fun LoginContent(
     state: () -> AuthState,
     handleEvent: (AuthEvent) -> Unit
 ) {
-
-    val authState = rememberUpdatedState(newValue = state())
-
     var password by remember { mutableStateOf("") }
     var errorEmailBlank by remember { mutableStateOf(false) }
     var errorPassBlank by remember { mutableStateOf(false) }
@@ -127,11 +130,11 @@ fun LoginContent(
         bottomBar = {
             Button(
                 onClick = {
-                    if (authState.value.email.isBlank()) {
+                    if (state().email.isBlank()) {
                         errorEmailBlank = true
                     } else {
-                        handleEvent(AuthEvent.CheckEmailFormValidation(authState.value.email))
-                        if (!authState.value.emailIsValid) {
+                        handleEvent(AuthEvent.CheckEmailFormValidation(state().email))
+                        if (!state().emailIsValid) {
                             emailErrorFrame = true
                         }
                     }
@@ -140,9 +143,9 @@ fun LoginContent(
                         if (password.isBlank()) {
                             errorPassBlank = true
                         } else {
-                            handleEvent(AuthEvent.VerifyAccountCredentials(authState.value.email, password))
+                            handleEvent(AuthEvent.VerifyAccountCredentials(state().email, password))
 
-                            if (authState.value.credentialsAreValid) {
+                            if (state().credentialsAreValid) {
                                 onLogin()
                             } else {
                                 errorWrongPass = true
@@ -195,10 +198,9 @@ fun LoginContent(
             Space()
 
             AppTextFieldPlaceholder(
-                value = authState.value.email,
+                value = state().email,
                 onValueChange = {
                     handleEvent(AuthEvent.UpdateEmailState(email = it))
-                    handleEvent(AuthEvent.CheckEmailFormValidation(email = it))
                     emailErrorFrame = false
                     errorEmailBlank = false
                 },
@@ -230,7 +232,6 @@ fun LoginContent(
                 isPassword = true,
                 onValueChange = {
                     password = it
-                    handleEvent(AuthEvent.VerifyAccountCredentials(authState.value.email, password))
                     errorWrongPass = false
                     errorPassBlank = false
                 },

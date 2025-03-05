@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -7,6 +9,8 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.baselineprofile)
 }
+
+val properties = Properties().apply { load(File(rootProject.rootDir, "gradle.properties").inputStream()) }
 
 android {
     namespace = "samaryanin.avitofork"
@@ -26,6 +30,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+
+        }
         release {
             isMinifyEnabled = true //R8 compiler
             isShrinkResources = true //Shrinking
@@ -34,6 +42,7 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+
         }
     }
 
@@ -46,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
