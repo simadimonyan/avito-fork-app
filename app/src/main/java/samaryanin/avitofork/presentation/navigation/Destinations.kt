@@ -15,6 +15,10 @@ sealed class MainRoutes(val route: String) {
      */
     @Serializable object UtilRouteID : MainRoutes("utils_id")
 
+    @Serializable object MarketPlaceScreen : MainRoutes("market_place_screen")
+    @Serializable object AdditionalInfoScreen : MainRoutes("additional_info_screen")
+
+
 }
 
 @Serializable

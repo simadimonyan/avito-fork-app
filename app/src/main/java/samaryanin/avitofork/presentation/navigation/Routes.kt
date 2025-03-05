@@ -18,15 +18,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
-import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.auth.VerificationScreen
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
+import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
+import samaryanin.avitofork.presentation.screens.menu.search.poster.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.poster.poster_additional_info.AdditionalInfoScreen
 import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
-import samaryanin.avitofork.presentation.screens.menu.search.MarketplaceScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
@@ -44,14 +45,13 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
 
     NavHost(
         navController = globalNavController,
-        startDestination = MainRoutes.MainScreen.route
+        startDestination = MainRoutes.MainScreen
     ) {
 
-        composable(
-            route = MainRoutes.MainScreen.route
-        ) {
+        composable<MainRoutes.MainScreen> {
             MainScreen(
                 mainViewModel,
+                authViewModel,
                 globalNavController
             )
         }
@@ -75,12 +75,14 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
  * Вложенный Navigation Host Graph экранов
  * ----------------------------------------------
  * @param screenNavController контроллер навигации между экранами
+ * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 @Composable
 fun NestedScreenGraph(
     screenNavController: NavHostController,
+    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -89,10 +91,9 @@ fun NestedScreenGraph(
 
     NavHost(
         navController = screenNavController,
-        startDestination = SearchRoutes.Search.route
+        startDestination = SearchRoutes.Search
     ) {
-        composable(
-            route = SearchRoutes.Search.route,
+        composable<SearchRoutes.Search>(
             enterTransition = {
                 EnterTransition.None
             },
@@ -100,10 +101,9 @@ fun NestedScreenGraph(
                 ExitTransition.None
             }
         ) {
-            MarketplaceScreen()
+            MarketplaceScreen(globalNavController)
         }
-        composable(
-            route = SearchRoutes.ShoppingCart.route,
+        composable<SearchRoutes.ShoppingCart>(
             enterTransition = {
                 EnterTransition.None
             },
@@ -117,6 +117,7 @@ fun NestedScreenGraph(
         }
         profileGraph(
             profileViewModel,
+            authViewModel,
             mainViewModel,
             globalNavController
         )
@@ -176,6 +177,50 @@ fun NavGraphBuilder.utilGraph(
         ) {
             SettingsScreen(globalNavController)
         }
+
+        composable(
+            route = MainRoutes.MarketPlaceScreen.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            MarketplaceScreen(globalNavController)
+        }
+
+        composable(
+            route = MainRoutes.AdditionalInfoScreen.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            AdditionalInfoScreen(globalNavController)
+        }
     }
 }
 
@@ -183,11 +228,13 @@ fun NavGraphBuilder.utilGraph(
  * Вложенный Navigation Graph профиля
  * ----------------------------------------------
  * @param profileViewModel модель экрана профиля
+ * @param authViewModel модель экрана авторизации
  * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.profileGraph(
     profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
@@ -201,7 +248,7 @@ fun NavGraphBuilder.profileGraph(
                 ExitTransition.None
             }
         ) {
-            ProfileScreen(profileViewModel, mainViewModel, globalNavController)
+            ProfileScreen(profileViewModel, authViewModel, mainViewModel, globalNavController)
         }
     }
 }
@@ -219,8 +266,7 @@ fun NavGraphBuilder.authGraph(
     globalNavController: NavHostController,
 ) {
     navigation(startDestination = AuthRoutes.Login.route, route = AuthRoutes.RouteID.route) {
-        composable(
-            route = AuthRoutes.Login.route,
+        composable<AuthRoutes.Login>(
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -240,8 +286,7 @@ fun NavGraphBuilder.authGraph(
         ) {
             LoginScreen(authViewModel, globalNavController)
         }
-        composable(
-            route = AuthRoutes.SignUp.route,
+        composable<AuthRoutes.SignUp>(
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -288,8 +333,7 @@ fun NavGraphBuilder.authGraph(
             val createProfile = backStackEntry.arguments?.getBoolean("createProfile") ?: false
             VerificationScreen(authViewModel, mainViewModel, globalNavController, createProfile)
         }
-        composable(
-            route = AuthRoutes.CreateProfile.route,
+        composable<AuthRoutes.CreateProfile>(
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,

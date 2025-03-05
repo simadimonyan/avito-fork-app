@@ -14,6 +14,6 @@ val navigationSelected = Color(76, 168, 246)
 val lightBlue = Color(76, 150, 255)
 val alphaLightBlue = Color(76, 168, 246, 100)
 
-val lightGrayColor = Color(242, 241, 239)
+val lightGrayColor = Color(230, 240, 240)
 val greyButton = Color(227, 227, 228)
 val veryLightGray = Color(250, 250, 250)
