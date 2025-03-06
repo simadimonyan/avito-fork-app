@@ -1,6 +1,5 @@
 package samaryanin.avitofork.presentation.screens.auth.data
 
-import android.util.Log
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +15,11 @@ data class AuthState(
      */
     val profile: String = "",
     val email: String = "",
+
+    /**
+     * Состояние сетевого запроса
+     */
+    val isLoading: Boolean = false,
 
     /**
      * Проверка существования аккаунта и соответствия пароля
@@ -52,6 +56,10 @@ class AuthStateHolder @Inject constructor() {
         _authState.update {
             it.copy(email = email)
         }
+    }
+
+    fun updateLoading(isLoading: Boolean) {
+        _authState.update { it.copy(isLoading = isLoading) }
     }
 
     fun updateProfile(profile: String) {

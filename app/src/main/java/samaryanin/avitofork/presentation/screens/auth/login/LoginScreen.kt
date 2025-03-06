@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
@@ -126,26 +127,21 @@ fun LoginContent(
     var errorWrongPass by remember { mutableStateOf(false) }
 
     var verificationEmail by remember { mutableStateOf(false) }
-    var verificationPass by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
-
     LaunchedEffect(verificationEmail) {
-        if (verificationEmail) {
-            emailErrorFrame = if (state.email.isNotBlank()) !state.emailIsValid else false
-            verificationEmail = false
-        }
+        if (state.email.isNotBlank()) emailErrorFrame = !state.emailIsValid
+        verificationEmail = false
     }
 
-    LaunchedEffect(verificationPass) {
-        if (verificationPass) {
+    LaunchedEffect(state.isLoading) {
+        if (password.isNotEmpty() && !state.isLoading) {
             if (state.credentialsAreValid) {
                 onLogin()
             } else {
                 errorWrongPass = true
             }
-            verificationPass = false
         }
     }
 
@@ -156,12 +152,10 @@ fun LoginContent(
             Button(
                 onClick = {
                     scope.launch {
-
                         if (state.email.isBlank()) {
                             errorEmailBlank = true
                         } else {
                             handleEvent(AuthEvent.CheckEmailFormValidation(state.email))
-
                             verificationEmail = true
                         }
 
@@ -170,11 +164,8 @@ fun LoginContent(
                                 errorPassBlank = true
                             } else {
                                 handleEvent(AuthEvent.VerifyAccountCredentials(state.email, password))
-
-                                verificationPass = true
                             }
                         }
-
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),

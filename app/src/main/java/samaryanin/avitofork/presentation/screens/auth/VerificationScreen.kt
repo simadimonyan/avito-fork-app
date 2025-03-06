@@ -60,7 +60,7 @@ import samaryanin.avitofork.presentation.ui.theme.greyButton
 @Preview
 @Composable
 fun VerificationPreview() {
-    VerificationContent({}, {}, { AuthState() }, {}) // пустой обработчик
+    VerificationContent({}, {}, AuthState(), {}) // пустой обработчик
 }
 
 /**
@@ -112,7 +112,7 @@ fun VerificationScreen(
     VerificationContent(
         onExit = onExit,
         onLogin = onLogin,
-        state = { state },
+        state = state,
         handleEvent = handleEvent
     )
 
@@ -130,7 +130,7 @@ fun VerificationScreen(
 fun VerificationContent(
     onExit: () -> Unit?,
     onLogin: () -> Unit,
-    state: () -> AuthState,
+    state: AuthState,
     handleEvent: (AuthEvent) -> Unit
 ) {
 
@@ -142,17 +142,13 @@ fun VerificationContent(
     var errorCodeIsNotValid by remember { mutableStateOf(false) }
     var sendCodeState by remember { mutableStateOf(false) }
 
-    var verification by remember { mutableStateOf(false) }
-
-    LaunchedEffect(verification) {
-        if (verification) {
-            errorCodeIsNotValid = !state().emailCodeIsValid
-
-            if (!errorCodeIsNotValid) {
+    LaunchedEffect(state.isLoading) {
+        if (code.isNotEmpty() && !state.isLoading) {
+            if (state.emailCodeIsValid) {
                 onLogin()
-            } else
-                errorFrame = true
-            verification = false
+            } else {
+                errorCodeIsNotValid = true
+            }
         }
     }
 
@@ -198,9 +194,7 @@ fun VerificationContent(
                         if (code.isBlank()) {
                             errorFrame = true
                         } else {
-                            handleEvent(AuthEvent.CheckEmailCodeValidation(state().email, code))
-
-                            verification = true
+                            handleEvent(AuthEvent.CheckEmailCodeValidation(state.email, code))
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
@@ -255,7 +249,7 @@ fun VerificationContent(
                         fontWeight = FontWeight.Bold
                     )
                 )
-                append(state.invoke().email)
+                append(state.email)
                 pop()
                 append(" в течение 2 минут.")
             }
@@ -272,10 +266,10 @@ fun VerificationContent(
                     errorFrame = false
                     errorCodeIsNotValid = false
                 },
-                errorListener = errorFrame
+                errorListener = errorFrame || errorCodeIsNotValid
             )
 
-            if (errorFrame) {
+            if (errorFrame || errorCodeIsNotValid) {
                 Text(
                     if (errorCodeIsNotValid) "Код недействительный" else "Необходимо ввести код подтверждения",
                     color = Color.Red,

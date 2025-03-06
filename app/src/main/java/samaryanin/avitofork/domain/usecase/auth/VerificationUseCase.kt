@@ -17,11 +17,12 @@ class VerificationUseCase @Inject constructor(
 ) {
 
     private val authService = repository.authServiceRepository
-    private val serviceToken = state.authTokenStateHolder.authTokenState.value.serviceToken
 
     suspend fun verification(email: String, code: String): AuthStatus {
 
         try {
+            val serviceToken = state.authTokenStateHolder.authTokenState.value.serviceToken
+
             when (val result = authService.verify(serviceToken, VerifyRequest(code, email))) {
 
                 is Result.Success -> {

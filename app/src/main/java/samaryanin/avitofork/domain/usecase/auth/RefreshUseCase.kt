@@ -17,12 +17,13 @@ class RefreshUseCase @Inject constructor(
 ) {
 
     private val authService = repository.authServiceRepository
-    private val serviceToken = state.authTokenStateHolder.authTokenState.value.serviceToken
-    private val refreshToken = state.authTokenStateHolder.authTokenState.value.refreshToken
 
     suspend fun refresh() {
 
         try {
+            val refreshToken = state.authTokenStateHolder.authTokenState.value.refreshToken
+            val serviceToken = state.authTokenStateHolder.authTokenState.value.serviceToken
+
             when (val result = authService.refresh(serviceToken, RefreshRequest(refreshToken))) {
 
                 is Result.Success -> {
