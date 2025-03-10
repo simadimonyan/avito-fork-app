@@ -69,6 +69,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -83,6 +88,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.profileinstaller)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.camera.core)
     "baselineProfile"(project(":baselineprofile"))
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose.v120)
