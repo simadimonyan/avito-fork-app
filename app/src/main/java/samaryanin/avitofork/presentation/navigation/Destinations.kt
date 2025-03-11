@@ -82,6 +82,26 @@ sealed class ProfileRoutes(val route: String) {
 }
 
 @Serializable
+sealed class FavoriteRoutes(val route: String) {
+
+    /**
+     * Идентификатор вложенной навигации
+     */
+    @Serializable object RouteID : FavoriteRoutes("favorite_id")
+
+    /**
+     * Избранные
+     */
+    @Serializable object Favorite : FavoriteRoutes("favorite")
+
+    /**
+     * дополнителтное Окно
+     */
+  //  @Serializable object Notifications : ProfileRoutes("notifications")
+
+}
+
+@Serializable
 sealed class SettingsRoutes(val route: String) {
 
     /**

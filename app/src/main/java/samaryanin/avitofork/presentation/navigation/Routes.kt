@@ -23,6 +23,7 @@ import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
+import samaryanin.avitofork.presentation.screens.menu.favorites.FavoritesScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.menu.search.MarketplaceScreen
@@ -121,7 +122,41 @@ fun NestedScreenGraph(
             mainViewModel,
             globalNavController
         )
+
+        composable(
+            route = FavoriteRoutes.Favorite.route,
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
+            }
+        ) {
+            FavoritesScreen(
+                // profileViewModel,
+                mainViewModel,
+                globalNavController
+            )
+        }
     }
+
+//
+//    /**
+//     * Вложенный Navigation Graph избранных
+//     * ----------------------------------------------
+//     * @param favoritesViewModel модель экрана избранных
+//     * @param mainViewModel главная модель приложения
+//     * @param globalNavController глобальный контроллер навигации
+//     */
+//    fun NavGraphBuilder.favoriteGraph(
+//        //favoritesViewModel: FavoritesViewModel,
+//        mainViewModel: MainViewModel,
+//        globalNavController: NavHostController
+//    ) {
+//        navigation(startDestination = FavoriteRoutes.Favorite.route, route = FavoriteRoutes.RouteID.route) {
+//
+//        }
+//    }
 }
 
 /**
@@ -250,6 +285,7 @@ fun NavGraphBuilder.profileGraph(
         }
     }
 }
+
 
 /**
  * Вложенный Navigation Graph авторизации
