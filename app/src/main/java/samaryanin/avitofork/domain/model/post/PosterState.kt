@@ -1,33 +1,25 @@
-package samaryanin.avitofork.presentation.screens.menu.profile.poster.data
-
-/**
- * Модель верхнеуровневых категорий
- * @param id уникальный идентификатор категории
- * @param name название категории
- * @param subs список подкатегорий
- */
-data class Category(
-    val id: String,
-    val name: String,
-    val subs: Set<SubCategory>
-)
-
-/**
- * Модель подкатегорий
- * @param id уникальный идентификатор категории
- * @param name название категории
- * @param fields список характеристик объявления
- */
-data class SubCategory(
-    val id: String,
-    val name: String,
-    val fields: Set<CategoryField>
-)
+package samaryanin.avitofork.domain.model.post
 
 /**
  * Модель структур данных для характеристик категорий
  */
 sealed class CategoryField {
+
+    /**
+     * Модель верхнеуровневых категорий
+     * @param id уникальный идентификатор категории
+     * @param name название категории
+     * @param subs список подкатегорий
+     */
+    data class Category(val id: String, val name: String, val subs: Set<SubCategory>)
+
+    /**
+     * Модель подкатегорий
+     * @param id уникальный идентификатор категории
+     * @param name название категории
+     * @param fields список характеристик объявления
+     */
+    data class SubCategory(val id: String, val name: String, val fields: Set<CategoryField>)
 
     /**
      * Мета-тег для разделения полей на категории
