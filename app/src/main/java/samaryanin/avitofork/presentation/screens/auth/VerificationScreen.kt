@@ -41,11 +41,11 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.navigation.MainRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.auth.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space

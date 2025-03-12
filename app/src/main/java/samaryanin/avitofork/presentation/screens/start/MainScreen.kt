@@ -19,14 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import samaryanin.avitofork.presentation.navigation.AuthRoutes
-import samaryanin.avitofork.presentation.navigation.FavoriteRoutes
-import samaryanin.avitofork.presentation.navigation.MessagesRoutes
 import samaryanin.avitofork.presentation.navigation.NestedScreenGraph
-import samaryanin.avitofork.presentation.navigation.ProfileRoutes
-import samaryanin.avitofork.presentation.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.auth.AuthBottomSheet
+import samaryanin.avitofork.presentation.screens.auth.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.screens.menu.appbar.BottomAppNavigation
+import samaryanin.avitofork.presentation.screens.menu.favorites.navigation.FavoriteRoutes
+import samaryanin.avitofork.presentation.screens.menu.messages.navigation.MessagesRoutes
+import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
+import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 

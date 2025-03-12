@@ -42,8 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.ProfileRoutes
-import samaryanin.avitofork.presentation.navigation.SettingsRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.start.data.AppEvent
@@ -52,6 +50,8 @@ import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.components.AddProfile
 import samaryanin.avitofork.presentation.screens.menu.profile.components.DefaultAvatar
 import samaryanin.avitofork.presentation.screens.menu.profile.components.ProfileTabLayout
+import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
+import samaryanin.avitofork.presentation.screens.settings.navigation.SettingsRoutes
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.theme.alphaLightBlue
 import samaryanin.avitofork.presentation.ui.theme.lightBlue

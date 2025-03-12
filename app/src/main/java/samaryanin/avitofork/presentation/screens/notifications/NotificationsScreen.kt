@@ -37,15 +37,15 @@ fun NotificationsPreview() {
 /**
  * State Hoisting паттерн
  * -------------------------------------
- * @param globalNavController глобальный контроллер навигации
+ * @param navController контроллер навигации
  */
 @Composable
 fun NotificationsScreen(
-    globalNavController: NavHostController,
+    navController: NavHostController,
 ) {
 
     val onExit = {
-        globalNavController.navigateUp()
+        navController.navigateUp()
     }
 
     NotificationsContent(onExit)

@@ -12,10 +12,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.auth.navigation.authGraph
 import samaryanin.avitofork.presentation.screens.menu.favorites.FavoritesScreen
+import samaryanin.avitofork.presentation.screens.menu.favorites.navigation.FavoriteRoutes
+import samaryanin.avitofork.presentation.screens.menu.messages.navigation.MessagesRoutes
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
+import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.screens.menu.search.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 
