@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.MainRoutes
-import samaryanin.avitofork.presentation.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.menu.search.Product
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
