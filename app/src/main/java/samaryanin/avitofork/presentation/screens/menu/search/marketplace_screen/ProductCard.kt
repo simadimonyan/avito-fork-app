@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
+package samaryanin.avitofork.presentation.screens.menu.search
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.MainRoutes
+import samaryanin.avitofork.presentation.navigation.SearchRoutes
+import samaryanin.avitofork.presentation.screens.menu.search.Product
 
 //@Preview(showSystemUi = false)
 //@Composable
@@ -53,7 +55,7 @@ fun ProductCard(product: Product, globalNavController: NavHostController) {
             .padding(8.dp)
             .aspectRatio(1f)
             .clickable {
-                globalNavController.navigate(MainRoutes.AdditionalInfoScreen.route)
+                globalNavController.navigate(SearchRoutes.AdditionalInfoScreen.route)
             },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

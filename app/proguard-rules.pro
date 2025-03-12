@@ -30,6 +30,8 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 
+-dontwarn coil3.PlatformContext
+
 -keep public class com.vk.push.** extends android.os.Parcelable
 
 # Keep application model classes (serialization/deserialization)
