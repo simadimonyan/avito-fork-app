@@ -6,18 +6,14 @@ import kotlinx.serialization.Serializable
 sealed class MainRoutes(val route: String) {
 
     /**
-     * Стартовое окно при запуске приложения
+     * Стартовое окно при запуске приложения (под BottomSheet)
      */
     @Serializable object MainScreen : MainRoutes("main")
 
     /**
-     * Идентификатор дополненной навигации
+     * Идентификатор дополненной навигации (над BottomSheet)
      */
     @Serializable object UtilRouteID : MainRoutes("utils_id")
-
-    @Serializable object MarketPlaceScreen : MainRoutes("market_place_screen")
-    @Serializable object AdditionalInfoScreen : MainRoutes("additional_info_screen")
-
 
 }
 
@@ -25,29 +21,27 @@ sealed class MainRoutes(val route: String) {
 sealed class SearchRoutes(val route: String) {
 
     /**
-     * Идентификатор вложенной навигации
-     */
-    @Serializable object RouteID : SearchRoutes("search_id")
-
-    /**
-     * Меню для поиска актуальных объявлений
+     * Окно для поиска актуальных объявлений (под BottomSheet)
      */
     @Serializable object Search : SearchRoutes("search")
 
     /**
-     * Меню корзины покупок
+     * Окно карточки товара в поиске актуальных объявлений (над BottomSheet)
+     */
+    @Serializable object AdditionalInfoScreen : SearchRoutes("additional_info_screen")
+
+    /**
+     * Окно корзины покупок (над BottomSheet)
      */
     @Serializable object ShoppingCart : SearchRoutes("cart")
 
 }
 
+/**
+ * Ветка над BottomSheet
+ */
 @Serializable
 sealed class GoodRoutes(val route: String) {
-
-    /**
-     * Идентификатор вложенной навигации
-     */
-    @Serializable object RouteID : GoodRoutes("goods_id")
 
     /**
      * Меню выбора категории товара или услуги
@@ -65,17 +59,12 @@ sealed class GoodRoutes(val route: String) {
 sealed class ProfileRoutes(val route: String) {
 
     /**
-     * Идентификатор вложенной навигации
-     */
-    @Serializable object RouteID : ProfileRoutes("profile_id")
-
-    /**
-     * Меню профиля пользователя
+     * Меню профиля пользователя (под BottomSheet)
      */
     @Serializable object Profile : ProfileRoutes("profile")
 
     /**
-     * Окно уведомлений
+     * Окно уведомлений (над BottomSheet)
      */
     @Serializable object Notifications : ProfileRoutes("notifications")
 
@@ -85,12 +74,7 @@ sealed class ProfileRoutes(val route: String) {
 sealed class FavoriteRoutes(val route: String) {
 
     /**
-     * Идентификатор вложенной навигации
-     */
-    @Serializable object RouteID : FavoriteRoutes("favorite_id")
-
-    /**
-     * Избранные
+     * Избранные (под BottomSheet)
      */
     @Serializable object Favorite : FavoriteRoutes("favorite")
 
@@ -102,12 +86,20 @@ sealed class FavoriteRoutes(val route: String) {
 }
 
 @Serializable
-sealed class SettingsRoutes(val route: String) {
+sealed class MessagesRoutes(val route: String) {
 
     /**
-     * Идентификатор вложенной навигации
+     * Окно сообщений (под BottomSheet)
      */
-    @Serializable object RouteID : SettingsRoutes("settings_id")
+    @Serializable object Messages : MessagesRoutes("messages")
+
+}
+
+/**
+ * Ветка над BottomSheet
+ */
+@Serializable
+sealed class SettingsRoutes(val route: String) {
 
     /**
      * Меню профиля пользователя
@@ -116,6 +108,10 @@ sealed class SettingsRoutes(val route: String) {
 
 }
 
+
+/**
+ * Ветка над BottomSheet
+ */
 @Serializable
 sealed class AuthRoutes(val route: String) {
 

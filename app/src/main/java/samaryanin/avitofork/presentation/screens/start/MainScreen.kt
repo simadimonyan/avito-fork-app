@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.navigation.FavoriteRoutes
+import samaryanin.avitofork.presentation.navigation.MessagesRoutes
 import samaryanin.avitofork.presentation.navigation.NestedScreenGraph
 import samaryanin.avitofork.presentation.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.navigation.SearchRoutes
@@ -49,6 +50,7 @@ fun MainScreen(
            selectedIndex = when (currentRoute) {
                SearchRoutes.Search.route -> 0
                FavoriteRoutes.Favorite.route -> 1
+               MessagesRoutes.Messages.route -> 2
                ProfileRoutes.Profile.route -> 3
                else -> {
                    selectedIndex
@@ -84,7 +86,7 @@ fun MainScreen(
                 }
             }
             2 -> { // 2 - индекс сообщений
-                screenController.navigate(SearchRoutes.ShoppingCart.route) { // TODO (сообщения)
+                screenController.navigate(MessagesRoutes.Messages.route) {
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
