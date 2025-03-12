@@ -35,15 +35,15 @@ fun SettingsPreview() {
 /**
  * State Hoisting паттерн
  * -------------------------------------
- * @param globalNavController глобальный контроллер навигации
+ * @param navController контроллер навигации
  */
 @Composable
 fun SettingsScreen(
-    globalNavController: NavHostController,
+    navController: NavHostController,
 ) {
 
     val onExit = {
-        globalNavController.navigateUp()
+        navController.navigateUp()
     }
 
     SettingsContent(onExit)

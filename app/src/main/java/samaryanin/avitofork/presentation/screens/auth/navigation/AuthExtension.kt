@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.navigation
+package samaryanin.avitofork.presentation.screens.auth.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -13,100 +13,7 @@ import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
 import samaryanin.avitofork.presentation.screens.auth.login.LoginScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.CreateProfileScreen
 import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
-import samaryanin.avitofork.presentation.screens.menu.search.poster_additional_info.AdditionalInfoScreen
-import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
-import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
-
-/**
- * Расширение утилитной навигации Navigation Graph выше слоя BottomSheet
- * ----------------------------------------------
- * @param mainViewModel главная модель приложения
- * @param globalNavController глобальный контроллер навигации
- */
-fun NavGraphBuilder.utilGraph(
-    mainViewModel: MainViewModel,
-    globalNavController: NavHostController
-) {
-    navigation(startDestination = ProfileRoutes.Notifications.route, route = MainRoutes.UtilRouteID.route) {
-
-        // ------------------------- Профили -------------------------
-
-        composable( // Уведомления
-            route = ProfileRoutes.Notifications.route,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
-            }
-        ) {
-            NotificationsScreen(globalNavController)
-        }
-
-        composable( // Настройки
-            route = SettingsRoutes.Settings.route,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
-            }
-        ) {
-            SettingsScreen(globalNavController)
-        }
-
-        // -----------------------------------------------------------
-
-
-        // --------------------- Меню объявлений ---------------------
-
-        composable( // Карточка товара
-            route = SearchRoutes.AdditionalInfoScreen.route,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
-            }
-        ) {
-            AdditionalInfoScreen(globalNavController)
-        }
-
-        // -----------------------------------------------------------
-
-    }
-}
 
 /**
  * Расширение навигации авторизации Navigation Graph выше слоя BottomSheet

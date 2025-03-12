@@ -33,10 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.auth.data.AuthViewModel
+import samaryanin.avitofork.presentation.screens.auth.navigation.AuthRoutes
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
