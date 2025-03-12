@@ -20,6 +20,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import samaryanin.avitofork.presentation.navigation.AuthRoutes
+import samaryanin.avitofork.presentation.navigation.FavoriteRoutes
 import samaryanin.avitofork.presentation.navigation.NestedScreenGraph
 import samaryanin.avitofork.presentation.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.navigation.SearchRoutes
@@ -47,7 +48,7 @@ fun MainScreen(
            currentRoute = destination.route.toString()
            selectedIndex = when (currentRoute) {
                SearchRoutes.Search.route -> 0
-               SearchRoutes.ShoppingCart.route -> 1
+               FavoriteRoutes.Favorite.route -> 1
                ProfileRoutes.Profile.route -> 3
                else -> {
                    selectedIndex
@@ -74,7 +75,7 @@ fun MainScreen(
                 }
             }
             1 -> { // 1 - индекс избранного
-                screenController.navigate(SearchRoutes.ShoppingCart.route) { // TODO (избранное)
+                screenController.navigate(FavoriteRoutes.Favorite.route) {
                     popUpTo(screenController.graph.findStartDestination().id) {
                         saveState = true
                     }
