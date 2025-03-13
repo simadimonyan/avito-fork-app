@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search
+package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,7 +34,15 @@ import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
-    val ads = List(10) { Product("Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
+   // val ads = List(10) { Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
+    val ads = listOf(
+        Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Product(2, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Product(3, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Product(4, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Product(5, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+
+    )
     AvitoForkTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.fillMaxSize()) {

@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search
+package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.navigation.MainRoutes
-import samaryanin.avitofork.presentation.screens.menu.search.Product
 
 //@Preview(showSystemUi = false)
 //@Composable

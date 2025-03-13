@@ -26,7 +26,7 @@ import samaryanin.avitofork.presentation.screens.auth.signup.SignUpScreen
 import samaryanin.avitofork.presentation.screens.menu.favorites.FavoritesScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
-import samaryanin.avitofork.presentation.screens.menu.search.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceScreen
 import samaryanin.avitofork.presentation.screens.menu.search.poster_additional_info.AdditionalInfoScreen
 import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen

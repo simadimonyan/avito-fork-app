@@ -69,9 +69,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+    kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.material.icons.extended)
 
@@ -94,7 +92,6 @@ dependencies {
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.camera.core)
     "baselineProfile"(project(":baselineprofile"))
-    kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose.v120)
 
     implementation(libs.androidx.preference.ktx)
