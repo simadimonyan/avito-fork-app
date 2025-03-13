@@ -48,7 +48,6 @@ data class FavoriteAd(
     val imageUrl: String
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
     mainViewModel: MainViewModel,

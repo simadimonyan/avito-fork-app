@@ -8,6 +8,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
     alias(libs.plugins.baselineprofile)
+    id("com.google.devtools.ksp")
 }
 
 val properties = Properties().apply { load(File(rootProject.rootDir, "gradle.properties").inputStream()) }
@@ -70,6 +71,11 @@ android {
 
 dependencies {
     kapt(libs.hilt.android.compiler)
+
+    //room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     implementation(libs.androidx.material.icons.extended)
 

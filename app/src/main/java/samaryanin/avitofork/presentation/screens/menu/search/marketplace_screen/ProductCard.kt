@@ -19,6 +19,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,9 +30,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.presentation.navigation.MainRoutes
+import samaryanin.avitofork.data.database.favorites.Favorite
+import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceViewModel
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.Product
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
@@ -48,7 +51,13 @@ import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRo
 @Composable
 fun ProductCard(product: Product, globalNavController: NavHostController) {
     var expanded by remember { mutableStateOf(false) }
+
     var isFav by remember { mutableStateOf(false) }
+
+    val viewModel: MarketplaceViewModel = hiltViewModel()
+    val favorites by viewModel.allFavorites.collectAsState()
+
+    if(favorites.contains(Favorite(product.id))) isFav = true else isFav = false
 
     Card(
         modifier = Modifier
@@ -113,6 +122,8 @@ fun ProductCard(product: Product, globalNavController: NavHostController) {
                         modifier = Modifier
                             .clickable {
                                 isFav = !isFav
+                                if(isFav) viewModel.addToFavorites(product.id)
+                                else viewModel.removeFromFavorites(product.id)
                             }
                             .size(24.dp)
                     )

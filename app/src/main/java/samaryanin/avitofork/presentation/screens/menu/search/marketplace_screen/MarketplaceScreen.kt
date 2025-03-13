@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.screens.menu.search.ProductCard
@@ -44,6 +48,13 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
         Product(5, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
 
     )
+    val viewModel: MarketplaceViewModel = hiltViewModel()
+    val favorites by viewModel.allFavorites.collectAsState()
+
+    SideEffect {
+        Log.d("FAV", "$favorites")
+    }
+
     AvitoForkTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.fillMaxSize()) {
@@ -71,6 +82,7 @@ fun SearchBar(search: String, onSearchChange: (String) -> Unit) {
             isPassword = false,
             errorListener = false
         )
+
         Row(modifier = Modifier.padding(end = 8.dp)) {
             IconButton(R.drawable.search) {
                 //click
