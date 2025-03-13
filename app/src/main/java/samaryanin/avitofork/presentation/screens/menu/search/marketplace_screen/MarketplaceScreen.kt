@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.screens.menu.search.ProductCard
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 
