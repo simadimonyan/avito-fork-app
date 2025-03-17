@@ -29,6 +29,7 @@ profileinstaller = "1.4.1"
 uiTooling = "1.7.8"
 foundationAndroid = "1.7.8"
 cameraCore = "1.4.1"
+roomCommon = "2.6.1"
 
 [libraries]
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
@@ -69,6 +70,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
