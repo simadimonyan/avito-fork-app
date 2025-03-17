@@ -45,6 +45,7 @@ private fun CategoryPreview() {
             CategoryField.Category("", "Тестовая категория 2", mutableListOf()),
             CategoryField.Category("", "Тестовая категория 3", mutableListOf())
         ),
+        mutableListOf(),
         false
     )
 
