@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +27,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
-import samaryanin.avitofork.presentation.screens.start.data.AppEvent
 import samaryanin.avitofork.presentation.screens.start.data.AppState
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
@@ -83,7 +85,7 @@ fun FavoritesScreen(
 
     // обработчик событий для AuthBottomSheet
     val authRequest = {
-        mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
+      //  mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
     FavoritesScreenContent({ appState },
@@ -95,7 +97,7 @@ fun FavoritesScreen(
 @Composable
 fun FavoritesScreenContent(
     appState: () -> AppState,
-   // navigateTo: (Int) -> Unit,
+    //navigateTo: (Int) -> Unit,
     authRequest: () -> Unit,
     authState: () -> AuthState
 ){
@@ -162,19 +164,21 @@ fun FavoriteAdCard(ad: FavoriteAd) {
         ) {
             // Фото объявления
             Image(
-                painter = painterResource(R.drawable.testimg),
+                painter = painterResource(R.drawable.house),
                 //  painter = rememberAsyncImageLoader(ad.imageUrl),
                 contentDescription = "Фото объявления",
                 modifier = Modifier
-                    .size(100.dp)
-                    .align(Alignment.CenterVertically)
+                    .size(170.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .align(Alignment.CenterVertically),
+                contentScale = ContentScale.Crop,
             )
             Spacer(modifier = Modifier.width(16.dp))
             // Текстовая информация
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .align(Alignment.CenterVertically)
+                    .align(Alignment.Top)
             ) {
                 Text(
                     text = ad.price,
