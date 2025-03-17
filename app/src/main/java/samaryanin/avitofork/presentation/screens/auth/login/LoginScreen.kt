@@ -212,6 +212,7 @@ fun LoginContent(
             Spacer(modifier = Modifier.height(30.dp))
 
             AppTextTitle("Вход")
+
             Space()
 
             AppTextFieldPlaceholder(

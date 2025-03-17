@@ -20,9 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -64,7 +62,7 @@ fun FieldsPreview() {
     Column {
         MetaTag(
             key = "",
-            fields = mutableSetOf(
+            fields = mutableListOf(
                 CategoryField.PhotoPickerField("", 8),
                 CategoryField.TextField("Описание:", ""),
                 CategoryField.TextField("Описание 1:", ""),
@@ -72,15 +70,15 @@ fun FieldsPreview() {
         )
         MetaTag(
             key = "Характеристики 2",
-            fields = mutableSetOf(
+            fields = mutableListOf(
                 CategoryField.NumberField("Год выпуска:", "", "г"),
                 CategoryField.NumberField("Объем двигателя:", "", "л")
             )
         )
         MetaTag(
             key = "Характеристики 3",
-            fields = mutableSetOf(
-                CategoryField.DropdownField("Тип недвижимости:", "Не выбран", mutableSetOf(), true),
+            fields = mutableListOf(
+                CategoryField.DropdownField("Тип недвижимости:", "Не выбран", mutableListOf(), true),
                 CategoryField.LocationField("Местоположение строения")
             )
         )
@@ -88,33 +86,32 @@ fun FieldsPreview() {
 }
 
 @Composable
-fun MetaTag(key: String, fields: Set<CategoryField>) {
+fun MetaTag(key: String, fields: List<CategoryField>) {
     Box(modifier = Modifier.background(veryLightGray)) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             if (key.isNotEmpty()) Text(modifier = Modifier.padding(10.dp), text = key, fontSize = 15.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
 
-                items(fields.toList(), key = { it.hashCode() }) { field ->
+            fields.forEach { field ->
 
-                    val index = fields.indexOf(field)
-                    if (index != 0) {
-                        Divider()
-                    }
+                val index = fields.indexOf(field)
+                if (index != 0) {
+                    Divider()
+                }
 
-                    when (field) {
-                        is CategoryField.TextField -> TextField(field.key, field.value, "до 3000 символов") {}
-                        is CategoryField.DropdownField -> DropdownField(field.key, field.value, field.options, field.isOnlyOneToChoose) {}
-                        is CategoryField.LocationField -> LocationField(field.key)
-                        is CategoryField.NumberField -> NumberField(field.key, field.value, field.unitMeasure, "") {}
-                        is CategoryField.PhotoPickerByCategoryField -> TODO()
-                        is CategoryField.PhotoPickerField -> PhotoPickerField(field.key, field.count)
-                        is CategoryField.MetaTag -> {}
-                    }
-
+                when (field) {
+                    is CategoryField.TextField -> TextField(field.key, field.value, "до 3000 символов") {}
+                    is CategoryField.DropdownField -> DropdownField(field.key, field.value, field.options, field.isOnlyOneToChoose) {}
+                    is CategoryField.LocationField -> LocationField(field.key)
+                    is CategoryField.NumberField -> NumberField(field.key, field.value, field.unitMeasure, field.value) {}
+                    is CategoryField.PhotoPickerByCategoryField -> TODO()
+                    is CategoryField.PhotoPickerField -> PhotoPickerField(field.key, field.count)
+                    is CategoryField.MetaTag -> MetaTag(key = field.key, field.fields)
+                    else -> {}
                 }
 
             }
+
         }
     }
 }
@@ -233,7 +230,7 @@ fun PhotoPickerField(key: String, count: Int) {
 }
 
 @Composable
-fun DropdownField(key: String, value: String, options: Set<String>, isOnlyOneToChoose: Boolean, onClick: () -> Unit) {
+fun DropdownField(key: String, value: String, options: List<String>, isOnlyOneToChoose: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .wrapContentHeight()

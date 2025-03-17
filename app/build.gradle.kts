@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
     alias(libs.plugins.baselineprofile)
 }
 
@@ -69,6 +70,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.decompose)
+    implementation(libs.decompose.extensions.compose)
+
     implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.coil.compose)

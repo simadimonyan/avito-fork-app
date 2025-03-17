@@ -8,8 +8,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AppTextTitle(text: String){
-    Text(text, fontSize = 24.sp, fontWeight = FontWeight.Bold )
+fun AppTextTitle(text: String, modifier: Modifier = Modifier) {
+    Text(text, modifier, fontSize = 24.sp, fontWeight = FontWeight.Bold)
 }
 
 @Composable

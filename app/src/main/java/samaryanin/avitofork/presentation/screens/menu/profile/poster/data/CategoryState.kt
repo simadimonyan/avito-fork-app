@@ -18,6 +18,11 @@ data class CategoryState(
     val categories: List<CategoryField> = mutableStateListOf(),
 
     /**
+     * Список черновиков подкатегорий объявлений (включает в себя их поля)
+     */
+    val drafts: List<CategoryField> = mutableListOf(),
+
+    /**
      * Состояние подгрузки категорий
      */
     val isLoading: Boolean = false
