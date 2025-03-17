@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteAdDao {
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addFavorite(ad: Favorite)
 
@@ -16,4 +17,5 @@ interface FavoriteAdDao {
 
     @Query("SELECT * FROM favorites")
     fun getFavorites(): Flow<List<Favorite>>
+
 }

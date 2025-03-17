@@ -73,6 +73,7 @@ android {
 dependencies {
     implementation(libs.decompose)
     implementation(libs.decompose.extensions.compose)
+    implementation(libs.androidx.room.common)
 
     kapt(libs.hilt.android.compiler)
 

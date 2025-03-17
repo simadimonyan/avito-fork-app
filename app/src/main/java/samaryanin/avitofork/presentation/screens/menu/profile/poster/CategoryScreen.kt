@@ -111,3 +111,41 @@ private fun CategoryContent(
         ) {
 
             AppTextTitle(text = "Новое объявление")
+
+            Space(20.dp)
+
+            categoryState.categories.forEachIndexed{ index, categoryField ->
+
+                when (categoryField) {
+
+                    is CategoryField.Category -> {
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp)
+                                .clickable {
+                                    Log.d("CLICK", "CategoryContent: Category clicked: ${categoryField.name + " " + categoryField.subs}")
+                                    chooseSubCategory(categoryField)
+                                }
+                        ) {
+                            Text(
+                                text = categoryField.name,
+                                color = Color.Black,
+                                fontSize = 20.sp,
+                            )
+                        }
+
+                        if (index != categoryState.categories.size - 1) Divider()
+
+                    }
+                    else -> Unit
+
+                }
+
+            }
+        }
+
+    }
+
+}
