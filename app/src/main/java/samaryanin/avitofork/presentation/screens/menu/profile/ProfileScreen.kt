@@ -51,6 +51,7 @@ import samaryanin.avitofork.presentation.screens.menu.profile.components.AddProf
 import samaryanin.avitofork.presentation.screens.menu.profile.components.DefaultAvatar
 import samaryanin.avitofork.presentation.screens.menu.profile.components.ProfileTabLayout
 import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.PostRoutes
 import samaryanin.avitofork.presentation.screens.settings.navigation.SettingsRoutes
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.theme.alphaLightBlue
@@ -96,6 +97,15 @@ fun ProfileScreen(
             }
             1 -> { // 1 - индекс навигации на экран настроек
                 globalNavController.navigate(SettingsRoutes.Settings.route) {
+                    popUpTo(globalNavController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    restoreState = true
+                    launchSingleTop = true
+                }
+            }
+            2 -> { // 2 - индекс навигации на меню управления объявлениями
+                globalNavController.navigate(PostRoutes.PostCategories.route) {
                     popUpTo(globalNavController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -169,7 +179,7 @@ fun ProfileContent(
             contentAlignment = Alignment.Center
         ) {
             if (appState.invoke().isLoggedIn) {
-                ProfileAuthorized(authState)
+                ProfileAuthorized(authState, navigateTo)
             }
             else {
                 ProfileUnauthorized(authRequest)
@@ -182,7 +192,7 @@ fun ProfileContent(
  * Состояние экрана профиля когда пользователь авторизован
  */
 @Composable
-fun ProfileAuthorized(authState: () -> AuthState) {
+fun ProfileAuthorized(authState: () -> AuthState, navigateTo: (Int) -> Unit) {
 
     Column(modifier = Modifier
         .fillMaxSize(),
@@ -256,9 +266,7 @@ fun ProfileAuthorized(authState: () -> AuthState) {
     ) {
         FloatingActionButton(
             onClick = {
-
-
-
+                navigateTo(2) // 2 - индекс навигации на меню управления объявлениями
             },
             modifier = Modifier
                 .padding(bottom = 70.dp)

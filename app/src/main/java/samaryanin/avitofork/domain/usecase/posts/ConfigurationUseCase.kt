@@ -1,8 +1,6 @@
 package samaryanin.avitofork.domain.usecase.posts
 
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import samaryanin.avitofork.data.json.CategoryDeserializer
+import kotlinx.serialization.json.Json
 import samaryanin.avitofork.domain.model.post.CategoryField
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,49 +9,176 @@ import javax.inject.Singleton
 class ConfigurationUseCase @Inject constructor() {
 
     private val prompt = """
-        {
-          "name": "Автомобили",
-          "subs": [
-            {
-              "name": "Легковые автомобили",
-              "fields": [
-                {
-                  "type": "TextField",
-                  "key": "make",
-                  "value": "Toyota"
-                },
-                {
-                  "type": "NumberField",
-                  "key": "year",
-                  "value": "",
-                  "unitMeasure": "год"
-                },
-                {
-                  "type": "DropdownField",
-                  "key": "fuel",
-                  "value": "Бензин",
-                  "options": ["Бензин", "Дизель", "Электро"],
-                  "isOnlyOneToChoose": true
-                },
-                {
-                  "type": "PhotoPickerField",
-                  "key": "photos",
-                  "count": 5
-                }
-              ]
-            }
-          ]
-        }
+        [
+          {
+            "type": "category",
+            "id": "1",
+            "name": "Автомобили",
+            "subs": [
+              {
+                "type": "subcategory",
+                "id": "1-1",
+                "name": "Легковые автомобили",
+                "fields": [
+                  {
+                    "type": "meta-tag",
+                    "key": "",
+                    "fields": [
+                      {
+                        "type": "photo-picker-field",
+                        "key": "photos",
+                        "count": 5
+                      },
+                      {
+                        "type": "number-field",
+                        "key": "Стоимость",
+                        "value": "",
+                        "unitMeasure": "руб"
+                      },
+                      {
+                        "type": "text-field",
+                        "key": "Описание",
+                        "value": ""
+                      },
+                      {
+                        "type": "dropdown-field",
+                        "key": "Эксплуатация",
+                        "value": "С пробегом",
+                        "options": ["С пробегом", "Без пробега"],
+                        "isOnlyOneToChoose": true
+                      },
+                      {
+                        "type": "meta-tag",
+                        "key": "Основные параметры",
+                        "fields": [
+                          {
+                            "type": "dropdown-field",
+                            "key": "Марка",
+                            "value": "Не указано",
+                            "options": ["Porsche", "Chevrolet"],
+                            "isOnlyOneToChoose": true
+                          },
+                          {
+                            "type": "dropdown-field",
+                            "key": "Модель",
+                            "value": "Не указано",
+                            "options": ["", ""],
+                            "isOnlyOneToChoose": true
+                          },
+                          {
+                            "type": "number-field",
+                            "key": "Год выпуска",
+                            "value": "",
+                            "unitMeasure": "год"
+                          },
+                          {
+                            "type": "dropdown-field",
+                            "key": "Руль",
+                            "value": "Не указано",
+                            "options": ["", ""],
+                            "isOnlyOneToChoose": true
+                          },
+                          {
+                            "type": "dropdown-field",
+                            "key": "Кузов",
+                            "value": "Не указано",
+                            "options": ["", ""],
+                            "isOnlyOneToChoose": true
+                          },
+                          {
+                            "type": "number-field",
+                            "key": "Количество дверей",
+                            "value": "",
+                            "unitMeasure": "шт"
+                          },
+                          {
+                            "type": "dropdown-field",
+                            "key": "Цвет",
+                            "value": "Не указано",
+                            "options": ["", ""],
+                            "isOnlyOneToChoose": true
+                          }
+                        ]
+                      },
+                      {
+                        "type": "location-field",
+                        "key": "location"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "category",
+            "id": "2",
+            "name": "Недвижимость",
+            "subs": [
+              {
+                "type": "subcategory",
+                "id": "2-1",
+                "name": "Квартира",
+                "fields": [
+                  {
+                    "type": "meta-tag",
+                    "key": "",
+                    "fields": [
+                      {
+                        "type": "photo-picker-field",
+                        "key": "photos",
+                        "count": 5
+                      },
+                      {
+                        "type": "text-field",
+                        "key": "Стоимость",
+                        "value": ""
+                      },
+                      {
+                        "type": "meta-tag",
+                        "key": "Характеристики",
+                        "fields": [
+                          {
+                            "type": "text-field",
+                            "key": "make",
+                            "value": ""
+                          },
+                          {
+                            "type": "number-field",
+                            "key": "year",
+                            "value": "",
+                            "unitMeasure": "год"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "dropdown-field",
+                        "key": "fuel",
+                        "value": "",
+                        "options": ["Бензин", "Дизель", "Электро"],
+                        "isOnlyOneToChoose": true
+                      },
+                      {
+                        "type": "location-field",
+                        "key": "location"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]  
     """
 
     fun getCategories(): List<CategoryField> {
 
-        val gson = GsonBuilder()
-            .registerTypeAdapter(CategoryField::class.java, CategoryDeserializer())
-            .create()
+        val json = Json {
+            classDiscriminator = "type"
+            ignoreUnknownKeys = true // например, "type"
+        }
 
-        val listType = object : TypeToken<List<CategoryField>>() {}.type
-        val categoryFields: List<CategoryField> = gson.fromJson(prompt, listType)
+        val categoryFields = json.decodeFromString<List<CategoryField.Category>>(prompt)
 
         return categoryFields
     }

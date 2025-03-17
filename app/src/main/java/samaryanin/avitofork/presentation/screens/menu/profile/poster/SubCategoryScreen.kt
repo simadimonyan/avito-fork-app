@@ -1,6 +1,5 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,21 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.domain.model.post.CategoryField
-import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryEvent
-import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryState
-import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.PostRoutes
 import samaryanin.avitofork.presentation.ui.components.utils.space.Divider
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
@@ -37,46 +30,43 @@ import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 
 @Preview
 @Composable
-private fun CategoryPreview() {
+private fun SubCategoryPreview() {
 
-    val sample = CategoryState(
+    val sample = CategoryField.Category("", "Тестовая категория",
         mutableListOf(
-            CategoryField.Category("", "Тестовая категория 1", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 2", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 3", mutableListOf())
-        ),
-        mutableListOf(),
-        false
-    )
+            CategoryField.SubCategory("", "Тестовая подкатегория 1", mutableListOf()),
+            CategoryField.SubCategory("", "Тестовая подкатегория 2", mutableListOf()),
+            CategoryField.SubCategory("", "Тестовая подкатегория 3", mutableListOf())
+        ))
 
-    CategoryContent({ true }, sample, {})
+    SubCategoryContent({ true }, sample, {})
 }
 
 @Composable
-fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewModel = hiltViewModel()) {
-
-    viewModel.handleEvent(CategoryEvent.UpdateCategoryListConfiguration)
-
-    val categories by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
-
-    Log.d("LOADED", "CategoryScreen: Categories loaded: ${categories.categories}")
+fun SubCategoryScreen(
+    globalNavController: NavController,
+    category: CategoryField.Category,
+) {
 
     val onExit = {
         globalNavController.navigateUp()
     }
 
-    val onSubCategoryClick: (CategoryField.Category) -> Unit = { category ->
-        globalNavController.navigate(PostRoutes.PostSubCategories(category))
+    val onSubCategoryClick: (CategoryField.SubCategory) -> Unit = { subcategory ->
+        globalNavController.navigate(PostRoutes.PostCreate(subcategory)) {
+            launchSingleTop = true
+            restoreState = true
+        }
     }
 
-    CategoryContent(onExit, categories, onSubCategoryClick)
+    SubCategoryContent(onExit, category, onSubCategoryClick)
 }
 
 @Composable
-private fun CategoryContent(
+private fun SubCategoryContent(
     onExit: () -> Boolean,
-    categoryState: CategoryState,
-    chooseSubCategory: (CategoryField.Category) -> Unit
+    category: CategoryField.Category,
+    onCategoryClick: (CategoryField.SubCategory) -> Unit
 ) {
 
     Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,
@@ -89,10 +79,10 @@ private fun CategoryContent(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_close),
+                    painter = painterResource(R.drawable.ic_arrow),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(34.dp)
                         .clickable {
                             onExit()
                         }
@@ -110,4 +100,30 @@ private fun CategoryContent(
                 .padding(16.dp)
         ) {
 
-            AppTextTitle(text = "Новое объявление")
+            AppTextTitle(text = category.name)
+
+            Space(20.dp)
+
+            category.subs.forEachIndexed{ index, categoryField ->
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                        .clickable { onCategoryClick(categoryField) }
+                ) {
+                    Text(
+                        text = categoryField.name,
+                        color = Color.Black,
+                        fontSize = 20.sp
+                    )
+                }
+
+                if (index != category.subs.size - 1) Divider()
+
+            }
+        }
+
+    }
+
+}

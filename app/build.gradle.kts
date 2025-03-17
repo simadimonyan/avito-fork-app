@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
     alias(libs.plugins.baselineprofile)
     id("com.google.devtools.ksp")
 }
@@ -70,6 +71,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.decompose)
+    implementation(libs.decompose.extensions.compose)
+
     kapt(libs.hilt.android.compiler)
 
     //room
