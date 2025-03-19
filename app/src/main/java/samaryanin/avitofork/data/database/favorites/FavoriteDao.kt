@@ -12,26 +12,32 @@ interface FavoriteAdDao {
     suspend fun insertAds(ads: List<Ad>) // Добавить несколько объявлений
 
     @Query("SELECT * FROM ads")
-    fun getAllAds(): Flow<List<Ad>>
+    fun getAllAds(): Flow<List<Ad>> // Получить все объявления
 
-    @Query("""
+    @Query(
+        """
         SELECT ads.*, 
-               CASE WHEN favorites.favId IS NOT NULL THEN 1 ELSE 0 END AS isFavorite
-        FROM ads
-        LEFT JOIN favorites ON ads.id = favorites.favId
-    """)
-     fun getAdsWithFavoriteStatus(): Flow<List<AdWithFavorite>>
+       EXISTS (SELECT 1 FROM favorites WHERE favorites.favId = ads.id) AS isFavorite
+FROM ads
+    """
+    )
+    fun getAdsWithFavoriteStatus(): Flow<List<AdWithFavorite>> // Все объявления с флагом избранного
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addToFavorites(favorite: Favorite)
+    suspend fun addToFavorites(favorite: Favorite) // Добавить в избранное
 
     @Query("DELETE FROM favorites WHERE favId = :adId")
-    suspend fun removeFromFavorites(adId: Int)
+    suspend fun removeFromFavorites(adId: Int) // Удалить из избранного
 
-    @Query("SELECT * FROM ads INNER JOIN favorites ON ads.id = favorites.favId")
-    fun getFavoriteAds(): Flow<List<Ad>>
+    @Query(
+        """
+        SELECT ads.* 
+        FROM ads 
+        INNER JOIN favorites ON ads.id = favorites.favId
+    """
+    )
+    fun getFavoriteAds(): Flow<List<Ad>> // Получить только избранные объявления
 }
-
 
 //@Dao
 //interface FavoriteAdDao {

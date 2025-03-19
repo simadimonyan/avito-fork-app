@@ -4,11 +4,15 @@ import kotlinx.coroutines.flow.Flow
 
 class FavoriteAdRepository(private val favoriteAdDao: FavoriteAdDao) {
 
-    val allFavorites: Flow<List<Ad>> = favoriteAdDao.getFavoriteAds()
-    val adsWithFavoriteStatus: Flow<List<AdWithFavorite>> = favoriteAdDao.getAdsWithFavoriteStatus()
+    fun getAllAds(): Flow<List<Ad>> = favoriteAdDao.getAllAds() // получить все объявления
 
-    suspend fun addFavorite(favId: Int) {
-        favoriteAdDao.addToFavorites(Favorite(favId))
+    fun getFavoriteAds(): Flow<List<Ad>> = favoriteAdDao.getFavoriteAds() // получить избранные
+
+    // все объявления с флагом избранного
+    fun getAdsWithFavoriteStatus(): Flow<List<AdWithFavorite>> = favoriteAdDao.getAdsWithFavoriteStatus()
+
+    suspend fun addFavorite(adId: Int) {
+        favoriteAdDao.addToFavorites(Favorite(adId))
     }
 
     suspend fun removeFavorite(adId: Int) {

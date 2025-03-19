@@ -1,6 +1,7 @@
 package samaryanin.avitofork.presentation.screens.menu.favorites
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.data.database.favorites.Ad
@@ -75,7 +78,7 @@ fun FavoritesScreen(
 //    }
     // обработчик событий для AuthBottomSheet
     val authRequest = {
-      //  mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
+        //  mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
     FavoritesScreenContent({ appState },
@@ -87,22 +90,17 @@ fun FavoritesScreen(
 @Composable
 fun FavoritesScreenContent(
     appState: () -> AppState,
-    //navigateTo: (Int) -> Unit,
     authRequest: () -> Unit,
     authState: () -> AuthState
-){
- /*Пример списка избранных объявлений*/
-    val favoriteAds = listOf(
-        Ad(1, "Квартира в центре", "50 000 ₽", "Москва, ул. Ленина",
-            "https://example.com/image1.jpg"),
-        Ad(2, "Дом у озера", "80 000 ₽", "Подмосковье", ""),
-        Ad(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        Ad(4, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        Ad(5, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        Ad(6, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        Ad(7, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        Ad(8, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-    )
+) {
+    val viewModel: FavoritesScreenViewModel = hiltViewModel()
+    val favoritesState = viewModel.favoriteAds.collectAsState()
+    val favorites = favoritesState.value
+
+    // Обновляем список при открытии экрана
+    LaunchedEffect(Unit) {
+        viewModel.refreshFavoriteAds()
+    }
 
     Scaffold(
         topBar = {
@@ -111,7 +109,7 @@ fun FavoritesScreenContent(
             )
         }
     ) { padding ->
-        if (favoriteAds.isEmpty()) {
+        if (favorites.isEmpty()) {
             EmptyFavoritesMessage(modifier = Modifier.padding(padding))
         } else {
             LazyColumn(
@@ -120,8 +118,11 @@ fun FavoritesScreenContent(
                     .fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(favoriteAds) { ad ->
-                    FavoriteAdCard(ad = ad)
+                items(favorites) { ad ->
+                    FavoriteAdCard(
+                        ad = ad,
+                        onLikeClick = { viewModel.toggleFavorite(ad) }  // Логика для лайка
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -129,10 +130,9 @@ fun FavoritesScreenContent(
     }
 }
 
-
 // Компонент карточки объявления
 @Composable
-fun FavoriteAdCard(ad: Ad) {
+fun FavoriteAdCard(ad: Ad, onLikeClick: (Ad) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -150,7 +150,6 @@ fun FavoriteAdCard(ad: Ad) {
             // Фото объявления
             Image(
                 painter = painterResource(R.drawable.house),
-                //  painter = rememberAsyncImageLoader(ad.imageUrl),
                 contentDescription = "Фото объявления",
                 modifier = Modifier
                     .size(170.dp)
@@ -159,6 +158,7 @@ fun FavoriteAdCard(ad: Ad) {
                 contentScale = ContentScale.Crop,
             )
             Spacer(modifier = Modifier.width(16.dp))
+
             // Текстовая информация
             Column(
                 modifier = Modifier
@@ -182,6 +182,13 @@ fun FavoriteAdCard(ad: Ad) {
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
+            Image(
+                painter = painterResource(R.drawable.like_act),
+                contentDescription = "",
+                modifier = Modifier
+                    .clickable { onLikeClick(ad) }
+                    .size(24.dp)
+            )
         }
     }
 }
@@ -206,6 +213,6 @@ fun EmptyFavoritesMessage(modifier: Modifier = Modifier) {
 @Composable
 fun FavoritesScreenPreview() {
     MaterialTheme {
-       // FavoritesScreen()
+        // FavoritesScreen()
     }
 }

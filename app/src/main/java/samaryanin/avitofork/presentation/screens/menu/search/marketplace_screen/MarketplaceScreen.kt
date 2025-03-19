@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.ProductCard
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
@@ -36,19 +36,24 @@ import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
     // val ads = List(10) { Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
-    val adsList = listOf(
-        Ad(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Ad(2, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Ad(3, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Ad(4, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Ad(5, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-
-        )
+//    val adsList = listOf(
+//        Ad(1, "Квартира в центре", "50 000 ₽", "Москва, ул. Ленина",
+//            "https://example.com/image1.jpg"),
+//        Ad(2, "Дом у озера", "80 000 ₽", "Подмосковье", ""),
+//        Ad(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+//        Ad(4, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+//        Ad(5, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+//        Ad(6, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+//        Ad(7, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+//        Ad(8, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+//        )
     val viewModel: MarketplaceViewModel = hiltViewModel()
 //    val favorites by viewModel.favoriteAds.collectAsState()
-
-    val ads by viewModel.adsWithFavoriteStatus.collectAsState()
-
+    //viewModel.addAds(adsList)
+    val ads by viewModel.allAds.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.refreshFavoriteAds()
+    }
     SideEffect {
         Log.d("FAV", "$ads")
     }
@@ -62,10 +67,10 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     columns = GridCells.Adaptive(minSize = 150.dp),
                     modifier = Modifier.padding(paddingValues)
                 ) {
-                    items(ads) { adWithFav ->
-                        ProductCard(adWithFav.ad, adWithFav.isFavorite, globalNavController) {
-                            viewModel.toggleFavorite(adWithFav.ad)
-                        }
+                    items(ads) { ad ->
+                        ProductCard(ad, globalNavController)
+                          //  viewModel.toggleFavorite(ad)
+
                         //  items(ads.size) { index -> ProductCard(ads[index],  , globalNavController) }
                     }
                 }

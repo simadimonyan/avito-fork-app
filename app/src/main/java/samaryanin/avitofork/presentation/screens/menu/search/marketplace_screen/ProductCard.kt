@@ -34,31 +34,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.data.database.favorites.Ad
-import samaryanin.avitofork.data.database.favorites.Favorite
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceViewModel
-import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.Product
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
-//@Preview(showSystemUi = false)
-//@Composable
-//fun ProductCardScreenPreview() {
-//    ProductCard(
-//        Product("мерседес S-19302-s 860", "1200$", "New York", "url"),
-//        globalNavController,
-//    )
-//}
-
-
 @Composable
-fun ProductCard(ad: Ad, isFavorite: Boolean, globalNavController: NavHostController, onFavoriteClick: () -> Unit) {
+fun ProductCard(ad: Ad, globalNavController: NavHostController) {
     var expanded by remember { mutableStateOf(false) }
-
-    var isFav by remember { mutableStateOf(false) }
-
     val viewModel: MarketplaceViewModel = hiltViewModel()
     val favorites by viewModel.favoriteAds.collectAsState()
 
-   // isFav = if(favorites.contains(Favorite(ad.id))) true else false
+    val isFav = favorites.any { it.id == ad.id }
 
     Card(
         modifier = Modifier
@@ -71,7 +56,7 @@ fun ProductCard(ad: Ad, isFavorite: Boolean, globalNavController: NavHostControl
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(R.drawable.car),
+                painter = painterResource(R.drawable.house),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,21 +71,21 @@ fun ProductCard(ad: Ad, isFavorite: Boolean, globalNavController: NavHostControl
                         .padding(8.dp)
                 ) {
                     Text(
-                        text = product.title,
+                        text = ad.title,
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = product.price,
+                        text = ad.price,
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = product.location,
+                        text = ad.address,
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -116,15 +101,12 @@ fun ProductCard(ad: Ad, isFavorite: Boolean, globalNavController: NavHostControl
                 ) {
                     Image(
                         painter = painterResource(
-                            if (isFav) R.drawable.like_act else
-                                R.drawable.like_non_act
+                            if (isFav) R.drawable.like_act else R.drawable.like_non_act
                         ),
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
-                                isFav = !isFav
-                                if(isFav) viewModel.(product.id)
-                                else viewModel.removeFromFavorites(product.id)
+                                viewModel.toggleFavorite(ad)
                             }
                             .size(24.dp)
                     )
