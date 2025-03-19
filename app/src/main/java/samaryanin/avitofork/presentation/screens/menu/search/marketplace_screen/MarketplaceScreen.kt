@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -26,33 +27,30 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.ProductCard
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 
-//@Preview(showSystemUi = false)
-//@Composable
-//fun MarketplaceScreenPreview() {
-//    MarketplaceScreen(globalNavController)
-//}
-
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
-   // val ads = List(10) { Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
-    val ads = listOf(
-        Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Product(2, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Product(3, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Product(4, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
-        Product(5, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+    // val ads = List(10) { Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
+    val adsList = listOf(
+        Ad(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Ad(2, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Ad(3, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Ad(4, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
+        Ad(5, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url"),
 
-    )
+        )
     val viewModel: MarketplaceViewModel = hiltViewModel()
-    val favorites by viewModel.allFavorites.collectAsState()
+//    val favorites by viewModel.favoriteAds.collectAsState()
+
+    val ads by viewModel.adsWithFavoriteStatus.collectAsState()
 
     SideEffect {
-        Log.d("FAV", "$favorites")
+        Log.d("FAV", "$ads")
     }
 
     AvitoForkTheme {
@@ -64,12 +62,16 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     columns = GridCells.Adaptive(minSize = 150.dp),
                     modifier = Modifier.padding(paddingValues)
                 ) {
-                    items(ads.size) { index -> ProductCard(ads[index], globalNavController) }
+                    items(ads) { adWithFav ->
+                        ProductCard(adWithFav.ad, adWithFav.isFavorite, globalNavController) {
+                            viewModel.toggleFavorite(adWithFav.ad)
+                        }
+                        //  items(ads.size) { index -> ProductCard(ads[index],  , globalNavController) }
+                    }
                 }
             }
         }
     }
-
 }
 
 @Composable

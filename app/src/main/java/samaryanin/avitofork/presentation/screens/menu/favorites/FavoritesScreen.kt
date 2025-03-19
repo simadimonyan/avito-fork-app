@@ -37,28 +37,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.start.data.AppState
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
-
-data class FavoriteAd(
-    val id: Int,
-    val title: String,
-    val price: String,
-    val address: String,
-    val imageUrl: String
-)
 
 @Composable
 fun FavoritesScreen(
     mainViewModel: MainViewModel,
     globalNavController: NavHostController
 ) {
-
     val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
     val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
-
     val navigateTo = 0
 //        { index: Int ->
 //        when (index) {
@@ -82,7 +73,6 @@ fun FavoritesScreen(
 //            }
 //        }
 //    }
-
     // обработчик событий для AuthBottomSheet
     val authRequest = {
       //  mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
@@ -101,22 +91,17 @@ fun FavoritesScreenContent(
     authRequest: () -> Unit,
     authState: () -> AuthState
 ){
-// Пример списка избранных объявлений
+ /*Пример списка избранных объявлений*/
     val favoriteAds = listOf(
-        FavoriteAd(
-            1,
-            "Квартира в центре",
-            "50 000 ₽",
-            "Москва, ул. Ленина",
-            "https://example.com/image1.jpg"
-        ),
-        FavoriteAd(2, "Дом у озера", "80 000 ₽", "Подмосковье", ""),
-        FavoriteAd(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        FavoriteAd(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        FavoriteAd(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        FavoriteAd(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        FavoriteAd(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-        FavoriteAd(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(1, "Квартира в центре", "50 000 ₽", "Москва, ул. Ленина",
+            "https://example.com/image1.jpg"),
+        Ad(2, "Дом у озера", "80 000 ₽", "Подмосковье", ""),
+        Ad(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(4, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(5, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(6, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(7, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(8, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
     )
 
     Scaffold(
@@ -147,7 +132,7 @@ fun FavoritesScreenContent(
 
 // Компонент карточки объявления
 @Composable
-fun FavoriteAdCard(ad: FavoriteAd) {
+fun FavoriteAdCard(ad: Ad) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),

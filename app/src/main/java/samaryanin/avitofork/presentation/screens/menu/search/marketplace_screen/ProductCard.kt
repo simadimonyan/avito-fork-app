@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.data.database.favorites.Favorite
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceViewModel
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.Product
@@ -49,15 +50,15 @@ import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRo
 
 
 @Composable
-fun ProductCard(product: Product, globalNavController: NavHostController) {
+fun ProductCard(ad: Ad, isFavorite: Boolean, globalNavController: NavHostController, onFavoriteClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     var isFav by remember { mutableStateOf(false) }
 
     val viewModel: MarketplaceViewModel = hiltViewModel()
-    val favorites by viewModel.allFavorites.collectAsState()
+    val favorites by viewModel.favoriteAds.collectAsState()
 
-    if(favorites.contains(Favorite(product.id))) isFav = true else isFav = false
+   // isFav = if(favorites.contains(Favorite(ad.id))) true else false
 
     Card(
         modifier = Modifier
@@ -122,7 +123,7 @@ fun ProductCard(product: Product, globalNavController: NavHostController) {
                         modifier = Modifier
                             .clickable {
                                 isFav = !isFav
-                                if(isFav) viewModel.addToFavorites(product.id)
+                                if(isFav) viewModel.(product.id)
                                 else viewModel.removeFromFavorites(product.id)
                             }
                             .size(24.dp)
