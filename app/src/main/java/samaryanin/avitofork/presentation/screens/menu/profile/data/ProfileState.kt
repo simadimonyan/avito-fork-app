@@ -13,7 +13,7 @@ data class ProfileState(
     /**
      * Список публикаций профиля
      */
-    val posts: List<Map<String, List<PostState>>> = mutableListOf()
+    val posts: Map<String, List<PostState>> = mutableMapOf()
 
 )
 
@@ -25,7 +25,7 @@ class ProfileStateHolder @Inject constructor() {
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState: StateFlow<ProfileState> = _profileState
 
-    fun updatePostsList(posts: List<Map<String, List<PostState>>>) {
+    fun updatePostsList(posts: Map<String, List<PostState>>) {
         _profileState.update { it.copy(posts = posts) }
     }
 

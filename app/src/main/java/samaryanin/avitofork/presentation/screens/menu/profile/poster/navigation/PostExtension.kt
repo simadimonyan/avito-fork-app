@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.serialization.json.Json
 import samaryanin.avitofork.domain.model.post.CategoryField
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.CategoryScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.PostCreateScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.SubCategoryScreen
@@ -19,10 +20,12 @@ import kotlin.reflect.typeOf
  * Расширение утилитной навигации управления объявлениями выше слоя BottomNavigation
  * ---------------------------------------------------------------------------------
  * @param globalNavController глобальный контроллер навигации
+ * @param profileViewModel модель профиля
  * @param categoriesViewModel модель категорий объявлений приложения
  */
 fun NavGraphBuilder.utilPosterGraph(
     globalNavController: NavHostController,
+    profileViewModel: ProfileViewModel,
     categoriesViewModel: CategoryViewModel
 ) {
 
@@ -117,7 +120,7 @@ fun NavGraphBuilder.utilPosterGraph(
             } ?: CategoryField.SubCategory("", "", emptyList())
 
 
-            PostCreateScreen(globalNavController, subcategory, categoriesViewModel)
+            PostCreateScreen(globalNavController, subcategory, categoriesViewModel, profileViewModel)
         }
 
     }

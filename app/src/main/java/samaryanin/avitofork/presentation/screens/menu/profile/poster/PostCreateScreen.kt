@@ -31,10 +31,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
 import samaryanin.avitofork.domain.model.post.CategoryField
 import samaryanin.avitofork.domain.model.post.PostData
 import samaryanin.avitofork.domain.model.post.PostState
+import samaryanin.avitofork.presentation.navigation.MainRoutes
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileEvent
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.components.MetaTag
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryEvent
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
@@ -80,6 +84,7 @@ fun PostCreateScreen(
     globalNavController: NavController,
     subcategory: CategoryField.SubCategory,
     categoriesViewModel: CategoryViewModel,
+    profileViewModel: ProfileViewModel,
 ) {
 
     val draftPost by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
@@ -90,7 +95,19 @@ fun PostCreateScreen(
 
     val onPublish: () -> Unit = {
         Log.d("TEST", draftPost.tempDraft.data.toString())
-        //TODO (логика опубликования объявления)
+
+        // TODO -- заменить на ивент для серверного апдейта
+        profileViewModel.handleEvent(ProfileEvent.AddPublication(draftPost.tempDraft))
+
+        categoriesViewModel.handleEvent(CategoryEvent.PublishPost)
+
+        globalNavController.navigate(MainRoutes.MainScreen.route) {
+            popUpTo(globalNavController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
     }
 
     val updateDraft: (PostData) -> Unit = { data ->

@@ -20,11 +20,16 @@ class CategoryViewModel @Inject constructor(
             is CategoryEvent.UpdateCategoryListConfiguration -> updateConfiguration()
             is CategoryEvent.SaveDraftToCache -> saveDraftToCache()
             is CategoryEvent.UpdateDraftParams -> updateDraftParams(event.draft)
+            is CategoryEvent.PublishPost -> publish()
         }
     }
 
     private fun updateDraftParams(draft: PostState) {
         appStateStore.categoryStateHolder.updateTempDraftPost(draft)
+    }
+
+    private fun publish() {
+        // TODO (опубликовать объявление)
     }
 
     private fun saveDraftToCache() {

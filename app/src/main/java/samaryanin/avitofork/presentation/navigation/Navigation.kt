@@ -36,6 +36,7 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
     val globalNavController = rememberNavController()
 
     val authViewModel: AuthViewModel = hiltViewModel()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
     val categoriesViewModel: CategoryViewModel = hiltViewModel()
 
     NavHost(
@@ -54,6 +55,7 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
 
         utilGraph(
             mainViewModel,
+            profileViewModel,
             categoriesViewModel,
             globalNavController
         )

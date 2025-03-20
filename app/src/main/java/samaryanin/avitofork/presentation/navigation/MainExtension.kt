@@ -3,6 +3,7 @@ package samaryanin.avitofork.presentation.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigation
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.navigation.utilProfileGraph
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.utilPosterGraph
@@ -14,11 +15,13 @@ import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
  * Расширение утилитной навигации Navigation Graph выше слоя BottomNavigation
  * ------------------------------------------------------------------------
  * @param mainViewModel главная модель приложения
+ * @param profileViewModel модель профиля
  * @param categoriesViewModel модель категорий объявлений приложения
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.utilGraph(
     mainViewModel: MainViewModel,
+    profileViewModel: ProfileViewModel,
     categoriesViewModel: CategoryViewModel,
     globalNavController: NavHostController
 ) {
@@ -26,7 +29,7 @@ fun NavGraphBuilder.utilGraph(
 
         utilProfileGraph(globalNavController)
         utilSearchGraph(globalNavController)
-        utilPosterGraph(globalNavController, categoriesViewModel)
+        utilPosterGraph(globalNavController, profileViewModel, categoriesViewModel)
 
     }
 }

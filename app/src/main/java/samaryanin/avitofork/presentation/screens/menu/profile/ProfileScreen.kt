@@ -50,6 +50,7 @@ import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.components.AddProfile
 import samaryanin.avitofork.presentation.screens.menu.profile.components.DefaultAvatar
 import samaryanin.avitofork.presentation.screens.menu.profile.components.ProfileTabLayout
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileState
 import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.PostRoutes
 import samaryanin.avitofork.presentation.screens.settings.navigation.SettingsRoutes
@@ -64,7 +65,7 @@ import samaryanin.avitofork.presentation.ui.theme.navigationSelected
 @Preview
 @Composable
 fun ProfilePreview() {
-    ProfileContent({ AppState() }, {}, {}, { AuthState() })
+    ProfileContent({ AppState() }, {}, {}, { AuthState() }) { ProfileState() }
 }
 
 /**
@@ -83,6 +84,7 @@ fun ProfileScreen(
 
     val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
     val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
+    val profileState by profileViewModel.appStateStore.profileStateHolder.profileState.collectAsState()
 
     val navigateTo = { index: Int ->
         when (index) {
@@ -121,7 +123,7 @@ fun ProfileScreen(
         mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
-    ProfileContent({ appState }, navigateTo, authRequest, { authState })
+    ProfileContent({ appState }, navigateTo, authRequest, { authState }, { profileState })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,7 +132,8 @@ fun ProfileContent(
     appState: () -> AppState,
     navigateTo: (Int) -> Unit,
     authRequest: () -> Unit,
-    authState: () -> AuthState
+    authState: () -> AuthState,
+    profileState: () -> ProfileState
 ) {
     Scaffold(
         modifier = Modifier,
@@ -179,7 +182,7 @@ fun ProfileContent(
             contentAlignment = Alignment.Center
         ) {
             if (appState.invoke().isLoggedIn) {
-                ProfileAuthorized(authState, navigateTo)
+                ProfileAuthorized(profileState, authState, navigateTo)
             }
             else {
                 ProfileUnauthorized(authRequest)
@@ -192,7 +195,11 @@ fun ProfileContent(
  * Состояние экрана профиля когда пользователь авторизован
  */
 @Composable
-fun ProfileAuthorized(authState: () -> AuthState, navigateTo: (Int) -> Unit) {
+fun ProfileAuthorized(
+    profileState: () -> ProfileState,
+    authState: () -> AuthState,
+    navigateTo: (Int) -> Unit
+) {
 
     Column(modifier = Modifier
         .fillMaxSize(),
@@ -255,7 +262,7 @@ fun ProfileAuthorized(authState: () -> AuthState, navigateTo: (Int) -> Unit) {
             Space()
         }
 
-        ProfileTabLayout()
+        ProfileTabLayout(profileState().posts)
 
     }
 

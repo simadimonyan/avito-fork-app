@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -27,7 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.presentation.ui.components.placeholders.ProfileEmptyAdvertisement
+import samaryanin.avitofork.domain.model.post.PostData
+import samaryanin.avitofork.domain.model.post.PostState
+import samaryanin.avitofork.presentation.ui.components.placeholders.ProfileEmptyPublication
+import samaryanin.avitofork.presentation.ui.components.placeholders.ProfilePublication
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 
 sealed class TabItem(val index: Int, val title: String) {
@@ -46,7 +52,18 @@ sealed class TabItem(val index: Int, val title: String) {
 
 @Preview
 @Composable
-fun ProfileTabLayout() {
+fun ProfileTabLayoutPreview() {
+    ProfileTabLayout(mutableMapOf(
+        "0" to mutableListOf(
+            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
+            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
+            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб."))
+        ),
+    ))
+}
+
+@Composable
+fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
 
     val tabTitles = listOf(TabItem.Publications, TabItem.Archive)
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
@@ -96,30 +113,57 @@ fun ProfileTabLayout() {
             userScrollEnabled = true
         ) { page ->
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                contentAlignment = Alignment.Center
-            ) {
-                Column {
-                    ProfileEmptyAdvertisement()
-                    Space()
-                    ProfileEmptyAdvertisement()
-                    Space()
-                    Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                        Text(
-                            modifier = Modifier.padding(bottom = 70.dp),
-                            text = "У вас нет объявлений",
-                            fontSize = 16.sp,
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center
-                        )
+            if (posts.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column {
+                        ProfileEmptyPublication()
+                        Space()
+                        ProfileEmptyPublication()
+                        Space()
+                        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                            Text(
+                                modifier = Modifier.padding(bottom = 70.dp),
+                                text = "У вас нет объявлений",
+                                fontSize = 16.sp,
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
+            } else {
+
+                LazyColumn(modifier = Modifier.background(Color.White)) {
+
+                    item { Space(5.dp) }
+
+                    if (page == 0) {
+
+                        items(posts["0"]!!.size) {
+                            posts["0"]!!.forEach { field ->
+                                Surface(modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp), color = Color.White, shape = RoundedCornerShape(10.dp), shadowElevation = 2.dp) {
+                                    ProfilePublication(
+                                        title = field.subcategory,
+                                        description = field.data.description,
+                                        price = field.data.price + " " + field.data.unit
+                                    )
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+
             }
 
         }
     }
 }
+
