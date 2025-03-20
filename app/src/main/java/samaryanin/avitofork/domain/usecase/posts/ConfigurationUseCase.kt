@@ -30,13 +30,13 @@ class ConfigurationUseCase @Inject constructor() {
                         "count": 5
                       },
                       {
-                        "type": "number-field",
+                        "type": "price-field",
                         "key": "Стоимость",
                         "value": "",
                         "unitMeasure": "руб"
                       },
                       {
-                        "type": "text-field",
+                        "type": "description-field",
                         "key": "Описание",
                         "value": ""
                       },

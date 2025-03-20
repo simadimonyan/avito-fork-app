@@ -35,9 +35,11 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
 import samaryanin.avitofork.domain.model.post.CategoryField
+import samaryanin.avitofork.domain.model.post.PostData
 import samaryanin.avitofork.presentation.ui.components.utils.space.Divider
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.theme.greyButton
@@ -66,27 +69,39 @@ fun FieldsPreview() {
                 CategoryField.PhotoPickerField("", 8),
                 CategoryField.TextField("Описание:", ""),
                 CategoryField.TextField("Описание 1:", ""),
-            )
+            ),
+            {},
+            PostData()
         )
         MetaTag(
             key = "Характеристики 2",
             fields = mutableListOf(
                 CategoryField.NumberField("Год выпуска:", "", "г"),
                 CategoryField.NumberField("Объем двигателя:", "", "л")
-            )
+            ),
+            {},
+            PostData()
         )
         MetaTag(
             key = "Характеристики 3",
             fields = mutableListOf(
                 CategoryField.DropdownField("Тип недвижимости:", "Не выбран", mutableListOf(), true),
                 CategoryField.LocationField("Местоположение строения")
-            )
+            ),
+            {},
+            PostData()
         )
     }
 }
 
 @Composable
-fun MetaTag(key: String, fields: List<CategoryField>) {
+fun MetaTag(
+    key: String,
+    fields: List<CategoryField>,
+    observer: (PostData) -> Unit,
+    draft: PostData,
+    params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() }
+) {
     Box(modifier = Modifier.background(veryLightGray)) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -100,14 +115,39 @@ fun MetaTag(key: String, fields: List<CategoryField>) {
                 }
 
                 when (field) {
-                    is CategoryField.TextField -> TextField(field.key, field.value, "до 3000 символов") {}
-                    is CategoryField.DropdownField -> DropdownField(field.key, field.value, field.options, field.isOnlyOneToChoose) {}
-                    is CategoryField.LocationField -> LocationField(field.key)
-                    is CategoryField.NumberField -> NumberField(field.key, field.value, field.unitMeasure, field.value) {}
+
+                    is CategoryField.PriceField -> PriceField(observer, draft, field.key, field.value, field.unitMeasure)
+                    is CategoryField.DescriptionField -> DescriptionField(observer, draft, field.key, field.value)
+
+                    is CategoryField.TextField -> {
+                        TextField(field.key, field.value, "до 3000 символов") {
+                            params[field.key] = it
+                            observer(draft.copy(options = params))
+                        }
+                    }
+
+                    is CategoryField.DropdownField -> DropdownField(observer, field.key, field.value, field.options, field.isOnlyOneToChoose)
+                    is CategoryField.LocationField -> LocationField(observer, field.key)
+
+                    is CategoryField.NumberField -> {
+                        NumberField(field.key, field.value, field.unitMeasure, field.value) {
+                            params[field.key] = it
+                            observer(draft.copy(options = params))
+                        }
+                    }
+
                     is CategoryField.PhotoPickerByCategoryField -> TODO()
-                    is CategoryField.PhotoPickerField -> PhotoPickerField(field.key, field.count)
-                    is CategoryField.MetaTag -> MetaTag(key = field.key, field.fields)
+                    is CategoryField.PhotoPickerField -> PhotoPickerField(observer, field.key, field.count)
+
+                    is CategoryField.MetaTag -> MetaTag(
+                        field.key,
+                        field.fields,
+                        observer,
+                        draft,
+                        params
+                    )
                     else -> {}
+
                 }
 
             }
@@ -117,7 +157,21 @@ fun MetaTag(key: String, fields: List<CategoryField>) {
 }
 
 @Composable
-fun LocationField(key: String) {
+fun PriceField(updateDraft: (PostData) -> Unit, draft: PostData, key: String, value: String, unitMeasure: String) {
+    NumberField(key = key, value = value, unitMeasure = unitMeasure, placeholder = "") {
+        updateDraft(draft.copy(price = it, unit = unitMeasure))
+    }
+}
+
+@Composable
+fun DescriptionField(updateDraft: (PostData) -> Unit, draft: PostData, key: String, value: String) {
+    TextField(key = key, value = value, placeholder = "До 3000 символов") {
+        updateDraft(draft.copy(description = it))
+    }
+}
+
+@Composable
+fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String) {
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -164,7 +218,7 @@ fun LocationField(key: String) {
 }
 
 @Composable
-fun PhotoPickerField(key: String, count: Int) {
+fun PhotoPickerField(draftOptionsObserver: (PostData) -> Unit, key: String, count: Int) {
 
     Box(
         modifier = Modifier
@@ -230,7 +284,7 @@ fun PhotoPickerField(key: String, count: Int) {
 }
 
 @Composable
-fun DropdownField(key: String, value: String, options: List<String>, isOnlyOneToChoose: Boolean, onClick: () -> Unit) {
+fun DropdownField(draftOptionsObserver: (PostData) -> Unit, key: String, value: String, options: List<String>, isOnlyOneToChoose: Boolean, onClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -265,9 +319,11 @@ fun DropdownField(key: String, value: String, options: List<String>, isOnlyOneTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NumberField(key: String, value: String, unitMeasure: String, placeholder: String, onValueChanged: () -> Unit) {
+fun NumberField(key: String, value: String, unitMeasure: String, placeholder: String, onValueChanged: (String) -> Unit = {}) {
 
     val interactionSource = remember { MutableInteractionSource() }
+    var mutableValue by remember { mutableStateOf(value) }
+    var mutablePlaceholder by remember { mutableStateOf(placeholder) }
 
     Box(
         modifier = Modifier
@@ -285,8 +341,12 @@ fun NumberField(key: String, value: String, unitMeasure: String, placeholder: St
             Spacer(modifier = Modifier.weight(1f))
 
             BasicTextField(
-                value = value,
-                onValueChange = { onValueChanged() },
+                value = mutableValue,
+                onValueChange = {
+                    mutableValue = it
+                    mutablePlaceholder = ""
+                    onValueChanged(it)
+                },
                 Modifier,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 decorationBox = @Composable { innerTextField ->
@@ -295,7 +355,7 @@ fun NumberField(key: String, value: String, unitMeasure: String, placeholder: St
                         innerTextField = innerTextField,
                         enabled = true,
                         placeholder = @Composable {
-                            Text(text = placeholder, fontSize = 15.sp, color = Color.Gray)
+                            Text(text = mutablePlaceholder, fontSize = 15.sp, color = Color.Gray)
                         },
                         singleLine = false,
                         visualTransformation = VisualTransformation.None,
@@ -321,9 +381,11 @@ fun NumberField(key: String, value: String, unitMeasure: String, placeholder: St
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextField(key: String, value: String, placeholder: String, onValueChanged: () -> Unit) {
+fun TextField(key: String, value: String, placeholder: String, onValueChanged: (String) -> Unit = {}) {
 
     val interactionSource = remember { MutableInteractionSource() }
+    var mutableValue by remember { mutableStateOf(value) }
+    var mutablePlaceholder by remember { mutableStateOf(placeholder) }
 
     Box(
         modifier = Modifier
@@ -341,8 +403,12 @@ fun TextField(key: String, value: String, placeholder: String, onValueChanged: (
             Spacer(modifier = Modifier.weight(1f))
 
             BasicTextField(
-                value = value,
-                onValueChange = { onValueChanged() },
+                value = mutableValue,
+                onValueChange = {
+                    mutableValue = it
+                    mutablePlaceholder = ""
+                    onValueChanged(it)
+                },
                 Modifier.fillMaxWidth(),
                 decorationBox = @Composable { innerTextField ->
                     TextFieldDefaults.DecorationBox(
@@ -350,7 +416,7 @@ fun TextField(key: String, value: String, placeholder: String, onValueChanged: (
                         innerTextField = innerTextField,
                         enabled = true,
                         placeholder = @Composable {
-                            Text(text = placeholder, fontSize = 15.sp, color = Color.Gray)
+                            Text(text = mutablePlaceholder, fontSize = 15.sp, color = Color.Gray)
                         },
                         singleLine = false,
                         visualTransformation = VisualTransformation.None,

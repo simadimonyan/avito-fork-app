@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.domain.model.post.CategoryField
+import samaryanin.avitofork.domain.model.post.PostState
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryEvent
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryState
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
@@ -45,7 +46,8 @@ private fun CategoryPreview() {
             CategoryField.Category("", "Тестовая категория 2", mutableListOf()),
             CategoryField.Category("", "Тестовая категория 3", mutableListOf())
         ),
-        mutableListOf(),
+        mutableMapOf(),
+        PostState(),
         false
     )
 
@@ -66,6 +68,7 @@ fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewMo
     }
 
     val onSubCategoryClick: (CategoryField.Category) -> Unit = { category ->
+        viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(category.name)))
         globalNavController.navigate(PostRoutes.PostSubCategories(category))
     }
 
@@ -76,7 +79,7 @@ fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewMo
 private fun CategoryContent(
     onExit: () -> Boolean,
     categoryState: CategoryState,
-    chooseSubCategory: (CategoryField.Category) -> Unit
+    chooseSubCategory: (CategoryField.Category) -> Unit,
 ) {
 
     Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,

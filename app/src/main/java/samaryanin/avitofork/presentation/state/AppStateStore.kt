@@ -1,6 +1,7 @@
 package samaryanin.avitofork.presentation.state
 
 import samaryanin.avitofork.presentation.screens.auth.data.AuthStateHolder
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileStateHolder
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryStateHolder
 import samaryanin.avitofork.presentation.screens.start.data.AppStateHolder
 import javax.inject.Inject
@@ -15,13 +16,17 @@ class AppStateStore @Inject constructor() {
     /**
      * Общее состояние приложения
      */
-    var appStateHolder: AppStateHolder = AppStateHolder()
+    val appStateHolder: AppStateHolder = AppStateHolder()
 
     /**
      * Состояние авторизации
      */
-    var authStateHolder: AuthStateHolder = AuthStateHolder()
+    val authStateHolder: AuthStateHolder = AuthStateHolder()
 
+    /**
+     * Состояние данных профиля
+     */
+    val profileStateHolder: ProfileStateHolder = ProfileStateHolder()
 
     /**
      * Состояние категорий для управления объявлениями
