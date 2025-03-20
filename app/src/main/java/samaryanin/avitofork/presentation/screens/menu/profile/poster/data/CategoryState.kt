@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import samaryanin.avitofork.domain.model.post.CategoryField
+import samaryanin.avitofork.domain.model.post.PostState
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,9 +19,14 @@ data class CategoryState(
     val categories: List<CategoryField> = mutableStateListOf(),
 
     /**
-     * Список черновиков подкатегорий объявлений (включает в себя их поля)
+     * Список черновиков по категориям и подкатегориям
      */
-    val drafts: List<CategoryField> = mutableListOf(),
+    val drafts: Map<String, Map<String, List<PostState>>> = mutableMapOf(),
+
+    /**
+     * Временный черновик для сборки поста в список черновиков или публикации
+     */
+    val tempDraft: PostState = PostState(),
 
     /**
      * Состояние подгрузки категорий
@@ -41,6 +47,14 @@ class CategoryStateHolder @Inject constructor() {
 
     fun updateLoading(isLoading: Boolean) {
         _categoryState.update { it.copy(isLoading = isLoading) }
+    }
+
+    fun updateDrafts(drafts: Map<String, Map<String, List<PostState>>>) {
+        _categoryState.update { it.copy(drafts = drafts) }
+    }
+
+    fun updateTempDraftPost(temp: PostState) {
+        _categoryState.update { it.copy(tempDraft = temp) }
     }
 
 }

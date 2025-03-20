@@ -50,6 +50,25 @@ sealed class CategoryField {
     data class TextField(val key: String, val value: String) : CategoryField()
 
     /**
+     * Поле для ввода данных описания
+     * @param key ключ
+     * @param value значение
+     */
+    @Serializable
+    @SerialName("description-field")
+    data class DescriptionField(val key: String,  val value: String) : CategoryField()
+
+    /**
+     * Поле для ввода данных стоимости
+     * @param key ключ
+     * @param value значение
+     * @param unitMeasure единица измерения
+     */
+    @Serializable
+    @SerialName("price-field")
+    data class PriceField(val key: String, val value: String, val unitMeasure: String) : CategoryField()
+
+    /**
      * Поле для ввода числовых данных категории: площадь, стоимость, размеры, время
      * @param key ключ
      * @param value значение

@@ -11,6 +11,7 @@ import samaryanin.avitofork.domain.model.post.CategoryField
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.CategoryScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.PostCreateScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.SubCategoryScreen
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.data.CategoryNavType
 import kotlin.reflect.typeOf
 
@@ -18,9 +19,11 @@ import kotlin.reflect.typeOf
  * Расширение утилитной навигации управления объявлениями выше слоя BottomNavigation
  * ---------------------------------------------------------------------------------
  * @param globalNavController глобальный контроллер навигации
+ * @param categoriesViewModel модель категорий объявлений приложения
  */
 fun NavGraphBuilder.utilPosterGraph(
-    globalNavController: NavHostController
+    globalNavController: NavHostController,
+    categoriesViewModel: CategoryViewModel
 ) {
 
     navigation(startDestination = PostRoutes.PostCategories.route, route = PostRoutes.RouteID.route) {
@@ -44,11 +47,10 @@ fun NavGraphBuilder.utilPosterGraph(
                 )
             }
         ) {
-            CategoryScreen(globalNavController)
+            CategoryScreen(globalNavController, categoriesViewModel)
         }
 
         composable<PostRoutes.PostSubCategories>( // Подкатегории
-            //route = PostRoutes.PostSubCategories.route,
             typeMap = mapOf(
                 typeOf<CategoryField.Category>() to CategoryNavType.CategoryType
             ),
@@ -80,7 +82,7 @@ fun NavGraphBuilder.utilPosterGraph(
             } ?: CategoryField.Category("", "", emptyList())
 
 
-            SubCategoryScreen(globalNavController, category)
+            SubCategoryScreen(globalNavController, category, categoriesViewModel)
         }
 
         composable<PostRoutes.PostCreate>( // Создать объявление
@@ -115,7 +117,7 @@ fun NavGraphBuilder.utilPosterGraph(
             } ?: CategoryField.SubCategory("", "", emptyList())
 
 
-            PostCreateScreen(globalNavController, subcategory)
+            PostCreateScreen(globalNavController, subcategory, categoriesViewModel)
         }
 
     }

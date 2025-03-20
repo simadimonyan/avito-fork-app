@@ -1,37 +1,32 @@
 package samaryanin.avitofork.presentation.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layout
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigation
-import com.arkivanov.decompose.extensions.compose.stack.animation.isBack
-import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimator
 import samaryanin.avitofork.presentation.screens.menu.profile.navigation.utilProfileGraph
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.utilPosterGraph
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.utilSearchGraph
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
-import kotlin.math.absoluteValue
 
 /**
  * Расширение утилитной навигации Navigation Graph выше слоя BottomNavigation
  * ------------------------------------------------------------------------
  * @param mainViewModel главная модель приложения
+ * @param categoriesViewModel модель категорий объявлений приложения
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.utilGraph(
     mainViewModel: MainViewModel,
+    categoriesViewModel: CategoryViewModel,
     globalNavController: NavHostController
 ) {
     navigation(startDestination = SearchRoutes.AdditionalInfoScreen.route, route = MainRoutes.UtilRouteID.route) {
 
         utilProfileGraph(globalNavController)
         utilSearchGraph(globalNavController)
-        utilPosterGraph(globalNavController)
+        utilPosterGraph(globalNavController, categoriesViewModel)
 
     }
 }

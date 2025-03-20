@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -23,6 +25,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.domain.model.post.CategoryField
+import samaryanin.avitofork.domain.model.post.PostState
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryEvent
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation.PostRoutes
 import samaryanin.avitofork.presentation.ui.components.utils.space.Divider
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
@@ -46,13 +51,17 @@ private fun SubCategoryPreview() {
 fun SubCategoryScreen(
     globalNavController: NavController,
     category: CategoryField.Category,
+    viewModel: CategoryViewModel
 ) {
+
+    val draftPost by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
 
     val onExit = {
         globalNavController.navigateUp()
     }
 
     val onSubCategoryClick: (CategoryField.SubCategory) -> Unit = { subcategory ->
+        viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(draftPost.tempDraft.category, subcategory.name)))
         globalNavController.navigate(PostRoutes.PostCreate(subcategory)) {
             launchSingleTop = true
             restoreState = true

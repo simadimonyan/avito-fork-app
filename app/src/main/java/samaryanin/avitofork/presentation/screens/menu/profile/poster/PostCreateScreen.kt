@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -30,7 +33,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.domain.model.post.CategoryField
+import samaryanin.avitofork.domain.model.post.PostData
+import samaryanin.avitofork.domain.model.post.PostState
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.components.MetaTag
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryEvent
+import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 
@@ -65,31 +72,41 @@ private fun PostCreatePreview() {
         )
     )
 
-    PostCreateContent({ true }, sample, {})
+    PostCreateContent({ true }, sample, {}, {}, PostData())
 }
 
 @Composable
 fun PostCreateScreen(
     globalNavController: NavController,
     subcategory: CategoryField.SubCategory,
+    categoriesViewModel: CategoryViewModel,
 ) {
+
+    val draftPost by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
 
     val onExit = {
         globalNavController.navigateUp()
     }
 
-    val onPublish = {
+    val onPublish: () -> Unit = {
+        Log.d("TEST", draftPost.tempDraft.data.toString())
         //TODO (логика опубликования объявления)
     }
 
-    PostCreateContent(onExit, subcategory, onPublish)
+    val updateDraft: (PostData) -> Unit = { data ->
+        categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(draftPost.tempDraft.category, draftPost.tempDraft.subcategory, data)))
+    }
+
+    PostCreateContent(onExit, subcategory, updateDraft, onPublish, draftPost.tempDraft.data)
 }
 
 @Composable
 private fun PostCreateContent(
     onExit: () -> Boolean,
     subcategory: CategoryField.SubCategory,
+    updateDraft: (PostData) -> Unit,
     onPublish: () -> Unit,
+    data: PostData,
 ) {
 
     Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,
@@ -148,7 +165,9 @@ private fun PostCreateContent(
 
             Space(10.dp)
 
-            Box(modifier = Modifier.fillMaxWidth().padding(start = 16.dp)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp)) {
                 AppTextTitle(text = subcategory.name)
                 Space(20.dp)
             }
@@ -158,7 +177,7 @@ private fun PostCreateContent(
                 subcategory.fields.forEach { field ->
                     item {
                         if (field is CategoryField.MetaTag) {
-                            MetaTag(key = field.key, fields = field.fields)
+                            MetaTag(key = field.key, fields = field.fields, updateDraft, data)
                         }
                     }
                 }
