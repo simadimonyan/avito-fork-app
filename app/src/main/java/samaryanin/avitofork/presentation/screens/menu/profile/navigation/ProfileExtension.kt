@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.notifications.NotificationsScreen
 import samaryanin.avitofork.presentation.screens.settings.SettingsScreen
 import samaryanin.avitofork.presentation.screens.settings.navigation.SettingsRoutes
@@ -16,7 +17,7 @@ import samaryanin.avitofork.presentation.screens.settings.navigation.SettingsRou
  * @param globalNavController глобальный контроллер навигации
  */
 fun NavGraphBuilder.utilProfileGraph(
-    globalNavController: NavHostController
+    globalNavController: NavHostController,
 ) {
 
     navigation(startDestination = ProfileRoutes.Notifications.route, route = ProfileRoutes.RouteID.route) {

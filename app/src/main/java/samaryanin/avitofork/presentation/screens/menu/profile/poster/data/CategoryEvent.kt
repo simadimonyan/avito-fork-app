@@ -15,6 +15,11 @@ sealed class CategoryEvent {
     object SaveDraftToCache : CategoryEvent()
 
     /**
+     * Опубликовать объявление
+     */
+    object PublishPost : CategoryEvent()
+
+    /**
      * Обновить данные черновика
      */
     data class UpdateDraftParams(val draft: PostState) : CategoryEvent()
