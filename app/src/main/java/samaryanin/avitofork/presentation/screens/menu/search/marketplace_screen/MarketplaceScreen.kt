@@ -49,7 +49,9 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
 //        )
     val viewModel: MarketplaceViewModel = hiltViewModel()
 //    val favorites by viewModel.favoriteAds.collectAsState()
+
     //viewModel.addAds(adsList)
+
     val ads by viewModel.allAds.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.refreshFavoriteAds()
