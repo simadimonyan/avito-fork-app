@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
+import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.ProductCard
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
@@ -35,22 +36,21 @@ import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
-    // val ads = List(10) { Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
-//    val adsList = listOf(
-//        Ad(1, "Квартира в центре", "50 000 ₽", "Москва, ул. Ленина",
-//            "https://example.com/image1.jpg"),
-//        Ad(2, "Дом у озера", "80 000 ₽", "Подмосковье", ""),
-//        Ad(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-//        Ad(4, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-//        Ad(5, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-//        Ad(6, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-//        Ad(7, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-//        Ad(8, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
-//        )
+    val adsList = listOf(
+        Ad(1, "Квартира в центре", "50 000 ₽", "Москва, ул. Ленина",
+            "https://example.com/image1.jpg"),
+        Ad(2, "Дом у озера", "80 000 ₽", "Подмосковье", ""),
+        Ad(3, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(4, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(5, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(6, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(7, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        Ad(8, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
+        )
     val viewModel: MarketplaceViewModel = hiltViewModel()
 //    val favorites by viewModel.favoriteAds.collectAsState()
 
-    //viewModel.addAds(adsList)
+    viewModel.addAds(adsList)
 
     val ads by viewModel.allAds.collectAsState()
     LaunchedEffect(Unit) {

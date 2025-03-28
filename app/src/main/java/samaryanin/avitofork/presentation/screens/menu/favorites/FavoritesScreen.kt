@@ -42,6 +42,7 @@ import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
+import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.start.data.AppState
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
 import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
@@ -49,7 +50,7 @@ import samaryanin.avitofork.presentation.ui.components.utils.text.AppTextTitle
 @Composable
 fun FavoritesScreen(
     mainViewModel: MainViewModel,
-    globalNavController: NavHostController
+    globalNavController: NavHostController,
 ) {
     val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
     val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
@@ -83,7 +84,8 @@ fun FavoritesScreen(
 
     FavoritesScreenContent({ appState },
         //navigateTo,
-        authRequest, { authState })
+        authRequest, { authState },
+        globalNavController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,7 +93,8 @@ fun FavoritesScreen(
 fun FavoritesScreenContent(
     appState: () -> AppState,
     authRequest: () -> Unit,
-    authState: () -> AuthState
+    authState: () -> AuthState,
+    globalNavController: NavHostController
 ) {
     val viewModel: FavoritesScreenViewModel = hiltViewModel()
     val favoritesState = viewModel.favoriteAds.collectAsState()
@@ -121,7 +124,8 @@ fun FavoritesScreenContent(
                 items(favorites) { ad ->
                     FavoriteAdCard(
                         ad = ad,
-                        onLikeClick = { viewModel.toggleFavorite(ad) }  // Логика для лайка
+                        onLikeClick = { viewModel.toggleFavorite(ad) },  // Логика для лайка
+                        globalNavController
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -132,10 +136,13 @@ fun FavoritesScreenContent(
 
 // Компонент карточки объявления
 @Composable
-fun FavoriteAdCard(ad: Ad, onLikeClick: (Ad) -> Unit) {
+fun FavoriteAdCard(ad: Ad, onLikeClick: (Ad) -> Unit, globalNavController: NavHostController) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                globalNavController.navigate(SearchRoutes.AdditionalInfoScreen.route)
+            },
         colors = CardColors(
             Color.Transparent,
             Color.Black,
