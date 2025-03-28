@@ -36,7 +36,6 @@ import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
-     //val ads = List(10) { Product(1, "Camera 2000 аmsp", "600$", "Ростов-На-Дону", "url") }
     val adsList = listOf(
         Ad(1, "Квартира в центре", "50 000 ₽", "Москва, ул. Ленина",
             "https://example.com/image1.jpg"),
@@ -49,8 +48,10 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
         Ad(8, "Студия", "35 000 ₽", "Санкт-Петербург", ""),
         )
     val viewModel: MarketplaceViewModel = hiltViewModel()
-    //val favorites by viewModel.favoriteAds.collectAsState()
+//    val favorites by viewModel.favoriteAds.collectAsState()
+
     viewModel.addAds(adsList)
+
     val ads by viewModel.allAds.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.refreshFavoriteAds()
