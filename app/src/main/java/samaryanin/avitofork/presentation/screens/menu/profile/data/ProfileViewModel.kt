@@ -19,13 +19,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun addPublication(post: PostState) {
-        val map = appStateStore.profileStateHolder.profileState.value.posts.toMutableMap()
+        val currentPosts = appStateStore.profileStateHolder.profileState.value.posts
+        val map = HashMap(currentPosts)
+        val list = ArrayList(map["0"] ?: emptyList())
 
-        val list: MutableList<PostState> = map["0"]?.toMutableList() ?: mutableListOf()
         list.add(post)
         map["0"] = list
 
         appStateStore.profileStateHolder.updatePostsList(map)
+
     }
 
     private fun loadPublications() {

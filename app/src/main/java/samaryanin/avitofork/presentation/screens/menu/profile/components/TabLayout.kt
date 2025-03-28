@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,7 +58,6 @@ fun ProfileTabLayoutPreview() {
         "0" to mutableListOf(
             PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
             PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
-            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб."))
         ),
     ))
 }
@@ -145,15 +145,13 @@ fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
 
                     if (page == 0) {
 
-                        items(posts["0"]!!.size) {
-                            posts["0"]!!.forEach { field ->
-                                Surface(modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp), color = Color.White, shape = RoundedCornerShape(10.dp), shadowElevation = 2.dp) {
-                                    ProfilePublication(
-                                        title = field.subcategory,
-                                        description = field.data.description,
-                                        price = field.data.price + " " + field.data.unit
-                                    )
-                                }
+                        items(posts["0"]!!) { field ->
+                            Surface(modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp), color = Color.White, shape = RoundedCornerShape(10.dp), shadowElevation = 2.dp) {
+                                ProfilePublication(
+                                    title = field.subcategory,
+                                    description = field.data.description,
+                                    price = field.data.price + " " + field.data.unit
+                                )
                             }
                         }
 
