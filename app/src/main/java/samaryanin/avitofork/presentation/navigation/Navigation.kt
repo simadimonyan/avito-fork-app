@@ -1,9 +1,7 @@
 package samaryanin.avitofork.presentation.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -96,20 +94,10 @@ fun NestedScreenGraph(
         composable( // Объявления
             route = SearchRoutes.Search.route,
             enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
+                EnterTransition.None
             },
             exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
-                )
+                ExitTransition.None
             }
         ) {
             MarketplaceScreen(globalNavController)
