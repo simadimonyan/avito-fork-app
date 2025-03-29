@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -159,7 +163,7 @@ private fun PostCreateContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
-                    .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding())
+                    .imePadding()
             ) {
                 Text("Опубликовать объявление", fontSize = 15.sp)
             }
@@ -170,6 +174,8 @@ private fun PostCreateContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .navigationBarsPadding()
+                .consumeWindowInsets(innerPadding)
         ) {
 
             Space(10.dp)

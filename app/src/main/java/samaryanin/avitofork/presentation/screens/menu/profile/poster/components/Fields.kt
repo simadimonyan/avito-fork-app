@@ -104,7 +104,7 @@ fun MetaTag(
     draft: PostData,
     params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() }
 ) {
-    Box(modifier = Modifier.background(veryLightGray).windowInsetsPadding(WindowInsets(0, 0, 0, 0))) {
+    Box(modifier = Modifier.background(veryLightGray)) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             if (key.isNotEmpty()) Text(modifier = Modifier.padding(10.dp), text = key, fontSize = 15.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
