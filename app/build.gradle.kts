@@ -15,6 +15,7 @@ plugins {
 val properties = Properties().apply { load(File(rootProject.rootDir, "gradle.properties").inputStream()) }
 
 android {
+
     namespace = "samaryanin.avitofork"
     compileSdk = 35
 
@@ -26,16 +27,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
     }
 
     buildTypes {
+
         debug {
             signingConfig = signingConfigs.getByName("debug")
-
         }
+
         release {
             isMinifyEnabled = true //R8 compiler
             isShrinkResources = true //Shrinking
@@ -44,10 +47,22 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-
         }
+
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
     }
 
+    composeCompiler {
+        enableStrongSkippingMode = true
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        metricsDestination = layout.buildDirectory.dir("compose_compiler")
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -68,6 +83,7 @@ android {
         }
     }
     buildToolsVersion = "35.0.0"
+
 }
 
 dependencies {
