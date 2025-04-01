@@ -62,22 +62,3 @@ class MarketplaceViewModel @Inject constructor(
         }
     }
 }
-//}
-//    val allFavorites = repository.allFavorites.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-//
-//
-//    fun addToFavorites(favId: Int) {
-//        viewModelScope.launch {
-//            repository.addFavorite(favId)
-//        }
-//    }
-//
-//    /**
-//     * Удаление объявления из избранного
-//     */
-//    fun removeFromFavorites(adId: Int) {
-//        viewModelScope.launch {
-//            repository.removeFavorite(adId)
-//        }
-//    }
-//}
