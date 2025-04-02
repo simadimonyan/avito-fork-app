@@ -19,7 +19,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +40,6 @@ import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRo
 fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, onFavoriteClick: (Ad) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val viewModel: MarketplaceViewModel = hiltViewModel()
-    val favorites by viewModel.favoriteAds.collectAsState()
 
     Card(
         modifier = Modifier

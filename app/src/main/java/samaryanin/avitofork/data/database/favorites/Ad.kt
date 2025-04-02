@@ -10,5 +10,4 @@ data class Ad(
     val price: String,
     val address: String,
     val imageUrl: String,
-    val isFav: Boolean = false
 )
