@@ -1,6 +1,6 @@
 package com.samaryanin.benchmark
 
-import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
@@ -29,11 +29,12 @@ class ExampleStartupBenchmark {
     @Test
     fun startup() = benchmarkRule.measureRepeated(
         packageName = "samaryanin.avitofork",
-        metrics = listOf(StartupTimingMetric()),
+        metrics = listOf(StartupTimingMetric(), FrameTimingMetric()),
         iterations = 5,
         startupMode = StartupMode.COLD
     ) {
         pressHome()
         startActivityAndWait()
+
     }
 }

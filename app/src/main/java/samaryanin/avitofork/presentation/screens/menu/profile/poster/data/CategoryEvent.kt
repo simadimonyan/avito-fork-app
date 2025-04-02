@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster.data
 
+import androidx.compose.runtime.Immutable
 import samaryanin.avitofork.domain.model.post.PostState
 
 sealed class CategoryEvent {
@@ -22,6 +23,7 @@ sealed class CategoryEvent {
     /**
      * Обновить данные черновика
      */
+    @Immutable
     data class UpdateDraftParams(val draft: PostState) : CategoryEvent()
 
 }

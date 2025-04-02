@@ -1,5 +1,7 @@
 package samaryanin.avitofork.data.network.repository
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import retrofit2.HttpException
 import retrofit2.Response
 import samaryanin.avitofork.data.network.Result
@@ -14,6 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@Immutable
 class AuthServiceRepository @Inject constructor() {
 
     private val client: RetrofitClient = RetrofitClient(

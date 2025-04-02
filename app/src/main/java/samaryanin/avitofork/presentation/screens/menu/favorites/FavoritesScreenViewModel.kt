@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.favorites
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,6 +10,8 @@ import kotlinx.coroutines.launch
 import samaryanin.avitofork.data.database.favorites.Ad
 import samaryanin.avitofork.data.database.favorites.FavoriteAdRepository
 import javax.inject.Inject
+
+@Stable
 @HiltViewModel
 class FavoritesScreenViewModel @Inject constructor(
     private val repository: FavoriteAdRepository

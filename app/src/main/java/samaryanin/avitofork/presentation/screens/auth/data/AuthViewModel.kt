@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.auth.data
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,6 +10,7 @@ import samaryanin.avitofork.domain.usecase.AuthUseCase
 import samaryanin.avitofork.presentation.state.AppStateStore
 import javax.inject.Inject
 
+@Stable
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     val appStateStore: AppStateStore,

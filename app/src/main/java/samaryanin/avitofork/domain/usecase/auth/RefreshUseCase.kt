@@ -1,6 +1,7 @@
 package samaryanin.avitofork.domain.usecase.auth
 
 import android.util.Log
+import androidx.compose.runtime.Immutable
 import samaryanin.avitofork.data.network.Result
 import samaryanin.avitofork.data.network.dto.auth.account.AccountResponse
 import samaryanin.avitofork.domain.repository.Repository
@@ -11,6 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@Immutable
 class RefreshUseCase @Inject constructor(
     private val repository: Repository,
     private val state: DomainStateStore

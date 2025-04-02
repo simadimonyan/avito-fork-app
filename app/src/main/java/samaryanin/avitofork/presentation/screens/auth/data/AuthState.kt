@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.auth.data
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -7,7 +8,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Stable
+@Immutable
 data class AuthState(
 
     /**
@@ -47,6 +48,7 @@ data class AuthState(
  * State Holder паттерн
  */
 @Singleton
+@Immutable
 class AuthStateHolder @Inject constructor() {
 
     private val _authState = MutableStateFlow(AuthState())

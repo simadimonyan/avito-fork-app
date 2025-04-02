@@ -1,8 +1,10 @@
 package samaryanin.avitofork.domain.model.post
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class PostState(
 
     val category: String = "",
@@ -14,6 +16,7 @@ data class PostState(
 )
 
 @Serializable
+@Immutable
 data class PostData(
 
     val photos: List<String> = mutableListOf(),

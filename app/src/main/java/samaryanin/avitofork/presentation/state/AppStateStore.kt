@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.state
 
+import androidx.compose.runtime.Immutable
 import samaryanin.avitofork.presentation.screens.auth.data.AuthStateHolder
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileStateHolder
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryStateHolder
@@ -11,6 +12,7 @@ import javax.inject.Singleton
  * Глобальный репозиторий состояний приложения
  */
 @Singleton
+@Immutable
 class AppStateStore @Inject constructor() {
 
     /**

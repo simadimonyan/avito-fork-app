@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster.data
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,7 @@ import samaryanin.avitofork.domain.model.post.PostState
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Stable
+@Immutable
 data class CategoryState(
 
     /**
@@ -36,6 +37,7 @@ data class CategoryState(
 )
 
 @Singleton
+@Immutable
 class CategoryStateHolder @Inject constructor() {
 
     private val _categoryState = MutableStateFlow(CategoryState())

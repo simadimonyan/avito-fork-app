@@ -1,5 +1,6 @@
 package samaryanin.avitofork.domain.model.post
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,6 +10,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @Polymorphic
+@Immutable
 sealed class CategoryField {
 
     /**
@@ -19,6 +21,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("category")
+    @Immutable
     data class Category(val id: String = "", val name: String = "", val subs: List<SubCategory> = emptyList()) : CategoryField()
 
     /**
@@ -29,6 +32,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("subcategory")
+    @Immutable
     data class SubCategory(val id: String, val name: String, val fields: List<CategoryField>) : CategoryField()
 
     /**
@@ -38,6 +42,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("meta-tag")
+    @Immutable
     data class MetaTag(val key: String, val fields: List<CategoryField>) : CategoryField()
 
     /**
@@ -47,6 +52,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("text-field")
+    @Immutable
     data class TextField(val key: String, val value: String) : CategoryField()
 
     /**
@@ -56,6 +62,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("description-field")
+    @Immutable
     data class DescriptionField(val key: String,  val value: String) : CategoryField()
 
     /**
@@ -66,6 +73,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("price-field")
+    @Immutable
     data class PriceField(val key: String, val value: String, val unitMeasure: String) : CategoryField()
 
     /**
@@ -76,6 +84,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("number-field")
+    @Immutable
     data class NumberField(val key: String, val value: String, val unitMeasure: String) : CategoryField()
 
     /**
@@ -87,6 +96,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("dropdown-field")
+    @Immutable
     data class DropdownField(val key: String, val value: String, val options: List<String>, val isOnlyOneToChoose: Boolean) : CategoryField()
 
     /**
@@ -96,6 +106,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("photo-picker-field")
+    @Immutable
     data class PhotoPickerField(val key: String, val count: Int) : CategoryField()
 
     /**
@@ -105,6 +116,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("photo-picker-by-category-field")
+    @Immutable
     data class PhotoPickerByCategoryField(val key: String, val options: HashMap<String, Int>) : CategoryField()
 
     /**
@@ -113,6 +125,7 @@ sealed class CategoryField {
      */
     @Serializable
     @SerialName("location-field")
+    @Immutable
     data class LocationField(val key: String) : CategoryField()
 
 }

@@ -1,10 +1,13 @@
 package samaryanin.avitofork.presentation.screens.start.data
 
+import androidx.compose.runtime.Immutable
+
 sealed class AppEvent {
 
     /**
      * Устанавливает состояние первого запуска приложения
      */
+    @Immutable
     data class FirstStartUp(val isFirstStartUp: Boolean) : AppEvent()
 
     /**

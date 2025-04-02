@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 import samaryanin.avitofork.domain.model.post.CategoryField
 
@@ -12,23 +13,29 @@ sealed class PostRoutes(val route: String) {
     /**
      * Уникальный идентификатор ветки
      */
-    @Serializable object RouteID : PostRoutes ("poster_id")
+    @Serializable
+    object RouteID : PostRoutes ("poster_id")
 
     /**
      * Меню выбора категории товара или услуги
      */
-    @Serializable object PostCategories : PostRoutes("good_categories")
+    @Serializable
+    object PostCategories : PostRoutes("good_categories")
 
     /**
      * Меню выбора подкатегории товара или услуги
      * @param category передача выбранной категории в SubCategoryScreen
      */
-    @Serializable data class PostSubCategories(val category: CategoryField.Category) : PostRoutes("good_subcategories")
+    @Serializable
+    @Immutable
+    data class PostSubCategories(val category: CategoryField.Category) : PostRoutes("good_subcategories")
 
     /**
      * Экран создания объявления о товаре или услуге
      * @param subCategory передача выбранной подкатегории в PostCreateScreen
      */
-    @Serializable data class PostCreate(val subCategory: CategoryField.SubCategory) : PostRoutes("good_create")
+    @Serializable
+    @Immutable
+    data class PostCreate(val subCategory: CategoryField.SubCategory) : PostRoutes("good_create")
 
 }

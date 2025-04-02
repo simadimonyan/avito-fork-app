@@ -87,6 +87,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.decompose)
     implementation(libs.decompose.extensions.compose)
     implementation(libs.androidx.room.common)
@@ -142,4 +143,5 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

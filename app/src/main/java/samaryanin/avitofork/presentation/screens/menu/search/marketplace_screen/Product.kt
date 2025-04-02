@@ -1,5 +1,8 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class Product(
     val id: Int,
     val title: String,

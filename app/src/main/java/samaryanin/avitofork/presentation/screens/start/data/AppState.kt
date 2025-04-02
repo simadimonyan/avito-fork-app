@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.start.data
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -7,7 +8,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Stable
+@Immutable
 data class AppState(
 
     /**
@@ -27,6 +28,7 @@ data class AppState(
  * State Holder паттерн
  */
 @Singleton
+@Immutable
 class AppStateHolder @Inject constructor() {
 
     private val _appState = MutableStateFlow(AppState())

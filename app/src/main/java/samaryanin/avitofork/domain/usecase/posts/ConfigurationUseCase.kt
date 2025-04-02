@@ -1,11 +1,13 @@
 package samaryanin.avitofork.domain.usecase.posts
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.json.Json
 import samaryanin.avitofork.domain.model.post.CategoryField
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@Immutable
 class ConfigurationUseCase @Inject constructor() {
 
     private val prompt = """

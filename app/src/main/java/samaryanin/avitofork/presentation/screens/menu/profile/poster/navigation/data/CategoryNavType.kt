@@ -3,12 +3,14 @@ package samaryanin.avitofork.presentation.screens.menu.profile.poster.navigation
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.navigation.NavType
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import samaryanin.avitofork.domain.model.post.CategoryField
 
-
+@Stable
 object CategoryNavType {
 
     private  val json = Json {
@@ -16,6 +18,7 @@ object CategoryNavType {
         ignoreUnknownKeys = true // например, "type"
     }
 
+    @Stable
     object CategoryType : NavType<CategoryField>(
         isNullableAllowed = false
     ) {
@@ -41,4 +44,5 @@ object CategoryNavType {
         }
 
     }
+
 }
