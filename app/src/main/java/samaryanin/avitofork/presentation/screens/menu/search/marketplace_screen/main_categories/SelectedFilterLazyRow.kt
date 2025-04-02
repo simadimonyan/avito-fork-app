@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
+package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.main_categories
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

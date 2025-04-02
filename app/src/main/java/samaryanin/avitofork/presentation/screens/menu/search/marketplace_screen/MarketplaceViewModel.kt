@@ -1,6 +1,5 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,13 +44,13 @@ class MarketplaceViewModel @Inject constructor(
 
     fun toggleFavorite(ad: Ad) {
         viewModelScope.launch {
-            val isCurrentlyFavorite = favoriteAds.value.any { it.id == ad.id }
+            val isCurrentlyFavorite = _favoriteAds.value.any { it.id == ad.id }
             if (isCurrentlyFavorite) {
                 repository.removeFavorite(ad.id)
-                Log.d("FAVOR", "REMOVED ${ad.id}")
+                _favoriteAds.value = _favoriteAds.value.filter { it.id != ad.id }
             } else {
                 repository.addFavorite(ad.id)
-                Log.d("FAVOR", "ADDED ${ad.id}")
+                _favoriteAds.value = _favoriteAds.value + ad
             }
         }
     }
