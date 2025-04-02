@@ -1,7 +1,9 @@
 package samaryanin.avitofork.data.database.favorites
 
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.Flow
 
+@Stable
 class FavoriteAdRepository(private val favoriteAdDao: FavoriteAdDao) {
 
     fun getAllAds(): Flow<List<Ad>> = favoriteAdDao.getAllAds() // получить все объявления

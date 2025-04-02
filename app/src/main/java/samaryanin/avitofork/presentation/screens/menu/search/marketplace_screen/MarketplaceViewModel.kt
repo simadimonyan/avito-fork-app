@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import samaryanin.avitofork.data.database.favorites.AdWithFavorite
 import samaryanin.avitofork.data.database.favorites.FavoriteAdRepository
 import javax.inject.Inject
 
+@Stable
 @HiltViewModel
 class MarketplaceViewModel @Inject constructor(
     private val repository: FavoriteAdRepository
