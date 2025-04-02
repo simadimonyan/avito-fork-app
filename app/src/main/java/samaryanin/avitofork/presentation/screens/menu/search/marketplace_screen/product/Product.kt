@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
+package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.product
 
 import androidx.compose.runtime.Immutable
 

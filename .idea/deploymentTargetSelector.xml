@@ -16,7 +16,7 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ExampleStartupBenchmark">
+      <SelectionState runConfigName="StartupBenchmarks">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

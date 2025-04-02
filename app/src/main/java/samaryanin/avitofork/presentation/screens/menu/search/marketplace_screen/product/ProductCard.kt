@@ -1,4 +1,4 @@
-package samaryanin.avitofork.presentation.screens.menu.search
+package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.product
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,7 +19,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,12 +37,9 @@ import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
 @Composable
-fun ProductCard(ad: Ad, globalNavController: NavHostController) {
+fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, onFavoriteClick: (Ad) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val viewModel: MarketplaceViewModel = hiltViewModel()
-    val favorites by viewModel.favoriteAds.collectAsState()
-
-    val isFav = favorites.any { it.id == ad.id }
 
     Card(
         modifier = Modifier
@@ -100,14 +96,10 @@ fun ProductCard(ad: Ad, globalNavController: NavHostController) {
                     horizontalAlignment = Alignment.End
                 ) {
                     Image(
-                        painter = painterResource(
-                            if (isFav) R.drawable.like_act else R.drawable.like_non_act
-                        ),
+                        painter = painterResource(if (isFav) R.drawable.like_act else R.drawable.like_non_act),
                         contentDescription = "",
                         modifier = Modifier
-                            .clickable {
-                                viewModel.toggleFavorite(ad)
-                            }
+                            .clickable { onFavoriteClick(ad) }
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))

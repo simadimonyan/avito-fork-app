@@ -9,5 +9,5 @@ data class Ad(
     val title: String,
     val price: String,
     val address: String,
-    val imageUrl: String
+    val imageUrl: String,
 )
