@@ -99,7 +99,7 @@ fun MetaTag(
     key: String,
     fields: List<CategoryField>,
     observer: (PostData) -> Unit,
-    draft: PostData,
+    data: PostData,
     params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() }
 ) {
     Box(modifier = Modifier.background(veryLightGray)) {
@@ -116,13 +116,15 @@ fun MetaTag(
 
                 when (field) {
 
-                    is CategoryField.PriceField -> PriceField(observer, draft, field.key, field.value, field.unitMeasure)
-                    is CategoryField.DescriptionField -> DescriptionField(observer, draft, field.key, field.value)
+                    // data передается и для обновления колбеком и для получения данных из черновиков в value
+                    is CategoryField.PriceField -> PriceField(observer, data, field.key, field.unitMeasure)
+                    is CategoryField.DescriptionField -> DescriptionField(observer, data, field.key)
 
                     is CategoryField.TextField -> {
-                        TextField(field.key, field.value, "до 3000 символов") {
+                        // data.options[field.key] - поиск значения поля по ключу поля
+                        TextField(field.key, data.options[field.key] ?: field.value, "до 3000 символов") {
                             params[field.key] = it
-                            observer(draft.copy(options = params))
+                            observer(data.copy(options = params))
                         }
                     }
 
@@ -130,9 +132,10 @@ fun MetaTag(
                     is CategoryField.LocationField -> LocationField(observer, field.key)
 
                     is CategoryField.NumberField -> {
-                        NumberField(field.key, field.value, field.unitMeasure, field.value) {
+                        // data.options[field.key] - поиск значения поля по ключу поля
+                        NumberField(field.key, data.options[field.key] ?: field.value, field.unitMeasure, field.value) {
                             params[field.key] = it
-                            observer(draft.copy(options = params))
+                            observer(data.copy(options = params))
                         }
                     }
 
@@ -143,7 +146,7 @@ fun MetaTag(
                         field.key,
                         field.fields,
                         observer,
-                        draft,
+                        data,
                         params
                     )
                     else -> {}
@@ -157,16 +160,16 @@ fun MetaTag(
 }
 
 @Composable
-fun PriceField(updateDraft: (PostData) -> Unit, draft: PostData, key: String, value: String, unitMeasure: String) {
-    NumberField(key = key, value = value, unitMeasure = unitMeasure, placeholder = "") {
-        updateDraft(draft.copy(price = it, unit = unitMeasure))
+fun PriceField(updateDraft: (PostData) -> Unit, data: PostData, key: String, unitMeasure: String) {
+    NumberField(key = key, value = data.price, unitMeasure = unitMeasure, placeholder = "") {
+        updateDraft(data.copy(price = it, unit = unitMeasure))
     }
 }
 
 @Composable
-fun DescriptionField(updateDraft: (PostData) -> Unit, draft: PostData, key: String, value: String) {
-    TextField(key = key, value = value, placeholder = "До 3000 символов") {
-        updateDraft(draft.copy(description = it))
+fun DescriptionField(updateDraft: (PostData) -> Unit, data: PostData, key: String) {
+    TextField(key = key, value = data.description, placeholder = "До 3000 символов") {
+        updateDraft(data.copy(description = it))
     }
 }
 

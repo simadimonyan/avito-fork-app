@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Generate Baseline Profile for app" type="AndroidBaselineProfileRunConfigurationType" factoryName="Android Baseline Profile Configuration Factory">
-    <module name="AvitoFork.Avito_Fork.app" />
-    <option name="generateAllVariants" value="true" />
+    <module name="Avito Fork.Avito_Fork.app" />
+    <option name="generateAllVariants" value="false" />
     <option name="CLEAR_LOGCAT" value="false" />
     <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
     <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
