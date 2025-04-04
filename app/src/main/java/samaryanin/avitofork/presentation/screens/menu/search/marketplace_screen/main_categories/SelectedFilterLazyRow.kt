@@ -16,15 +16,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 
 @Composable
 fun SelectableLazyRow() {
-    val items = listOf("Рекомендации", "Свежие", "Рядом", "Тест", "Еще поле")
+    val items = listOf("Рекомендации", "Свежие", "Рядом")
     var selectedItem by remember { mutableStateOf(items.first()) }
 
+    Space()
+
     LazyRow(
-        modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(start = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .padding(start = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(items) { item ->
@@ -32,6 +40,8 @@ fun SelectableLazyRow() {
                 text = item,
                 softWrap = true,
                 maxLines = 1,
+                fontWeight = FontWeight.Bold,
+                fontSize = 25.sp,
                 style = MaterialTheme.typography.titleLarge,
                 color = if (item == selectedItem) Color.Black else Color.Gray,
                 modifier = Modifier
@@ -39,4 +49,7 @@ fun SelectableLazyRow() {
             )
         }
     }
+
+    Space()
+
 }

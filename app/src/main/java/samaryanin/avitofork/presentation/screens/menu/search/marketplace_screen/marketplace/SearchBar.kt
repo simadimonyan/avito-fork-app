@@ -1,29 +1,51 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.marketplace
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.R
+import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.components.utils.textField.AppTextFieldPlaceholder
 
+@Preview(showSystemUi = true)
+@Composable
+fun SearchBarPreview() {
+    SearchBar(search = "", onSearchChange = {}, showShadow = true)
+}
 
 @Composable
-fun SearchBar(search: String, onSearchChange: (String) -> Unit) {
+fun SearchBar(search: String, onSearchChange: (String) -> Unit, showShadow: Boolean) {
+
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 1.dp)
+            .then(
+                Modifier.shadow(if (showShadow) 2.dp else 0.dp, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+            ),
+        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
-                .background(Color.White, shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-
+            modifier = Modifier.padding(horizontal = 17.dp, vertical = 12.dp)
         ) {
-            Spacer(modifier = Modifier.width(8.dp))
+
+            IconButton(R.drawable.search) {
+                //click
+            }
+
+            Space()
+
             AppTextFieldPlaceholder(
                 value = search,
                 onValueChange = onSearchChange,
@@ -31,12 +53,15 @@ fun SearchBar(search: String, onSearchChange: (String) -> Unit) {
                 errorListener = false,
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(R.drawable.search) {
-                //click
-            }
+
+            Space()
+
             IconButton(R.drawable.filter) {
                 //click
             }
+
         }
+
+    }
+
 }

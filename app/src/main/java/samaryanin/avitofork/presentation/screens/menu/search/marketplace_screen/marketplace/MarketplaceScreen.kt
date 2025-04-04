@@ -1,17 +1,19 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.marketplace
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,45 +27,67 @@ import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.additional_categories.CategoriesWithPhotos
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.main_categories.SelectableLazyRow
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.product.ProductCard
+import samaryanin.avitofork.presentation.ui.components.utils.space.Space
 import samaryanin.avitofork.presentation.ui.theme.AvitoForkTheme
 
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
+
     var search by remember { mutableStateOf("") }
     val viewModel: MarketplaceViewModel = hiltViewModel()
     val ads by viewModel.allAds.collectAsState()
     val favoriteAds by viewModel.favoriteAds.collectAsState()
 
+    val lazyGridState = rememberLazyGridState()
+
+    val showShadow by remember {
+        derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
+    }
+
     AvitoForkTheme {
-        Scaffold { paddingValues ->
-            Column(
+
+        Scaffold(
+            containerColor = Color.White,
+        ) { paddingValues ->
+
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(Color.White)
             ) {
-                SearchBar(search = search, onSearchChange = { search = it })
 
                 LazyVerticalGrid(
+                    state = lazyGridState,
                     columns = GridCells.Adaptive(minSize = 150.dp),
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
+                        .fillMaxWidth()
                         .padding(bottom = 50.dp),
                     contentPadding = PaddingValues(bottom = 50.dp)
                 ) {
+
+                    item { Space(40.dp) }
+
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         CategoriesWithPhotos()
                     }
+
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         SelectableLazyRow()
                     }
+
                     items(ads) { ad ->
                         val isFav = favoriteAds.any { it.id == ad.id }
                         ProductCard(ad, isFav, globalNavController) { viewModel.toggleFavorite(ad) }
                     }
+
                 }
+
+                SearchBar(search = search, onSearchChange = { search = it }, showShadow)
+
             }
+
         }
+
     }
+
 }
