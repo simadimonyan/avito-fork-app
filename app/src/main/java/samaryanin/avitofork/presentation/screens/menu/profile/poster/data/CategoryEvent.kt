@@ -13,7 +13,14 @@ sealed class CategoryEvent {
     /**
      * Добавить пост в черновики
      */
-    object SaveDraftToCache : CategoryEvent()
+    @Immutable
+    data class SaveDraft(val subCategory: String) : CategoryEvent()
+
+    /**
+     * Удалить пост из черновиков
+     */
+    @Immutable
+    data class ClearDraft(val subCategory: String) : CategoryEvent()
 
     /**
      * Опубликовать объявление

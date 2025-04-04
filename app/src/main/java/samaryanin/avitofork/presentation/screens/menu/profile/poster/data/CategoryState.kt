@@ -1,7 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster.data
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +21,7 @@ data class CategoryState(
     /**
      * Список черновиков по категориям и подкатегориям
      */
-    val drafts: Map<String, Map<String, List<PostState>>> = mutableMapOf(),
+    val drafts: Map<String, PostState> = mutableMapOf(),
 
     /**
      * Временный черновик для сборки поста в список черновиков или публикации
@@ -51,7 +50,7 @@ class CategoryStateHolder @Inject constructor() {
         _categoryState.update { it.copy(isLoading = isLoading) }
     }
 
-    fun updateDrafts(drafts: Map<String, Map<String, List<PostState>>>) {
+    fun updateDrafts(drafts: Map<String, PostState>) {
         _categoryState.update { it.copy(drafts = drafts) }
     }
 

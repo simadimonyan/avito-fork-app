@@ -20,9 +20,10 @@ class CategoryViewModel @Inject constructor(
     fun handleEvent(event: CategoryEvent) {
         when (event) {
             is CategoryEvent.UpdateCategoryListConfiguration -> updateConfiguration()
-            is CategoryEvent.SaveDraftToCache -> saveDraftToCache()
+            is CategoryEvent.SaveDraft -> saveDraft(event.subCategory)
             is CategoryEvent.UpdateDraftParams -> updateDraftParams(event.draft)
             is CategoryEvent.PublishPost -> publish()
+            is CategoryEvent.ClearDraft -> clearDraft(event.subCategory)
         }
     }
 
@@ -34,8 +35,25 @@ class CategoryViewModel @Inject constructor(
         // TODO (опубликовать объявление)
     }
 
-    private fun saveDraftToCache() {
-        //TODO (сохранить черновик в кеш)
+    private fun saveDraft(subCategory: String) {
+        val state = appStateStore.categoryStateHolder.categoryState.value
+
+        val draft = state.tempDraft
+        val mapping = state.drafts.toMutableMap()
+
+        mapping[subCategory] = draft
+
+        appStateStore.categoryStateHolder.updateDrafts(mapping)
+    }
+
+    private fun clearDraft(subCategory: String) {
+        val state = appStateStore.categoryStateHolder.categoryState.value
+
+        val mapping = state.drafts.toMutableMap()
+
+        mapping.remove(subCategory)
+
+        appStateStore.categoryStateHolder.updateDrafts(mapping)
     }
 
     private fun updateConfiguration() {

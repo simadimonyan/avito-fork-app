@@ -45,12 +45,14 @@ fun BottomAppNavigation(
             // Навигация в меню поиска
             BottomNavigationItem(
                 modifier = Modifier.wrapContentSize(),
-                label = { Text("Поиск", fontSize = 9.sp,
-                    maxLines = 1,
-                    color = if (selectedIndex == 0) navigationSelected else Color.Gray) },
+//                label = { Text("Поиск", fontSize = 9.sp,
+//                    maxLines = 1,
+//                    color = if (selectedIndex == 0) navigationSelected else Color.Gray) },
                 onClick = {
-                    selectedIndex = 0
-                    mainScreenNavigateTo(0)
+                    if (selectedIndex != 0) {
+                        selectedIndex = 0
+                        mainScreenNavigateTo(0)
+                    }
                 },
                 icon = { Icon(Icons.Filled.Search, contentDescription = "Search",
                     tint = if (selectedIndex == 0) navigationSelected else Color.Gray) },
@@ -61,12 +63,14 @@ fun BottomAppNavigation(
             // Навигация в меню избранного
             BottomNavigationItem(
                 modifier = Modifier.wrapContentSize(),
-                label = { Text("Избранное", fontSize = 9.sp,
-                    maxLines = 1,
-                    color = if (selectedIndex == 1) navigationSelected else Color.Gray) },
+//                label = { Text("Избранное", fontSize = 9.sp,
+//                    maxLines = 1,
+//                    color = if (selectedIndex == 1) navigationSelected else Color.Gray) },
                 onClick = {
-                    selectedIndex = 1
-                    mainScreenNavigateTo(1)
+                    if (selectedIndex != 1) {
+                        selectedIndex = 1
+                        mainScreenNavigateTo(1)
+                    }
                 },
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = "Like",
                     tint = if (selectedIndex == 1) navigationSelected else Color.Gray) },
@@ -93,9 +97,9 @@ fun BottomAppNavigation(
             // Навигация в меню сообщений
             BottomNavigationItem(
                 modifier = Modifier.wrapContentSize(),
-                label = { Text("Сообщения", fontSize = 9.sp,
-                    maxLines = 1,
-                    color = if (selectedIndex == 2) navigationSelected else Color.Gray) },
+//                label = { Text("Сообщения", fontSize = 9.sp,
+//                    maxLines = 1,
+//                    color = if (selectedIndex == 2) navigationSelected else Color.Gray) },
                 onClick = {
 
                     // если пользователь неавторизован
@@ -103,8 +107,10 @@ fun BottomAppNavigation(
                         onAuthRequest()
                     }
                     else {
-                        selectedIndex = 2
-                        mainScreenNavigateTo(2)
+                        if (selectedIndex != 2) {
+                            selectedIndex = 2
+                            mainScreenNavigateTo(2)
+                        }
                     }
 
                 },
@@ -117,12 +123,14 @@ fun BottomAppNavigation(
             // Навигация в меню профиля
             BottomNavigationItem(
                 modifier = Modifier.wrapContentSize(),
-                label = { Text("Профиль", fontSize = 9.sp,
-                    maxLines = 1,
-                    color = if (selectedIndex == 3) navigationSelected else Color.Gray) },
+//                label = { Text("Профиль", fontSize = 9.sp,
+//                    maxLines = 1,
+//                    color = if (selectedIndex == 3) navigationSelected else Color.Gray) },
                 onClick = {
-                    selectedIndex = 3
-                    mainScreenNavigateTo(3) // 3 - индекс профиля и управления объявлениями
+                    if (selectedIndex != 3) {
+                        selectedIndex = 3
+                        mainScreenNavigateTo(3)
+                    } // 3 - индекс профиля и управления объявлениями
                 },
                 icon = { Icon(Icons.Filled.Person, contentDescription = "Profile",
                     tint = if (selectedIndex == 3) navigationSelected else Color.Gray) },

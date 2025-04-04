@@ -1,6 +1,7 @@
 package samaryanin.avitofork.presentation.screens.menu.profile.poster
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -87,9 +89,20 @@ fun PostCreateScreen(
     profileViewModel: ProfileViewModel,
 ) {
 
+    val context = LocalContext.current
     val draftPost by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
 
     val onExit = {
+
+        val priceField = draftPost.tempDraft.data.price
+        val descriptionField = draftPost.tempDraft.data.description
+        val optionsField = draftPost.tempDraft.data.options.size
+
+        if (priceField != "" || descriptionField != "" || optionsField != 0) {
+            categoriesViewModel.handleEvent(CategoryEvent.SaveDraft(subcategory.name))
+            Toast.makeText(context, "Черновик объявления сохранен", Toast.LENGTH_LONG).show()
+        }
+
         globalNavController.navigateUp()
     }
 
@@ -194,8 +207,6 @@ private fun PostCreateContent(
 
             }
         }
-
-
 
     }
 
