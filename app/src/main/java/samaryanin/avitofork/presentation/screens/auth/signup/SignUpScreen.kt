@@ -170,6 +170,7 @@ fun SignUpContent(
 
             AppTextFieldPlaceholder(
                 value = email,
+                modifier = Modifier,
                 onValueChange = {
                     email = it
                     errorFrame = false

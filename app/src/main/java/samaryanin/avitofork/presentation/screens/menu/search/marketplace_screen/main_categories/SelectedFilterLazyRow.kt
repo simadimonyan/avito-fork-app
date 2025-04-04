@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.main_categories
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,7 @@ fun SelectableLazyRow() {
     var selectedItem by remember { mutableStateOf(items.first()) }
 
     LazyRow(
-        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+        modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(start = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(items) { item ->

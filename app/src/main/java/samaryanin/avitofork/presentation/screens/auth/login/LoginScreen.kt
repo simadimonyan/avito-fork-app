@@ -37,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
 import samaryanin.avitofork.presentation.screens.auth.data.AuthEvent
@@ -217,6 +216,7 @@ fun LoginContent(
 
             AppTextFieldPlaceholder(
                 value = state.email,
+                modifier = Modifier,
                 onValueChange = {
                     handleEvent(AuthEvent.UpdateEmailState(email = it))
                     emailErrorFrame = false
@@ -246,6 +246,7 @@ fun LoginContent(
 
             AppTextFieldPlaceholder(
                 value = password,
+                modifier = Modifier,
                 placeholder = "Пароль",
                 isPassword = true,
                 onValueChange = {

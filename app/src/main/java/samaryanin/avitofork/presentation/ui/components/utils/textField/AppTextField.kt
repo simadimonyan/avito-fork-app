@@ -81,13 +81,13 @@ fun AppTextFieldPlaceholder(
     onValueChange: (String) -> Unit,
     placeholder: String?,
     errorListener: Boolean,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    modifier: Modifier
 ) {
 
     var passwordVisible by remember { mutableStateOf(false) }
 
     TextField(
-
         value,
         onValueChange,
         isError = errorListener,
@@ -137,7 +137,7 @@ fun AppTextFieldPlaceholder(
         ),
 
         modifier = if (errorListener) {
-            Modifier.fillMaxWidth()
+            modifier.fillMaxWidth()
                 .border(
                     1.dp,
                     color = Color.Red,
@@ -145,7 +145,7 @@ fun AppTextFieldPlaceholder(
                 )
         }
         else
-            Modifier.fillMaxWidth()
+            modifier.fillMaxWidth()
 
     )
 

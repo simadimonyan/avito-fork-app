@@ -208,6 +208,7 @@ fun CreateProfileContent(
 
             AppTextFieldPlaceholder(
                 value = profile,
+                modifier = Modifier,
                 onValueChange = {
                     profile = it
                     errorProfileBlank = false
@@ -232,6 +233,7 @@ fun CreateProfileContent(
                 value = password,
                 placeholder = "Пароль",
                 isPassword = true,
+                modifier = Modifier,
                 onValueChange = {
                     password = it
                     handleEvent(AuthEvent.CheckPasswordFormValidation(password))
@@ -262,6 +264,7 @@ fun CreateProfileContent(
             AppTextFieldPlaceholder(
                 value = repeatPassword,
                 placeholder = "Повторите пароль",
+                modifier = Modifier,
                 isPassword = true,
                 onValueChange = {
                     repeatPassword = it

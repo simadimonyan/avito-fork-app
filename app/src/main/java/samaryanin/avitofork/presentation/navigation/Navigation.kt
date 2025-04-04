@@ -18,7 +18,7 @@ import samaryanin.avitofork.presentation.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.presentation.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
 import samaryanin.avitofork.presentation.screens.menu.profile.poster.data.CategoryViewModel
-import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceScreen
+import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.marketplace.MarketplaceScreen
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.start.MainScreen
 import samaryanin.avitofork.presentation.screens.start.data.MainViewModel
