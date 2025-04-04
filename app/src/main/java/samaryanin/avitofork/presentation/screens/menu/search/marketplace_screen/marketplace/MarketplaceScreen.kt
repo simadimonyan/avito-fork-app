@@ -9,11 +9,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,23 +34,17 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     val ads by viewModel.allAds.collectAsState()
     val favoriteAds by viewModel.favoriteAds.collectAsState()
 
-    val lazyGridState = rememberLazyGridState()
-
-    val showShadow by remember {
-        derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
-    }
-
     AvitoForkTheme {
         Scaffold { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .background(Color.White)
             ) {
-                SearchBar(search = search, onSearchChange = { search = it }, showShadow)
+                SearchBar(search = search, onSearchChange = { search = it })
 
                 LazyVerticalGrid(
-                    state = lazyGridState,
                     columns = GridCells.Adaptive(minSize = 150.dp),
                     modifier = Modifier
                         .fillMaxSize()

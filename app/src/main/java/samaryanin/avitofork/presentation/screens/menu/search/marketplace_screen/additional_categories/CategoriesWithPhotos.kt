@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -63,8 +64,8 @@ fun CategoriesWithPhotos() {
 fun CategoryCard(category: Category) {
     Card(
         modifier = Modifier
-            .width(130.dp)
-            .height(100.dp)
+            .width(100.dp)
+            .height(70.dp)
             .clickable { /* клик */ },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -73,8 +74,10 @@ fun CategoryCard(category: Category) {
             Image(
                 painter = painterResource(id = category.imageRes),
                 contentDescription = category.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(70.dp)
+                    .align(Alignment.Center)
             )
             Box(
                 modifier = Modifier
