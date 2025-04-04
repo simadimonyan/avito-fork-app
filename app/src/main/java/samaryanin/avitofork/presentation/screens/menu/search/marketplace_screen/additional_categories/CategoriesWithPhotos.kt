@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,11 +49,9 @@ fun CategoriesWithPhotos() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(categories.chunked(2)) { rowCategories ->
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    rowCategories.forEach { category ->
-                        CategoryCard(category)
-                    }
+            items(categories) { category ->
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CategoryCard(category)
                 }
             }
         }
@@ -65,10 +63,10 @@ fun CategoryCard(category: Category) {
     Card(
         modifier = Modifier
             .width(100.dp)
-            .height(70.dp)
+            .height(90.dp)
             .clickable { /* клик */ },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
