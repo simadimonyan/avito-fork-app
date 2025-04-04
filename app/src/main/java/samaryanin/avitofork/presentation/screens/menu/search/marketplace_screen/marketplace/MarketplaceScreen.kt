@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +34,9 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     val viewModel: MarketplaceViewModel = hiltViewModel()
     val ads by viewModel.allAds.collectAsState()
     val favoriteAds by viewModel.favoriteAds.collectAsState()
-
+    SideEffect {
+        viewModel.refreshFavoriteAds()
+    }
     AvitoForkTheme {
         Scaffold { paddingValues ->
             Column(

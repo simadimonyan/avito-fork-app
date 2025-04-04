@@ -46,7 +46,7 @@ fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, 
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .aspectRatio(1f)
+            .aspectRatio(.7f)
             .clickable {
                 globalNavController.navigate(SearchRoutes.AdditionalInfoScreen.route)
             },
