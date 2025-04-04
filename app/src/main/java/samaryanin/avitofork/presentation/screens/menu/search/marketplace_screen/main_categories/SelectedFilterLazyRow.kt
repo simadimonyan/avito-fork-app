@@ -41,7 +41,7 @@ fun SelectableLazyRow() {
                 softWrap = true,
                 maxLines = 1,
                 fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
+                fontSize = 23.sp,
                 style = MaterialTheme.typography.titleLarge,
                 color = if (item == selectedItem) Color.Black else Color.Gray,
                 modifier = Modifier
