@@ -37,6 +37,7 @@ import samaryanin.avitofork.R
 import samaryanin.avitofork.data.database.favorites.AdEntity
 import samaryanin.avitofork.domain.model.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceViewModel
+import samaryanin.avitofork.presentation.screens.menu.search.navigation.NavigationHolder
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
 @Composable
@@ -49,6 +50,7 @@ fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, 
             .padding(8.dp)
             .aspectRatio(.7f)
             .clickable {
+                NavigationHolder.id = ad.id
                 globalNavController.navigate(SearchRoutes.AdditionalInfoScreen.route)
             },
         colors = CardColors(

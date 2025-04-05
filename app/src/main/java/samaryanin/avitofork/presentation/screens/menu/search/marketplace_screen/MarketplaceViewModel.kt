@@ -69,7 +69,9 @@ class MarketplaceViewModel @Inject constructor(
         repository.getAdsWithFavoriteStatus()
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun toggleFavorite(ad: AdEntity) {
+
+
+    fun toggleFavoriteForDB(ad: AdEntity) {
         viewModelScope.launch {
             val isCurrentlyFavorite = _favoriteAds.value.any { it.id == ad.id }
             if (isCurrentlyFavorite) {

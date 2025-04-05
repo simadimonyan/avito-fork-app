@@ -21,7 +21,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.dimagor555.avito.dto.AdDto
 import ru.dimagor555.avito.dto.CategoryDto
-import ru.dimagor555.avito.request.GetAdsRequestDto
+import ru.dimagor555.avito.request.GetAdsByIdsRequestDto
+import ru.dimagor555.avito.request.GetFilteredAdsRequestDto
 import samaryanin.avitofork.domain.model.Ad
 import samaryanin.avitofork.domain.model.Category
 import javax.inject.Inject
@@ -63,12 +64,33 @@ class AdRepo @Inject constructor() {
         }
     }
 
+    suspend fun getAdById(
+        adId: String
+    ): Ad? = httpClient
+        .post("ad/byIds") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
+            setBody(GetAdsByIdsRequestDto(adId))
+        }
+        .body<List<AdDto>>()
+        .map { it.toDomain() }
+        .firstOrNull()
+
+    suspend fun getAdsByIds(
+        adsIds: List<String>
+    ): List<Ad> = httpClient
+        .post("ad/byIds") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
+            setBody(GetAdsByIdsRequestDto(adsIds))
+        }
+        .body<List<AdDto>>()
+        .map { it.toDomain() }
+
     suspend fun getFilteredAds(
         categoryIds: List<String>,
     ): List<Ad> = httpClient
         .post("ad/all") {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
-            setBody(GetAdsRequestDto(categoryIds = categoryIds.ifEmpty { null }))
+            setBody(GetFilteredAdsRequestDto(categoryIds = categoryIds.ifEmpty { null }))
         }
         .body<List<AdDto>>()
         .map { it.toDomain() }

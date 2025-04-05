@@ -98,13 +98,8 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     }
 
                 }
-
                 SearchBar(search = search, onSearchChange = { search = it }, showShadow)
-
             }
-
         }
-
     }
-
 }
