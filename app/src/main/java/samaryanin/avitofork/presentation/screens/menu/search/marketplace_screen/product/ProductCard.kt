@@ -34,12 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.data.database.favorites.Ad
+import samaryanin.avitofork.data.database.favorites.AdEntity
+import samaryanin.avitofork.domain.model.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceViewModel
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
 @Composable
-fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, onFavoriteClick: (Ad) -> Unit) {
+fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, onFavoriteClick: (AdEntity) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val viewModel: MarketplaceViewModel = hiltViewModel()
 
@@ -107,7 +108,7 @@ fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, 
                         painter = painterResource(if (isFav) R.drawable.like_act else R.drawable.like_non_act),
                         contentDescription = "",
                         modifier = Modifier
-                            .clickable { onFavoriteClick(ad) }
+//                            .clickable { onFavoriteClick(ad) }
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))

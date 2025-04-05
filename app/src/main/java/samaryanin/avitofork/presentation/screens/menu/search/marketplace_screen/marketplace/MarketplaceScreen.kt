@@ -37,6 +37,8 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
     val viewModel: MarketplaceViewModel = hiltViewModel()
     val ads by viewModel.allAds.collectAsState()
+    val categories by viewModel.allCategories.collectAsState()
+    val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
     val favoriteAds by viewModel.favoriteAds.collectAsState()
 
     val lazyGridState = rememberLazyGridState()
@@ -72,16 +74,27 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     item { Space(40.dp) }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        CategoriesWithPhotos()
+                        CategoriesWithPhotos(
+                            categories = categories.orEmpty(),
+                            selectedCategoryIds = selectedCategoryIds,
+                            onSelectedCategoriesIdsChange = {
+                                viewModel.selectedCategoryIds.value = it
+                            }
+                        )
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         SelectableLazyRow()
                     }
 
-                    items(ads) { ad ->
-                        val isFav = favoriteAds.any { it.id == ad.id }
-                        ProductCard(ad, isFav, globalNavController) { viewModel.toggleFavorite(ad) }
+                    items(ads.orEmpty()) { ad ->
+//                        val isFav = favoriteAds.any { it.id == ad.id }
+                        ProductCard(
+                            ad = ad,
+                            isFav = false,
+                            globalNavController = globalNavController,
+                            onFavoriteClick = {},
+                        )
                     }
 
                 }

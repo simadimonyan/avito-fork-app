@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.data.database.favorites.Ad
+import samaryanin.avitofork.data.database.favorites.AdEntity
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.start.data.AppState
@@ -136,7 +136,7 @@ fun FavoritesScreenContent(
 
 // Компонент карточки объявления
 @Composable
-fun FavoriteAdCard(ad: Ad, onLikeClick: (Ad) -> Unit, globalNavController: NavHostController) {
+fun FavoriteAdCard(ad: AdEntity, onLikeClick: (AdEntity) -> Unit, globalNavController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

@@ -1,7 +1,5 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.marketplace
 
-import samaryanin.avitofork.data.database.favorites.Ad
-
 //
 //val adsList = listOf(
 //    Ad(

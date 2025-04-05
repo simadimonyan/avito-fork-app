@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.data.database.favorites.Ad
+import samaryanin.avitofork.data.database.favorites.AdEntity
 import samaryanin.avitofork.data.database.favorites.FavoriteAdRepository
 import javax.inject.Inject
 
@@ -17,8 +17,8 @@ class FavoritesScreenViewModel @Inject constructor(
     private val repository: FavoriteAdRepository
 ) : ViewModel() {
 
-    private val _favoriteAds = MutableStateFlow<List<Ad>>(emptyList())
-    val favoriteAds: StateFlow<List<Ad>> get() = _favoriteAds
+    private val _favoriteAds = MutableStateFlow<List<AdEntity>>(emptyList())
+    val favoriteAds: StateFlow<List<AdEntity>> get() = _favoriteAds
 
     // Инициализация с загрузкой избранных данных
     init {
@@ -35,7 +35,7 @@ class FavoritesScreenViewModel @Inject constructor(
     }
 
     // Метод для переключения избранного объявления
-    fun toggleFavorite(ad: Ad) {
+    fun toggleFavorite(ad: AdEntity) {
         viewModelScope.launch {
             if (_favoriteAds.value.any { it.id == ad.id }) {
                 repository.removeFavorite(ad.id)

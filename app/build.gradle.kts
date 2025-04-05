@@ -87,12 +87,21 @@ android {
 }
 
 dependencies {
+    implementation(files("libs/domain-jvm-1.0.0.jar"))
 
     implementation(libs.decompose)
     implementation(libs.decompose.extensions.compose)
     implementation(libs.androidx.room.common)
 
     kapt(libs.hilt.android.compiler)
+
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.contentNegotiation)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.serialization)
 
     //room
     implementation(libs.androidx.room.runtime)

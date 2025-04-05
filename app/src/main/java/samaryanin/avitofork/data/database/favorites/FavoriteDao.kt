@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavoriteAdDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAds(ads: List<Ad>) // Добавить несколько объявлений
+    suspend fun insertAds(ads: List<AdEntity>) // Добавить несколько объявлений
 
     @Query("SELECT * FROM ads")
-    fun getAllAds(): Flow<List<Ad>> // Получить все объявления
+    fun getAllAds(): Flow<List<AdEntity>> // Получить все объявления
 
     @Query(
         """
@@ -36,7 +36,7 @@ FROM ads
         INNER JOIN favorites ON ads.id = favorites.favId
     """
     )
-    fun getFavoriteAds(): Flow<List<Ad>> // Получить только избранные объявления
+    fun getFavoriteAds(): Flow<List<AdEntity>> // Получить только избранные объявления
 }
 
 //@Dao
