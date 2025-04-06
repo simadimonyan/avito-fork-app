@@ -2,7 +2,6 @@ package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -28,16 +27,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import samaryanin.avitofork.R
+import samaryanin.avitofork.domain.model.Category
 
 @Composable
-fun CategoriesWithPhotos() {
-    val categories = listOf(
-        Category("Авто", R.drawable.auto),
-        Category("Недвижимость", R.drawable.deal),
-        Category("Услуги", R.drawable.service),
-        Category("Электроника", R.drawable.smartphone)
-    )
+fun CategoriesWithPhotos(
+    categories: List<Category>,
+    selectedCategoryIds: List<String>,
+    onSelectedCategoriesIdsChange: (List<String>) -> Unit,
+) {
+    val categoriesUI = categories.map { it.toCategoryUI() }
 
     Box(
         modifier = Modifier
@@ -49,9 +47,20 @@ fun CategoriesWithPhotos() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(categories) { category ->
+            items(categoriesUI) { category ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CategoryCard(category)
+                    val isSelected = selectedCategoryIds.contains(category.id)
+                    CategoryCard(
+                        category = category,
+                        isSelected = isSelected,
+                        onCategorySelected = {
+                            if (isSelected) {
+                                onSelectedCategoriesIdsChange(selectedCategoryIds - category.id)
+                            } else {
+                                onSelectedCategoriesIdsChange(selectedCategoryIds + category.id)
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -59,14 +68,18 @@ fun CategoriesWithPhotos() {
 }
 
 @Composable
-fun CategoryCard(category: Category) {
+fun CategoryCard(
+    category: CategoryUI,
+    isSelected: Boolean,
+    onCategorySelected: () -> Unit,
+) {
     Card(
         modifier = Modifier
             .width(100.dp)
-            .height(90.dp)
-            .clickable { /* клик */ },
+            .height(90.dp),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        onClick = onCategorySelected,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
@@ -77,12 +90,17 @@ fun CategoryCard(category: Category) {
                     .size(70.dp)
                     .align(Alignment.Center)
             )
+            val bgColor = if (isSelected) {
+                Color(0xFF6200EE)
+            } else {
+                Color.Black
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(bgColor.copy(alpha = 0.5f))
                     .padding(4.dp)
             ) {
                 Text(

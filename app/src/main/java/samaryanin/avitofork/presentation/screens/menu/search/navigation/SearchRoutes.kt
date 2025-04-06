@@ -1,7 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.search.navigation
 
 import kotlinx.serialization.Serializable
-import samaryanin.avitofork.presentation.screens.menu.profile.navigation.ProfileRoutes
 
 @Serializable
 sealed class SearchRoutes(val route: String) {

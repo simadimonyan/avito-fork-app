@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -36,14 +37,18 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     var search by remember { mutableStateOf("") }
     val viewModel: MarketplaceViewModel = hiltViewModel()
     val ads by viewModel.allAds.collectAsState()
-    val favoriteAds by viewModel.favoriteAds.collectAsState()
-
+    val categories by viewModel.allCategories.collectAsState()
+    val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
+    val favoriteIds by viewModel.favoriteIds.collectAsState()
     val lazyGridState = rememberLazyGridState()
 
     val showShadow by remember {
         derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
     }
 
+    SideEffect {
+
+    }
     AvitoForkTheme {
 
         Scaffold(
@@ -68,26 +73,32 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     item { Space(40.dp) }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        CategoriesWithPhotos()
+                        CategoriesWithPhotos(
+                            categories = categories.orEmpty(),
+                            selectedCategoryIds = selectedCategoryIds,
+                            onSelectedCategoriesIdsChange = {
+                                viewModel.selectedCategoryIds.value = it
+                            }
+                        )
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         SelectableLazyRow()
                     }
 
-                    items(ads) { ad ->
-                        val isFav = favoriteAds.any { it.id == ad.id }
-                        ProductCard(ad, isFav, globalNavController) { viewModel.toggleFavorite(ad) }
+                    items(ads.orEmpty()) { ad ->
+                        ProductCard(
+                            ad = ad,
+                            isFav = favoriteIds.contains(ad.id),
+                            globalNavController = globalNavController,
+                            onFavoriteClick = {
+                                viewModel.addToFav(ad.id)
+                            }
+                        )
                     }
-
                 }
-
                 SearchBar(search = search, onSearchChange = { search = it }, showShadow)
-
             }
-
         }
-
     }
-
 }

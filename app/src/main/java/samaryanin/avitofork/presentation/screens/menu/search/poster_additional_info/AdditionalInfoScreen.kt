@@ -18,6 +18,8 @@ import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,17 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
-
-@Preview(showSystemUi = false)
-@Composable
-fun AdditionalInfoPreview() {
-    AdditionalInfoContent { true }
-}
+import samaryanin.avitofork.domain.model.Ad
 
 @Composable
 fun AdditionalInfoScreen(
@@ -44,11 +42,17 @@ fun AdditionalInfoScreen(
     val onBack = {
         globalNavController.navigateUp()
     }
-    AdditionalInfoContent(onBack)
+    val viewModel: AdditionalInfoViewModel = hiltViewModel()
+    val ad by viewModel.adById.collectAsState()
+
+    AdditionalInfoContent(onBack, ad)
 }
 
 @Composable
-fun AdditionalInfoContent(onBack: () -> Boolean) {
+fun AdditionalInfoContent(
+    onBack: () -> Boolean,
+    ad: Ad?
+) {
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
@@ -64,30 +68,29 @@ fun AdditionalInfoContent(onBack: () -> Boolean) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Column {
-                Image(
-                    painter = painterResource(R.drawable.car),
-                    // painter = rememberImagePainter(announcement.photo),
+                AsyncImage(
+                    model = ad?.imageUrl, // или URL, если изображение из сети
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .weight(0.9f),
+                    contentScale = ContentScale.Crop
                 )
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Название товара",
+                        text = ad?.title?: "-/-",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "г. Москва, улица Булгакова 20",
+                        text = ad?.address?: "г. Москва, улица Булгакова 20",
                         fontSize = 14.sp,
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "99999$",
+                        text = ad?.price?:"99999$",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -144,3 +147,9 @@ fun AdditionalInfoContent(onBack: () -> Boolean) {
         }
     }
 }
+
+//@Preview(showSystemUi = false)
+//@Composable
+//fun AdditionalInfoPreview() {
+//    AdditionalInfoContent({ true }, viewModel, ad)
+//}
