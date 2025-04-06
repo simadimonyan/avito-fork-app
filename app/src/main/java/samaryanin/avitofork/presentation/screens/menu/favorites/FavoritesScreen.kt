@@ -24,7 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,8 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
-import samaryanin.avitofork.data.database.favorites.AdEntity
+import samaryanin.avitofork.domain.model.Ad
 import samaryanin.avitofork.presentation.screens.auth.data.AuthState
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 import samaryanin.avitofork.presentation.screens.start.data.AppState
@@ -97,14 +98,10 @@ fun FavoritesScreenContent(
     globalNavController: NavHostController
 ) {
     val viewModel: FavoritesScreenViewModel = hiltViewModel()
-    val favoritesState = viewModel.favoriteAds.collectAsState()
-    val favorites = favoritesState.value
-
-    // Обновляем список при открытии экрана
-    LaunchedEffect(Unit) {
-        viewModel.refreshFavoriteAds()
-    }
-
+    val favorites by viewModel.favoriteAds.collectAsState()
+SideEffect {
+    viewModel.getFavoriteAds()
+}
     Scaffold(
         topBar = {
             TopAppBar(
@@ -124,7 +121,7 @@ fun FavoritesScreenContent(
                 items(favorites) { ad ->
                     FavoriteAdCard(
                         ad = ad,
-                        onLikeClick = { viewModel.toggleFavorite(ad) },  // Логика для лайка
+                        onLikeClick = { viewModel.toggleFavorite(ad) },
                         globalNavController
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -133,10 +130,9 @@ fun FavoritesScreenContent(
         }
     }
 }
-
 // Компонент карточки объявления
 @Composable
-fun FavoriteAdCard(ad: AdEntity, onLikeClick: (AdEntity) -> Unit, globalNavController: NavHostController) {
+fun FavoriteAdCard(ad: Ad, onLikeClick: (Ad) -> Unit, globalNavController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,10 +150,10 @@ fun FavoriteAdCard(ad: AdEntity, onLikeClick: (AdEntity) -> Unit, globalNavContr
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            // Фото объявления
-            Image(
-                painter = painterResource(R.drawable.house),
-                contentDescription = "Фото объявления",
+            // Фото объявленияй с
+            AsyncImage(
+                model = ad.imageUrl, // или URL, если изображение из сети
+                contentDescription = null,
                 modifier = Modifier
                     .size(170.dp)
                     .clip(RoundedCornerShape(8.dp))
@@ -173,13 +169,13 @@ fun FavoriteAdCard(ad: AdEntity, onLikeClick: (AdEntity) -> Unit, globalNavContr
                     .align(Alignment.Top)
             ) {
                 Text(
-                    text = ad.price,
+                    text = ad.title,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = ad.title,
+                    text = ad.price,
                     fontSize = 16.sp,
                 )
                 Spacer(modifier = Modifier.height(4.dp))

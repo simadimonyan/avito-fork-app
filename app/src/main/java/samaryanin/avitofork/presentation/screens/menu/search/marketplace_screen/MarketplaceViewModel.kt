@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.data.cache.FavoriteIds.favIdsFlow
 import samaryanin.avitofork.data.database.favorites.AdEntity
 import samaryanin.avitofork.data.database.favorites.AdWithFavorite
 import samaryanin.avitofork.data.database.favorites.FavoriteAdRepository
@@ -29,8 +30,7 @@ class MarketplaceViewModel @Inject constructor(
     private val adRepo: AdRepo,
 ) : ViewModel() {
 
-    private val _favoriteAds = MutableStateFlow<List<AdEntity>>(emptyList())
-    val favoriteAds: StateFlow<List<AdEntity>> get() = _favoriteAds
+    val favoriteIds: StateFlow<Set<String>> = favIdsFlow.asStateFlow()
 
     private val _allAds = MutableStateFlow<List<Ad>?>(null)
     val allAds = _allAds.asStateFlow()
@@ -41,8 +41,6 @@ class MarketplaceViewModel @Inject constructor(
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
 
     init {
-        // Инициализация с загрузкой избранных данных
-        refreshFavoriteAds()
         viewModelScope.launch {
             selectedCategoryIds
                 .onEach {
@@ -56,33 +54,32 @@ class MarketplaceViewModel @Inject constructor(
         }
     }
 
-    // Метод для обновления списка избранных объявлений
-    fun refreshFavoriteAds() {
-        viewModelScope.launch {
-            repository.getFavoriteAds().collect { ads ->
-                _favoriteAds.value = ads // Обновляем состояние с новыми данными
-            }
-        }
-    }
-
     private val adsWithFavoriteStatus: StateFlow<List<AdWithFavorite>> =
         repository.getAdsWithFavoriteStatus()
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-
-
-    fun toggleFavoriteForDB(ad: AdEntity) {
-        viewModelScope.launch {
-            val isCurrentlyFavorite = _favoriteAds.value.any { it.id == ad.id }
-            if (isCurrentlyFavorite) {
-                repository.removeFavorite(ad.id)
-                _favoriteAds.value = _favoriteAds.value.filter { it.id != ad.id }
-            } else {
-                repository.addFavorite(ad.id)
-                _favoriteAds.value = _favoriteAds.value + ad
-            }
+    fun addToFav(adId: String) {
+        val updatedIds = favoriteIds.value.toMutableSet()
+        if (updatedIds.contains(adId)) {
+            updatedIds.remove(adId)
+        } else {
+            updatedIds.add(adId)
         }
+        favIdsFlow.value = updatedIds
     }
+
+//    fun toggleFavoriteForDB(ad: AdEntity) {
+//        viewModelScope.launch {
+//            val isCurrentlyFavorite = _favoriteAds.value.any { it.id == ad.id }
+//            if (isCurrentlyFavorite) {
+//                repository.removeFavorite(ad.id)
+//                _favoriteAds.value = _favoriteAds.value.filter { it.id != ad.id }
+//            } else {
+//                repository.addFavorite(ad.id)
+//                _favoriteAds.value = _favoriteAds.value + ad
+//            }
+//        }
+//    }
 
     fun addAds(ads: List<AdEntity>) {
         viewModelScope.launch {

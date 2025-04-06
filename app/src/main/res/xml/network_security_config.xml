@@ -2,7 +2,8 @@
 <network-security-config>
     <base-config>
         <trust-anchors>
-            <certificates src="@raw/my_ca" />
+            <certificates src="@raw/my_ca"/>
+            <certificates src="system"/>
         </trust-anchors>
     </base-config>
 </network-security-config>

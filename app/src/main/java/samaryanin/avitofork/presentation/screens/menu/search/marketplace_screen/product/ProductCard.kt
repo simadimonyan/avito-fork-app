@@ -1,5 +1,6 @@
 package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.product
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,19 +32,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
-import samaryanin.avitofork.data.database.favorites.AdEntity
+import samaryanin.avitofork.data.cache.FavoriteIds.favIdsFlow
 import samaryanin.avitofork.domain.model.Ad
-import samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen.MarketplaceViewModel
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.NavigationHolder
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 
 @Composable
-fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, onFavoriteClick: (AdEntity) -> Unit) {
+fun ProductCard(
+    ad: Ad,
+    isFav: Boolean?,
+    globalNavController: NavHostController,
+    onFavoriteClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val viewModel: MarketplaceViewModel = hiltViewModel()
 
     Card(
         modifier = Modifier
@@ -62,8 +65,8 @@ fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, 
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(R.drawable.house),
+            AsyncImage(
+                model = ad.imageUrl, // или URL, если изображение из сети
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,10 +110,14 @@ fun ProductCard(ad: Ad, isFav: Boolean, globalNavController: NavHostController, 
                     horizontalAlignment = Alignment.End
                 ) {
                     Image(
-                        painter = painterResource(if (isFav) R.drawable.like_act else R.drawable.like_non_act),
+                        painter = painterResource(if (isFav == true) R.drawable.like_act else R.drawable.like_non_act),
                         contentDescription = "",
                         modifier = Modifier
-//                            .clickable { onFavoriteClick(ad) }
+
+                            .clickable {
+                                onFavoriteClick()
+                                Log.d("FAV", "$favIdsFlow")
+                            }
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))

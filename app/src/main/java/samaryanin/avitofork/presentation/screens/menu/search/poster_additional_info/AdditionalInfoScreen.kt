@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
 import samaryanin.avitofork.domain.model.Ad
 
@@ -67,14 +68,13 @@ fun AdditionalInfoContent(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column {
-                Image(
-                    painter = painterResource(R.drawable.car),
-                    // painter = rememberImagePainter(announcement.photo),
+                AsyncImage(
+                    model = ad?.imageUrl, // или URL, если изображение из сети
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .weight(0.9f),
+                    contentScale = ContentScale.Crop
                 )
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(

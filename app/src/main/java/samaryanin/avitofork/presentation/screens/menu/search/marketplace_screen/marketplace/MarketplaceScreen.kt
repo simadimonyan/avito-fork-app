@@ -39,8 +39,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     val ads by viewModel.allAds.collectAsState()
     val categories by viewModel.allCategories.collectAsState()
     val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
-    val favoriteAds by viewModel.favoriteAds.collectAsState()
-
+    val favoriteIds by viewModel.favoriteIds.collectAsState()
     val lazyGridState = rememberLazyGridState()
 
     val showShadow by remember {
@@ -48,7 +47,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     }
 
     SideEffect {
-        viewModel.refreshFavoriteAds()
+
     }
     AvitoForkTheme {
 
@@ -88,15 +87,15 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     }
 
                     items(ads.orEmpty()) { ad ->
-//                        val isFav = favoriteAds.any { it.id == ad.id }
                         ProductCard(
                             ad = ad,
-                            isFav = false,
+                            isFav = favoriteIds.contains(ad.id),
                             globalNavController = globalNavController,
-                            onFavoriteClick = {},
+                            onFavoriteClick = {
+                                viewModel.addToFav(ad.id)
+                            }
                         )
                     }
-
                 }
                 SearchBar(search = search, onSearchChange = { search = it }, showShadow)
             }
