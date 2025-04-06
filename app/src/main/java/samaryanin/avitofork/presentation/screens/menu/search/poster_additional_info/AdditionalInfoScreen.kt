@@ -67,13 +67,14 @@ fun AdditionalInfoContent(
             elevation = 4.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column {
+            Column() {
                 AsyncImage(
                     model = ad?.imageUrl, // или URL, если изображение из сети
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.9f),
+                        .size(400.dp)
+                        .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -101,8 +102,10 @@ fun AdditionalInfoContent(
                     Text(text = "Описание", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Описане очень длинное описание Описане очень длинное описание Описане очень длинное описание",
-                        fontSize = 14.sp
+                        text = ad?.description?:" 34efds",
+                        fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                        color = Color.Black
                     )
                 }
             }

@@ -6,6 +6,9 @@
 -keepattributes *Annotation*
 -keepattributes Signature, InnerClasses
 
+-dontwarn java.lang.management.ManagementFactory
+-dontwarn java.lang.management.RuntimeMXBean
+
 # Keep BouncyCastle classes
 -keep class org.bouncycastle.jsse.** { *; }
 

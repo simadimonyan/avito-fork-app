@@ -109,6 +109,7 @@ private fun AdDto.toDomain(): Ad {
         price = "${(price.amountMinor / 100)} RUB",
         address = address.orEmpty(),
         imageUrl = imageUrl.orEmpty(),
+        description = description.orEmpty()
     )
 }
 
