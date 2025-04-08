@@ -87,15 +87,18 @@ android {
 }
 
 dependencies {
+
+    // Domain Lib
     implementation(files("libs/domain-jvm-1.0.0.jar"))
 
-    implementation(libs.coil.kt.coil.compose)
-
+    // Decompose
     implementation(libs.decompose)
     implementation(libs.decompose.extensions.compose)
     implementation(libs.androidx.room.common)
 
+    // Hilt
     kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
 
     // Ktor
     implementation(libs.ktor.client.core)
@@ -105,53 +108,52 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.serialization)
 
-    //room
+    // Room
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    // Icons
     implementation(libs.androidx.material.icons.extended)
 
+    // Coil
+    implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // Utils: Gson / Log
     implementation(libs.logging.interceptor)
-    implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
     implementation(libs.gson)
 
+    // Compose
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material)
     implementation(libs.androidx.animation)
-
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.profileinstaller)
-    implementation(libs.androidx.foundation.android)
-    implementation(libs.androidx.camera.core)
-    "baselineProfile"(project(":baselineprofile"))
-    implementation(libs.androidx.hilt.navigation.compose.v120)
-
     implementation(libs.androidx.preference.ktx)
-
-
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.ui.tooling)
     implementation(libs.androidx.material3)
 
+    // Baseline Profiler
+    implementation(libs.androidx.profileinstaller)
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.camera.core)
+    "baselineProfile"(project(":baselineprofile"))
+    implementation(libs.androidx.hilt.navigation.compose.v120)
+
+    // Test
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.domain.model.auth.AuthStatus
-import samaryanin.avitofork.domain.usecase.AuthUseCase
 import samaryanin.avitofork.presentation.state.AppStateStore
 import javax.inject.Inject
 
@@ -14,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     val appStateStore: AppStateStore,
-    private val auth: AuthUseCase
+    //private val auth: AuthUseCase
 ) : ViewModel() {
 
     fun handleEvent(event: AuthEvent) {
@@ -36,11 +35,11 @@ class AuthViewModel @Inject constructor(
 
     private fun verifyCredentials(email: String, pass: String) {
         viewModelScope.launch {
-            appStateStore.authStateHolder.updateLoading(true)
-            val response = auth.loginUseCase.login(email, pass)
-            val result = response is AuthStatus.LOGIN_SUCCEED
-            appStateStore.authStateHolder.setCredentialsValid(result)
-            appStateStore.authStateHolder.updateLoading(false)
+//            appStateStore.authStateHolder.updateLoading(true)
+//            //val response = auth.loginUseCase.login(email, pass)
+//            //val result = response is AuthStatus.LOGIN_SUCCEED
+//            appStateStore.authStateHolder.setCredentialsValid(result)
+//            appStateStore.authStateHolder.updateLoading(false)
         }
     }
 
@@ -49,11 +48,11 @@ class AuthViewModel @Inject constructor(
 
     private fun emailFieldCodeVerify(email: String, code: String) {
         viewModelScope.launch {
-            appStateStore.authStateHolder.updateLoading(true)
-            val response = auth.verificationUseCase.verification(email, code)
-            val result = response is AuthStatus.EMAIL_VERIFIED
-            appStateStore.authStateHolder.setEmailCodeValid(result)
-            appStateStore.authStateHolder.updateLoading(false)
+//            appStateStore.authStateHolder.updateLoading(true)
+//            val response = auth.verificationUseCase.verification(email, code)
+//            val result = response is AuthStatus.EMAIL_VERIFIED
+//            appStateStore.authStateHolder.setEmailCodeValid(result)
+//            appStateStore.authStateHolder.updateLoading(false)
         }
     }
 
