@@ -2,7 +2,7 @@ package samaryanin.avitofork.presentation.screens.menu.search.marketplace_screen
 
 import androidx.annotation.DrawableRes
 import samaryanin.avitofork.R
-import samaryanin.avitofork.domain.model.Category
+import samaryanin.avitofork.domain.model.favorites.Category
 
 data class CategoryUI(
     val id: String,

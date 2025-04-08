@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.data.cache.FavoriteIds.favIdsFlow
-import samaryanin.avitofork.data.database.favorites.AdEntity
-import samaryanin.avitofork.data.database.favorites.AdWithFavorite
-import samaryanin.avitofork.data.database.favorites.FavoriteAdRepository
-import samaryanin.avitofork.data.network.repository.AdRepo
-import samaryanin.avitofork.domain.model.Ad
-import samaryanin.avitofork.domain.model.Category
+import samaryanin.avitofork.data.models.favorites.AdEntity
+import samaryanin.avitofork.data.models.favorites.AdWithFavorite
+import samaryanin.avitofork.data.repository.database.FavoriteAdRepository
+import samaryanin.avitofork.data.repository.network.AdRepo
+import samaryanin.avitofork.domain.model.favorites.Ad
+import samaryanin.avitofork.domain.model.favorites.Category
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 

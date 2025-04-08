@@ -1,4 +1,4 @@
-package samaryanin.avitofork.di
+package samaryanin.avitofork.di.cache
 
 import android.content.Context
 import android.content.SharedPreferences

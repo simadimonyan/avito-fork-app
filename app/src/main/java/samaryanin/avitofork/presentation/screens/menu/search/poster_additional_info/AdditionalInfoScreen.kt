@@ -33,7 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
-import samaryanin.avitofork.domain.model.Ad
+import samaryanin.avitofork.domain.model.favorites.Ad
 
 @Composable
 fun AdditionalInfoScreen(

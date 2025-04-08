@@ -1,4 +1,4 @@
-package samaryanin.avitofork.data.network.repository
+package samaryanin.avitofork.data.repository.network
 
 import androidx.compose.runtime.Stable
 import retrofit2.HttpException

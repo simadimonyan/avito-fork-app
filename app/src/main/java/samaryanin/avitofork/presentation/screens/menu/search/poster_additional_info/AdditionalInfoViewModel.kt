@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.data.network.repository.AdRepo
-import samaryanin.avitofork.domain.model.Ad
+import samaryanin.avitofork.data.repository.network.AdRepo
+import samaryanin.avitofork.domain.model.favorites.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.NavigationHolder
 
 @HiltViewModel

@@ -36,7 +36,7 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
 import samaryanin.avitofork.data.cache.FavoriteIds.favIdsFlow
-import samaryanin.avitofork.domain.model.Ad
+import samaryanin.avitofork.domain.model.favorites.Ad
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.NavigationHolder
 import samaryanin.avitofork.presentation.screens.menu.search.navigation.SearchRoutes
 

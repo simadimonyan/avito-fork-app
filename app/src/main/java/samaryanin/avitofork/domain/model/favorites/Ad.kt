@@ -1,4 +1,4 @@
-package samaryanin.avitofork.domain.model
+package samaryanin.avitofork.domain.model.favorites
 
 data class Ad(
     val id: String,

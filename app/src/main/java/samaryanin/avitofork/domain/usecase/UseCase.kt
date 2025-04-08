@@ -5,7 +5,7 @@ import samaryanin.avitofork.domain.usecase.auth.LoginUseCase
 import samaryanin.avitofork.domain.usecase.auth.RefreshUseCase
 import samaryanin.avitofork.domain.usecase.auth.SignUpUseCase
 import samaryanin.avitofork.domain.usecase.auth.VerificationUseCase
-import samaryanin.avitofork.domain.usecase.posts.ConfigurationUseCase
+import samaryanin.avitofork.domain.usecase.poster.ConfigurationUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 

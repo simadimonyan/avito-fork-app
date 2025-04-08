@@ -1,4 +1,4 @@
-package samaryanin.avitofork.data.network.repository
+package samaryanin.avitofork.data.repository.network
 
 import android.util.Log
 import androidx.compose.runtime.Stable
@@ -23,8 +23,8 @@ import ru.dimagor555.avito.dto.AdDto
 import ru.dimagor555.avito.dto.CategoryDto
 import ru.dimagor555.avito.request.GetAdsByIdsRequestDto
 import ru.dimagor555.avito.request.GetFilteredAdsRequestDto
-import samaryanin.avitofork.domain.model.Ad
-import samaryanin.avitofork.domain.model.Category
+import samaryanin.avitofork.domain.model.favorites.Ad
+import samaryanin.avitofork.domain.model.favorites.Category
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -120,4 +120,3 @@ private fun CategoryDto.toDomain(): Category {
         imageUrl = iconUrl.orEmpty(),
     )
 }
-

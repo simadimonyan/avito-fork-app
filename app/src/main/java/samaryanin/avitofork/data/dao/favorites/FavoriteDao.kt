@@ -1,10 +1,13 @@
-package samaryanin.avitofork.data.database.favorites
+package samaryanin.avitofork.data.dao.favorites
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import samaryanin.avitofork.data.models.favorites.AdEntity
+import samaryanin.avitofork.data.models.favorites.AdWithFavorite
+import samaryanin.avitofork.data.models.favorites.Favorite
 
 @Dao
 interface FavoriteAdDao {
