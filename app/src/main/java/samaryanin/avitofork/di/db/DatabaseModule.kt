@@ -1,4 +1,4 @@
-package samaryanin.avitofork.data.database
+package samaryanin.avitofork.di.db
 
 import android.content.Context
 import androidx.room.Room
@@ -7,7 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import samaryanin.avitofork.data.database.favorites.FavoriteAdDao
+import samaryanin.avitofork.data.dao.AppDatabase
+import samaryanin.avitofork.data.dao.favorites.FavoriteAdDao
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -33,4 +34,5 @@ object DatabaseModule {
     fun provideFavoriteAdDao(database: AppDatabase): FavoriteAdDao {
         return database.favoriteAdDao()
     }
+
 }

@@ -1,10 +1,10 @@
-package samaryanin.avitofork.data.database.favorites
+package samaryanin.avitofork.data.models.favorites
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "ads")
-data class AdEntity(
+data class Ad(
     @PrimaryKey val id: Int,
     val title: String,
     val price: String,

@@ -6,7 +6,7 @@ import samaryanin.avitofork.data.network.Result
 import samaryanin.avitofork.data.network.dto.auth.session.LoginRequest
 import samaryanin.avitofork.data.network.dto.auth.session.SessionResponse
 import samaryanin.avitofork.domain.model.auth.AuthStatus
-import samaryanin.avitofork.domain.repository.Repository
+import samaryanin.avitofork.domain.repository.NetworkRepository
 import samaryanin.avitofork.domain.state.DomainStateStore
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 @Immutable
 class LoginUseCase @Inject constructor(
-    private val repository: Repository,
+    private val repository: NetworkRepository,
     private val state: DomainStateStore
 ) {
 

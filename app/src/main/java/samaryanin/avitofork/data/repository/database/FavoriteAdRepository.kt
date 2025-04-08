@@ -1,7 +1,11 @@
-package samaryanin.avitofork.data.database.favorites
+package samaryanin.avitofork.data.repository.database
 
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.Flow
+import samaryanin.avitofork.data.dao.favorites.FavoriteAdDao
+import samaryanin.avitofork.data.models.favorites.AdEntity
+import samaryanin.avitofork.data.models.favorites.AdWithFavorite
+import samaryanin.avitofork.data.models.favorites.Favorite
 
 @Stable
 class FavoriteAdRepository(private val favoriteAdDao: FavoriteAdDao) {

@@ -15,6 +15,9 @@
 # Keep OpenJSSE classes
 -keep class org.openjsse.** { *; }
 
+-dontwarn java.lang.management.ManagementFactory
+-dontwarn java.lang.management.RuntimeMXBean
+
 # Suppress warnings for missing BouncyCastle classes
 -dontwarn org.bouncycastle.jsse.BCSSLParameters
 -dontwarn org.bouncycastle.jsse.BCSSLSocket

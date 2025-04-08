@@ -1,4 +1,4 @@
-package samaryanin.avitofork.data.database.favorites
+package samaryanin.avitofork.data.models.favorites
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

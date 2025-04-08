@@ -1,4 +1,4 @@
-package samaryanin.avitofork.domain.usecase.posts
+package samaryanin.avitofork.domain.usecase.poster
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.json.Json

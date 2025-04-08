@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.data.cache.FavoriteIds
 import samaryanin.avitofork.data.cache.FavoriteIds.favIdsFlow
-import samaryanin.avitofork.data.database.favorites.FavoriteAdRepository
-import samaryanin.avitofork.data.network.repository.AdRepo
-import samaryanin.avitofork.domain.model.Ad
+import samaryanin.avitofork.data.repository.database.FavoriteAdRepository
+import samaryanin.avitofork.data.repository.network.AdRepo
+import samaryanin.avitofork.domain.model.favorites.Ad
 import javax.inject.Inject
 
 @Stable
