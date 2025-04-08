@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import samaryanin.avitofork.data.dao.AppDatabase
+import samaryanin.avitofork.data.repository.AppDatabase
 import samaryanin.avitofork.data.dao.favorites.FavoriteAdDao
 
 @Module

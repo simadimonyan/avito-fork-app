@@ -1,4 +1,4 @@
-package samaryanin.avitofork.data.dao
+package samaryanin.avitofork.data.repository
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
