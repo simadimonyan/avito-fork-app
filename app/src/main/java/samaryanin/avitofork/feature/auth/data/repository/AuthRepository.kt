@@ -35,15 +35,22 @@ class AuthRepository @Inject constructor(
             setBody(RegistrationRequestDto(email, password, name))
         }.let { response -> response.status.value == 200 }
 
-    suspend fun verify(email: String, code: String): AuthToken? =
-        httpClient.post("/auth/verify") {
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-            headers {
-                append("device-id", Settings.Secure.ANDROID_ID)
+    suspend fun verify(email: String, code: String): AuthToken? {
+        return try {
+            httpClient.post("/auth/verify") {
+                header(HttpHeaders.ContentType, ContentType.Application.Json)
+                headers {
+                    append("device-id", Settings.Secure.ANDROID_ID)
+                }
+                setBody(VerityCodeRequestDto(email, code))
+            }.let { response ->
+                if (response.status.value != 200) null
+                else response.body<AuthToken>()
             }
-            setBody(VerityCodeRequestDto(email, code))
-        }.let { response -> if (response.status.value != 200) null
-            else response.body<AuthToken>() }
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     suspend fun login(email: String, password: String): AuthToken?  =
         httpClient.post("/auth/login") {

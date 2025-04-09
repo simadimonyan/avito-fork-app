@@ -19,7 +19,7 @@ class VerifyUseCase @Inject constructor(
 
         if (authToken != null) {
             cacheManager.saveAuthToken(authToken)
-            return AuthStatus.LOGIN_SUCCEED
+            return AuthStatus.EMAIL_VERIFIED
         }
         return AuthStatus.CREDENTIALS_ERROR
     }

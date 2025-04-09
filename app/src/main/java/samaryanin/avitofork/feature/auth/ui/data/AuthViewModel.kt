@@ -26,8 +26,8 @@ class AuthViewModel @Inject constructor(
             is AuthEvent.SendVerificationCode -> sendVerificationCode()
             is AuthEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.pass)
             is AuthEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
-            is AuthEvent.RegisterAccount -> TODO()
-            is AuthEvent.Refresh -> TODO()
+            is AuthEvent.RegisterAccount -> registerAccount(event.email, event.pass, event.name)
+            is AuthEvent.Refresh -> refreshSession()
         }
     }
 
@@ -42,6 +42,24 @@ class AuthViewModel @Inject constructor(
             val response = authUseCase.loginUseCase.login(email, pass)
             val result = response is AuthStatus.LOGIN_SUCCEED
             appStateStore.authStateHolder.setCredentialsValid(result)
+            appStateStore.authStateHolder.updateLoading(false)
+        }
+    }
+
+    private fun registerAccount(email: String, password: String, name: String) {
+        viewModelScope.launch {
+            appStateStore.authStateHolder.updateLoading(true)
+            val response = authUseCase.registerUseCase.register(email, password, name)
+            val result = response is AuthStatus.SIGNUP_SUCCEED
+            appStateStore.authStateHolder.setCredentialsValid(result)
+            appStateStore.authStateHolder.updateLoading(false)
+        }
+    }
+
+    private fun refreshSession() {
+        viewModelScope.launch {
+            appStateStore.authStateHolder.updateLoading(true)
+            authUseCase.refreshUseCase.refresh()
             appStateStore.authStateHolder.updateLoading(false)
         }
     }

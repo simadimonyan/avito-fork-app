@@ -12,7 +12,7 @@ class RegisterUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 
-    suspend fun login(email: String, password: String, name: String): AuthStatus {
+    suspend fun register(email: String, password: String, name: String): AuthStatus {
         val bool = authRepository.register(email, password, name)
 
         if (bool) return AuthStatus.SIGNUP_SUCCEED
