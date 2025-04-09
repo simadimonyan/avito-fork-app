@@ -16,6 +16,10 @@ sealed class AuthStatus(val label: String) {
 
     object USER_ALREADY_EXISTS_ERROR : AuthStatus("User already exists!")
 
+    object TOKEN_REFRESH_SUCCEED : AuthStatus("Token successfully refreshed!")
+
+    object TOKEN_REFRESH_ERROR : AuthStatus("Token is out of date!")
+
     data class ERROR(val message: String) : AuthStatus("Unknown error: $message")
 
 }

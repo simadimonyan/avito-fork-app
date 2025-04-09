@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import samaryanin.avitofork.core.ui.start.data.state.AppState
+import samaryanin.avitofork.feature.auth.data.dto.AuthToken
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,6 +39,29 @@ class CacheManager @Inject constructor(
     fun saveAppState(appState: AppState) {
         val json = gson.toJson(appState)
         preferences.edit().putString("uiAppState", json).apply()
+    }
+
+    fun getAuthToken(): AuthToken {
+        val json =  preferences.getString("authToken", null)
+
+        val type = object : TypeToken<AuthToken>() {}.type
+
+        if (json != null) {
+            val state: AuthToken = try {
+                gson.fromJson(json, type)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return AuthToken()
+            }
+            return state
+        }
+        else
+            return AuthToken()
+    }
+
+    fun saveAuthToken(authToken: AuthToken) {
+        val json = gson.toJson(authToken)
+        preferences.edit().putString("authToken", json).apply()
     }
 
 }
