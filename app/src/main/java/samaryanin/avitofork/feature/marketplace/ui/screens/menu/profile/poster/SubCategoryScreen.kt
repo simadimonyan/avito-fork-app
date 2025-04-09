@@ -36,9 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.utils.components.utils.space.Divider
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Divider
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.marketplace.domain.model.post.CategoryField
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryEvent

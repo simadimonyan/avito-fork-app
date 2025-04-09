@@ -52,10 +52,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
-import samaryanin.avitofork.core.utils.components.utils.space.Divider
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.theme.greyButton
-import samaryanin.avitofork.core.utils.theme.veryLightGray
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Divider
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.theme.greyButton
+import samaryanin.avitofork.core.ui.utils.theme.veryLightGray
 import samaryanin.avitofork.feature.marketplace.domain.model.post.CategoryField
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostData
 

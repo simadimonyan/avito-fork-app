@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import samaryanin.avitofork.core.utils.theme.lightGrayColor
+import samaryanin.avitofork.core.ui.utils.theme.lightGrayColor
 
 @Composable
 fun DefaultAvatar(name: String, modifier: Modifier = Modifier) {

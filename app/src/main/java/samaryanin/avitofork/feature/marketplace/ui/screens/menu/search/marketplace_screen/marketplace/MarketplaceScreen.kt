@@ -24,8 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.theme.AvitoForkTheme
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.theme.AvitoForkTheme
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.MarketplaceViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.additional_categories.CategoriesWithPhotos
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.main_categories.SelectableLazyRow

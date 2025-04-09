@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import samaryanin.avitofork.core.navigation.GlobalGraph
+import samaryanin.avitofork.core.ui.navigation.GlobalGraph
 import samaryanin.avitofork.core.ui.start.data.state.AppEvent
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
-import samaryanin.avitofork.core.utils.theme.AvitoForkTheme
+import samaryanin.avitofork.core.ui.utils.theme.AvitoForkTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

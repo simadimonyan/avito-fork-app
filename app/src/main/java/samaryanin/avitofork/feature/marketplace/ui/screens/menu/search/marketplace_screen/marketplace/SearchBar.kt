@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.textField.AppTextFieldPlaceholder
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
 
 @Preview(showSystemUi = true)
 @Composable

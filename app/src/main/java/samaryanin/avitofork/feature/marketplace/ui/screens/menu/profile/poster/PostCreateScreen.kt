@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.navigation.MainRoutes
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.navigation.MainRoutes
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.marketplace.domain.model.post.CategoryField
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostData
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState

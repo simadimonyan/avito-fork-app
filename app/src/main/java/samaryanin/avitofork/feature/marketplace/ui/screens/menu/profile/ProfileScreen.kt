@@ -45,10 +45,10 @@ import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.core.ui.start.data.state.AppEvent
 import samaryanin.avitofork.core.ui.start.data.state.AppState
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.theme.alphaLightBlue
-import samaryanin.avitofork.core.utils.theme.lightBlue
-import samaryanin.avitofork.core.utils.theme.navigationSelected
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.theme.alphaLightBlue
+import samaryanin.avitofork.core.ui.utils.theme.lightBlue
+import samaryanin.avitofork.core.ui.utils.theme.navigationSelected
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.components.AddProfile
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.components.DefaultAvatar

@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import samaryanin.avitofork.core.navigation.NestedScreenGraph
+import samaryanin.avitofork.core.ui.navigation.NestedScreenGraph
 import samaryanin.avitofork.core.ui.start.data.state.AppEvent
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.AuthBottomSheet

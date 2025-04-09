@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.navigation
+package samaryanin.avitofork.core.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition

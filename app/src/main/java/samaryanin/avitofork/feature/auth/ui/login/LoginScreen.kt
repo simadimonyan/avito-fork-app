@@ -39,9 +39,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
-import samaryanin.avitofork.core.utils.components.utils.textField.AppTextFieldPlaceholder
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.feature.auth.ui.data.AuthEvent
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
