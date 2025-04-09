@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.auth.domain.usecase
+package samaryanin.avitofork.core.domain
 
 import androidx.compose.runtime.Immutable
 import samaryanin.avitofork.feature.marketplace.domain.usecase.poster.ConfigurationUseCase

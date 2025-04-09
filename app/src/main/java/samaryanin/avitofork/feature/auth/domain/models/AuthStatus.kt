@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.auth.domain
+package samaryanin.avitofork.feature.auth.domain.models
 
 sealed class AuthStatus(val label: String) {
 
