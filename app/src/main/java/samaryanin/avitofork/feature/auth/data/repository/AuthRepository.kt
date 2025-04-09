@@ -3,8 +3,10 @@ package samaryanin.avitofork.feature.auth.data.repository
 import android.provider.Settings
 import androidx.compose.runtime.Stable
 import io.ktor.client.call.body
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headers
 import ru.dimagor555.avito.auth.request.LoginRequestDto
@@ -26,38 +28,41 @@ class AuthRepository @Inject constructor(
 
     suspend fun register(email: String, password: String, name: String): Boolean =
         httpClient.post("/auth/register") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
             headers {
-                append(HttpHeaders.ContentType, "application/json")
                 append("device-id", Settings.Secure.ANDROID_ID)
             }
             setBody(RegistrationRequestDto(email, password, name))
-        }.body<Boolean>()
+        }.let { response -> response.status.value == 200 }
 
     suspend fun verify(email: String, code: String): AuthToken? =
         httpClient.post("/auth/verify") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
             headers {
-                append(HttpHeaders.ContentType, "application/json")
                 append("device-id", Settings.Secure.ANDROID_ID)
             }
             setBody(VerityCodeRequestDto(email, code))
-        }.body<AuthToken>() ?: null
+        }.let { response -> if (response.status.value != 200) null
+            else response.body<AuthToken>() }
 
     suspend fun login(email: String, password: String): AuthToken?  =
         httpClient.post("/auth/login") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
             headers {
-                append(HttpHeaders.ContentType, "application/json")
                 append("device-id", Settings.Secure.ANDROID_ID)
             }
             setBody(LoginRequestDto(email, password))
-        }.body<AuthToken>() ?: null
+        }.let { response -> if (response.status.value != 200) null
+            else response.body<AuthToken>() }
 
     suspend fun refresh(oldAccessToken: String, oldRefreshToken: String): AuthToken? =
         httpClient.post("/auth/refresh") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
             headers {
-                append(HttpHeaders.ContentType, "application/json")
                 append("device-id", Settings.Secure.ANDROID_ID)
             }
             setBody(RefreshRequestDto(oldRefreshToken, oldRefreshToken))
-        }.body<AuthToken>() ?: null
+        }.let { response -> if (response.status.value != 200) null
+            else response.body<AuthToken>() }
 
 }

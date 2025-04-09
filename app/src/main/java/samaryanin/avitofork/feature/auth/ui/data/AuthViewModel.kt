@@ -26,6 +26,8 @@ class AuthViewModel @Inject constructor(
             is AuthEvent.SendVerificationCode -> sendVerificationCode()
             is AuthEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.pass)
             is AuthEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
+            is AuthEvent.RegisterAccount -> TODO()
+            is AuthEvent.Refresh -> TODO()
         }
     }
 

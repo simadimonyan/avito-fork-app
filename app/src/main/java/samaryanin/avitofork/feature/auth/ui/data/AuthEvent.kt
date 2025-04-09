@@ -29,6 +29,17 @@ sealed class AuthEvent {
     data class VerifyAccountCredentials(val email: String, val pass: String) : AuthEvent()
 
     /**
+     * Регистрация аккаунта
+     */
+    @Immutable
+    data class RegisterAccount(val email: String, val pass: String, val name: String) : AuthEvent()
+
+    /**
+     * Обновить сессию
+     */
+    object Refresh : AuthEvent()
+
+    /**
      * Отправить код подтверждения
      */
     object SendVerificationCode : AuthEvent()
