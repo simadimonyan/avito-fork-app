@@ -89,7 +89,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.0.0.jar"))
+    implementation(files("libs/domain-jvm-1.0.1.jar"))
 
     // Decompose
     implementation(libs.decompose)

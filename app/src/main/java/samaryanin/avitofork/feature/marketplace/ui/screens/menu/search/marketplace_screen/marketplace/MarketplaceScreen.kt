@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -46,9 +45,6 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
         derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
     }
 
-    SideEffect {
-
-    }
     AvitoForkTheme {
 
         Scaffold(
@@ -92,7 +88,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                             isFav = favoriteIds.contains(ad.id),
                             globalNavController = globalNavController,
                             onFavoriteClick = {
-                                viewModel.addToFav(ad.id)
+                               viewModel.toggleFavoriteAd(ad.id)
                             }
                         )
                     }
