@@ -12,6 +12,7 @@ import ru.dimagor555.avito.dto.AdDto
 import ru.dimagor555.avito.dto.CategoryDto
 import ru.dimagor555.avito.request.GetAdsByIdsRequestDto
 import ru.dimagor555.avito.request.GetFilteredAdsRequestDto
+import ru.dimagor555.avito.user.request.ToggleFavouriteRequestDto
 import samaryanin.avitofork.core.network.KtorClient
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Category
@@ -57,6 +58,16 @@ class AdRepo @Inject constructor(
         .body<List<AdDto>>()
         .map { it.toDomain() }
 
+    suspend fun getFavoriteAds(): List<Ad> = httpClient
+        .get("ad/favourite") {
+        }
+        .body<List<AdDto>>()
+        .map { it.toDomain() }
+
+    suspend fun toggleFavouriteAd(adId: String, isFavorite: Boolean): Any = httpClient
+        .post("user/toggleFavouriteAd"){
+            setBody(ToggleFavouriteRequestDto(adId, isFavorite))
+        }
 
     suspend fun getAllCategories(): List<Category> = httpClient
         .get("ad/categories")

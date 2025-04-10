@@ -12,16 +12,20 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.database.cache.FavoriteIds.favIdsFlow
-import samaryanin.avitofork.feature.marketplace.data.repository.ad.AdRepo
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Category
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetAllCategoriesUseCase
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetFilteredAdsUseCase
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.ToggleFavoriteAdUseCase
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 @Stable
 @HiltViewModel
 class MarketplaceViewModel @Inject constructor(
-    private val adRepo: AdRepo,
+    private val getFilteredAdsUseCase: GetFilteredAdsUseCase,
+    private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
+    private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase
 ) : ViewModel() {
 
     val favoriteIds: StateFlow<Set<String>> = favIdsFlow.asStateFlow()
@@ -37,24 +41,21 @@ class MarketplaceViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             selectedCategoryIds
-                .onEach {
-                    _allAds.value = adRepo.getFilteredAds(it)
-                }
                 .debounce(250.milliseconds)
+                .onEach { categoryIds ->
+                    _allAds.value = getFilteredAdsUseCase(categoryIds)
+                }
                 .collect()
         }
+
         viewModelScope.launch {
-            _allCategories.value = adRepo.getAllCategories()
+            _allCategories.value = getAllCategoriesUseCase()
         }
     }
 
-    fun addToFav(adId: String) {
-        val updatedIds = favoriteIds.value.toMutableSet()
-        if (updatedIds.contains(adId)) {
-            updatedIds.remove(adId)
-        } else {
-            updatedIds.add(adId)
+    fun toggleFavoriteAd(adId: String, isFavorite: Boolean = true) {
+        viewModelScope.launch {
+            toggleFavoriteAdUseCase(adId, isFavorite)
         }
-        favIdsFlow.value = updatedIds
     }
 }
