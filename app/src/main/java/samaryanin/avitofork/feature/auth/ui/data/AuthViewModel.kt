@@ -22,7 +22,7 @@ class AuthViewModel @Inject constructor(
             is AuthEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.email)
             is AuthEvent.UpdateEmailState -> appStateStore.authStateHolder.updateEmail(event.email)
             is AuthEvent.UpdateProfileState -> appStateStore.authStateHolder.updateProfile(event.profile)
-            is AuthEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.email, event.password, event.code)
+            is AuthEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.email, event.code) //, event.password
             is AuthEvent.SendVerificationCode -> sendVerificationCode()
             is AuthEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.pass)
             is AuthEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
@@ -75,7 +75,7 @@ class AuthViewModel @Inject constructor(
     // TODO(подключить бекенд сервис для получения кода)
     private fun sendVerificationCode() {}
 
-    private fun emailFieldCodeVerify(email: String, password: String, code: String) {
+    private fun emailFieldCodeVerify(email: String, code: String) { // , password: String
         viewModelScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
 

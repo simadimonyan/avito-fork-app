@@ -14,7 +14,7 @@ data class AuthState(
      * Персональные данные от аккаунта
      */
     val profile: String = "",
-    val password: String = "",
+    //val password: String = "",
     val email: String = "",
 
     /**
@@ -77,9 +77,9 @@ class AuthStateHolder @Inject constructor() {
         _authState.update { it.copy(passwordFormIsValid = isValid) }
     }
 
-    fun setPassword(password: String) {
-        _authState.update { it.copy(password = password) }
-    }
+//    fun setPassword(password: String) {
+//        _authState.update { it.copy(password = password) }
+//    }
 
     fun setCredentialsValid(isValid: Boolean) {
         _authState.update { it.copy(credentialsAreValid = isValid) }
