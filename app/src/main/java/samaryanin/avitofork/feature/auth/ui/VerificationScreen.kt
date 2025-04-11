@@ -199,7 +199,7 @@ fun VerificationContent(
                         if (code.isBlank()) {
                             errorFrame = true
                         } else {
-                            handleEvent(AuthEvent.CheckEmailCodeValidation(state.email, state.password, code))
+                            handleEvent(AuthEvent.CheckEmailCodeValidation(state.email, code)) //state.password
                             launchedEffectFlagTrigger = true
                         }
                     },
