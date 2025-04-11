@@ -80,7 +80,7 @@ fun CreateProfileScreen(
 
     // обработчик авторизации
     val onRegister: (name: String, pass: String) -> Unit = { name, pass ->
-        navHostController.navigate(MainRoutes.MainScreen.route) {
+        navHostController.navigate(AuthRoutes.Verification.route) { // MainRoutes.MainScreen.route
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -89,7 +89,7 @@ fun CreateProfileScreen(
         }
         keyboardController?.hide()
 
-        authViewModel.handleEvent(AuthEvent.RegisterAccount(state.email, name, pass))
+        authViewModel.handleEvent(AuthEvent.RegisterAccount(state.email, pass, name))
     }
 
     // обработчик событий

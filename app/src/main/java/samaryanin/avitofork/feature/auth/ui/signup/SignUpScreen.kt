@@ -73,7 +73,7 @@ fun SignUpScreen(
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(AuthRoutes.Verification) { //.createRoute(true)
+        navHostController.navigate(AuthRoutes.CreateProfile.route) { //.createRoute(true)
             launchSingleTop = true
             restoreState = true
         }

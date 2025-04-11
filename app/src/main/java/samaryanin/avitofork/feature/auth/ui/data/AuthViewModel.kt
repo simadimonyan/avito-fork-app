@@ -22,7 +22,7 @@ class AuthViewModel @Inject constructor(
             is AuthEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.email)
             is AuthEvent.UpdateEmailState -> appStateStore.authStateHolder.updateEmail(event.email)
             is AuthEvent.UpdateProfileState -> appStateStore.authStateHolder.updateProfile(event.profile)
-            is AuthEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.email, event.code)
+            is AuthEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.email, event.password, event.code)
             is AuthEvent.SendVerificationCode -> sendVerificationCode()
             is AuthEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.pass)
             is AuthEvent.CheckPasswordFormValidation -> isPasswordValid(event.password)
@@ -55,14 +55,8 @@ class AuthViewModel @Inject constructor(
 
             val regResponse = authUseCase.registerUseCase.register(email, password, name)
             val regResult = regResponse is AuthStatus.SIGNUP_SUCCEED
+            //if (regResult) appStateStore.authStateHolder.setPassword(password)
             appStateStore.authStateHolder.setCredentialsValid(regResult)
-
-            if (regResult) {
-                val logResponse = authUseCase.loginUseCase.login(email, password)
-                val logResult = logResponse is AuthStatus.LOGIN_SUCCEED
-                if (logResult) appStateStore.appStateHolder.authorizeProfile()
-                    else appStateStore.authStateHolder.setPostRegLoginError(true)
-            }
 
             appStateStore.authStateHolder.updateLoading(false)
         }
@@ -81,14 +75,25 @@ class AuthViewModel @Inject constructor(
     // TODO(подключить бекенд сервис для получения кода)
     private fun sendVerificationCode() {}
 
-    private fun emailFieldCodeVerify(email: String, code: String) {
+    private fun emailFieldCodeVerify(email: String, password: String, code: String) {
         viewModelScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
 
             val response = authUseCase.verifyUseCase.verify(email, code)
             val result = response is AuthStatus.EMAIL_VERIFIED
+            if (result) appStateStore.appStateHolder.authorizeProfile()
 
             appStateStore.authStateHolder.setEmailCodeValid(result)
+
+//            if (result) {
+//                val logResponse = authUseCase.loginUseCase.login(email, password)
+//                val logResult = logResponse is AuthStatus.LOGIN_SUCCEED
+//                if (logResult) {
+//                    appStateStore.appStateHolder.authorizeProfile()
+//                    appStateStore.authStateHolder.setPassword("cleared")
+//                }
+//                else appStateStore.authStateHolder.setPostRegLoginError(true)
+//            }
 
             appStateStore.authStateHolder.updateLoading(false)
         }
