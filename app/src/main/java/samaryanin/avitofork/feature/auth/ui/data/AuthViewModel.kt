@@ -39,9 +39,12 @@ class AuthViewModel @Inject constructor(
     private fun verifyCredentials(email: String, pass: String) {
         viewModelScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
+
             val response = authUseCase.loginUseCase.login(email, pass)
             val result = response is AuthStatus.LOGIN_SUCCEED
             appStateStore.authStateHolder.setCredentialsValid(result)
+            if (result) appStateStore.appStateHolder.authorizeProfile()
+
             appStateStore.authStateHolder.updateLoading(false)
         }
     }
@@ -49,9 +52,18 @@ class AuthViewModel @Inject constructor(
     private fun registerAccount(email: String, password: String, name: String) {
         viewModelScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
-            val response = authUseCase.registerUseCase.register(email, password, name)
-            val result = response is AuthStatus.SIGNUP_SUCCEED
-            appStateStore.authStateHolder.setCredentialsValid(result)
+
+            val regResponse = authUseCase.registerUseCase.register(email, password, name)
+            val regResult = regResponse is AuthStatus.SIGNUP_SUCCEED
+            appStateStore.authStateHolder.setCredentialsValid(regResult)
+
+            if (regResult) {
+                val logResponse = authUseCase.loginUseCase.login(email, password)
+                val logResult = logResponse is AuthStatus.LOGIN_SUCCEED
+                if (logResult) appStateStore.appStateHolder.authorizeProfile()
+                    else appStateStore.authStateHolder.setPostRegLoginError(true)
+            }
+
             appStateStore.authStateHolder.updateLoading(false)
         }
     }
@@ -59,7 +71,9 @@ class AuthViewModel @Inject constructor(
     private fun refreshSession() {
         viewModelScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
+
             authUseCase.refreshUseCase.refresh()
+
             appStateStore.authStateHolder.updateLoading(false)
         }
     }
@@ -70,9 +84,12 @@ class AuthViewModel @Inject constructor(
     private fun emailFieldCodeVerify(email: String, code: String) {
         viewModelScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
+
             val response = authUseCase.verifyUseCase.verify(email, code)
             val result = response is AuthStatus.EMAIL_VERIFIED
+
             appStateStore.authStateHolder.setEmailCodeValid(result)
+
             appStateStore.authStateHolder.updateLoading(false)
         }
     }
@@ -81,12 +98,5 @@ class AuthViewModel @Inject constructor(
         val bool = email.matches("^[a-zA-Zа-яА-ЯёЁ0-9._%+-]+@[a-zA-Zа-яА-ЯёЁ0-9.-]+\\.[a-zA-Zа-яА-ЯёЁ]{2,}\$".toRegex())
         appStateStore.authStateHolder.setEmailFieldValid(bool)
     }
-
-//    private fun hash(data: String): String {
-//        val bytes = data.toByteArray()
-//        val md = MessageDigest.getInstance("SHA-256")
-//        val digest = md.digest(bytes)
-//        return digest.fold("") { str, it -> str + "%02x".format(it) }
-//    }
 
 }

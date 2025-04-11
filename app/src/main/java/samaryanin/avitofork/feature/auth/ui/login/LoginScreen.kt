@@ -36,9 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
+import samaryanin.avitofork.core.ui.navigation.MainRoutes
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
@@ -83,10 +85,17 @@ fun LoginScreen(
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(AuthRoutes.Verification.createRoute(false)) {
+        navHostController.navigate(MainRoutes.MainScreen.route) {
+            popUpTo(navHostController.graph.findStartDestination().id) {
+                saveState = true
+            }
             launchSingleTop = true
             restoreState = true
         }
+//        navHostController.navigate(AuthRoutes.Verification.createRoute(false)) {
+//            launchSingleTop = true
+//            restoreState = true
+//        }
         keyboardController?.hide()
     }
 
