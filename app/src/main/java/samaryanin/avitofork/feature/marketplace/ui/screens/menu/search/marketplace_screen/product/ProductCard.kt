@@ -1,6 +1,5 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.product
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.database.cache.FavoriteIds.favIdsFlow
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.NavigationHolder
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
@@ -45,8 +43,10 @@ fun ProductCard(
     ad: Ad,
     isFav: Boolean?,
     globalNavController: NavHostController,
-    onFavoriteClick: () -> Unit) {
+    onFavoriteClick: () -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
+    var isFavoriteState by remember { mutableStateOf(isFav ?: false) } // Добавляем состояние для избранного
 
     Card(
         modifier = Modifier
@@ -59,7 +59,7 @@ fun ProductCard(
         colors = CardColors(
             containerColor = Color.White,
             contentColor = Color.Black,
-            disabledContainerColor =Color.White,
+            disabledContainerColor = Color.White,
             disabledContentColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -109,14 +109,14 @@ fun ProductCard(
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
                 ) {
+                    // Иконка сердечка, которая меняется в зависимости от состояния
                     Image(
-                        painter = painterResource(if (isFav == true) R.drawable.like_act else R.drawable.like_non_act),
+                        painter = painterResource(if (isFavoriteState) R.drawable.like_act else R.drawable.like_non_act),
                         contentDescription = "",
                         modifier = Modifier
-
                             .clickable {
-                                onFavoriteClick()
-                                Log.d("FAV", "$favIdsFlow")
+                                isFavoriteState = !isFavoriteState // Меняем состояние
+                                onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных
                             }
                             .size(24.dp)
                     )
