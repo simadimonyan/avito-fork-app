@@ -6,9 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import samaryanin.avitofork.core.database.cache.CacheManager
 import samaryanin.avitofork.core.network.KtorClient
-import samaryanin.avitofork.feature.auth.data.repository.AuthRepository
 import javax.inject.Singleton
 
 @Module
@@ -19,10 +17,8 @@ object KtorModule {
     @Singleton
     fun provideKtorClient(
         @ApplicationContext context: Context,
-        authRepository: AuthRepository,
-        cacheManager: CacheManager
     ): KtorClient {
         val baseUrl = "https://194.54.159.160/api/v1/"
-        return KtorClient(context, baseUrl, cacheManager, authRepository)
+        return KtorClient(context, baseUrl)
     }
 }

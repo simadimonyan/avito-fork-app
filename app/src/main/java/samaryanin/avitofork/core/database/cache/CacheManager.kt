@@ -8,6 +8,7 @@ import samaryanin.avitofork.core.ui.start.data.state.AppState
 import samaryanin.avitofork.feature.auth.data.dto.AuthToken
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 @Singleton
 @Immutable
@@ -38,7 +39,7 @@ class CacheManager @Inject constructor(
 
     fun saveAppState(appState: AppState) {
         val json = gson.toJson(appState)
-        preferences.edit().putString("uiAppState", json).apply()
+        preferences.edit() { putString("uiAppState", json) }
     }
 
     fun getAuthToken(): AuthToken {
@@ -61,7 +62,7 @@ class CacheManager @Inject constructor(
 
     fun saveAuthToken(authToken: AuthToken) {
         val json = gson.toJson(authToken)
-        preferences.edit().putString("authToken", json).apply()
+        preferences.edit() { putString("authToken", json) }
     }
 
 }

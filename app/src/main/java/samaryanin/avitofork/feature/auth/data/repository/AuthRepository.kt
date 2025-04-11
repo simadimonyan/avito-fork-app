@@ -55,7 +55,7 @@ class AuthRepository @Inject constructor(
     suspend fun refresh(oldAccessToken: String, oldRefreshToken: String): AuthToken? =
         httpClient.post("$strictUrl/auth/refresh") {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
-            setBody(RefreshRequestDto(oldRefreshToken, oldRefreshToken))
+            setBody(RefreshRequestDto(oldAccessToken, oldRefreshToken))
         }.let { response -> if (response.status.value != 200) null
             else response.body<AuthToken>() }
 

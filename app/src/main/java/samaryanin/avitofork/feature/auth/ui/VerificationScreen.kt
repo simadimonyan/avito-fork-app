@@ -43,6 +43,7 @@ import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.navigation.MainRoutes
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
+import samaryanin.avitofork.core.ui.start.data.state.AppEvent
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextBody
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
@@ -102,6 +103,8 @@ fun VerificationScreen(
             restoreState = true
         }
         keyboardController?.hide()
+        mainViewModel.handleEvent(AppEvent.SaveAppState) // isLoggedIn state
+
         //if (!profileCreating) mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
     }
 
