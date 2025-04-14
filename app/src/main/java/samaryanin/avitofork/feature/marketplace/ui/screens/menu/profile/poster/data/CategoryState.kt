@@ -5,33 +5,35 @@ import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.serialization.Serializable
 import samaryanin.avitofork.feature.marketplace.domain.model.post.CategoryField
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Immutable
+@Serializable
 data class CategoryState(
 
     /**
      * Список категорий объявлений (включает в себя подкатегории и их поля)
      */
-    val categories: List<CategoryField> = mutableStateListOf(),
+    @Serializable val categories: List<CategoryField> = mutableStateListOf(),
 
     /**
      * Список черновиков по категориям и подкатегориям
      */
-    val drafts: Map<String, PostState> = mutableMapOf(),
+    @Serializable val drafts: Map<String, PostState> = mutableMapOf(),
 
     /**
      * Временный черновик для сборки поста в список черновиков или публикации
      */
-    val tempDraft: PostState = PostState(),
+    @Serializable val tempDraft: PostState = PostState(),
 
     /**
      * Состояние подгрузки категорий
      */
-    val isLoading: Boolean = false
+    @Serializable val isLoading: Boolean = false
 
 )
 
