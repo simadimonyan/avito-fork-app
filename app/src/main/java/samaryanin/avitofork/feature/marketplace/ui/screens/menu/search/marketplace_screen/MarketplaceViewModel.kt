@@ -1,5 +1,8 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen
 
+import android.content.SharedPreferences
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +26,7 @@ class MarketplaceViewModel @Inject constructor(
     private val getFilteredAdsUseCase: GetFilteredAdsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
-    private val favoriteManager: FavoriteManager
+    private val favoriteManager: FavoriteManager,
 ) : ViewModel() {
 
     val allAds = MutableStateFlow<List<Ad>?>(null)
@@ -34,10 +37,10 @@ class MarketplaceViewModel @Inject constructor(
     init {
         // Загрузка избранных товаров из DataStore
         loadFavorites()
-
         // Синхронизация избранных товаров с сервером
         viewModelScope.launch {
-      //      favoriteManager.syncWithServer()
+            favoriteManager.syncWithServer()
+            Log.d("SYNCH", "${favoriteManager.favorites.value} ")
         }
 
         viewModelScope.launch {
@@ -59,7 +62,12 @@ class MarketplaceViewModel @Inject constructor(
     fun toggleFavoriteAd(id: String) {
         favoriteManager.toggleFavorite(id)
         viewModelScope.launch {
-            toggleFavoriteAdUseCase.invoke(id, favoriteManager.isFavorite(id))
+            try{
+                toggleFavoriteAdUseCase.invoke(id, favoriteManager.isFavorite(id))
+
+            } catch (e: Exception){
+
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.database.cache.FavoriteIds
 import samaryanin.avitofork.core.database.cache.FavoriteIds.favIdsFlow
+import samaryanin.avitofork.core.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.data.repository.ad.AdRepo
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import javax.inject.Inject
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesScreenViewModel @Inject constructor(
     private val adRepo: AdRepo,
+    private val favoriteManager: FavoriteManager,
 ) : ViewModel() {
 
     private val _favoriteAds = MutableStateFlow<List<Ad>>(emptyList())
@@ -25,14 +27,23 @@ class FavoritesScreenViewModel @Inject constructor(
 
     fun getFavoriteAds() {
         viewModelScope.launch {
-            if (favIdsFlow.value?.isEmpty() == true) {
+            if (favoriteManager.favorites.value.isEmpty()) {
                 _favoriteAds.value = emptyList()
             } else {
-                val ads = adRepo.getAdsByIds(favIdsFlow.value.toList())
+                val ads = adRepo.getAdsByIds(favoriteManager.favorites.value.toList())
                 _favoriteAds.value = ads
             }
 
         }
+//        viewModelScope.launch {
+//            if (favIdsFlow.value?.isEmpty() == true) {
+//                _favoriteAds.value = emptyList()
+//            } else {
+//                val ads = adRepo.getAdsByIds(favIdsFlow.value.toList())
+//                _favoriteAds.value = ads
+//            }
+//
+//        }
     }
 
     fun toggleFavorite(ad: Ad) {
