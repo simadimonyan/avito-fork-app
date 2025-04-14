@@ -26,6 +26,7 @@ import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.dimagor555.avito.auth.request.RefreshRequestDto
+import samaryanin.avitofork.core.database.cache.CacheManager
 import samaryanin.avitofork.core.utils.DeviceIdProvider
 import samaryanin.avitofork.feature.auth.data.dto.AuthToken
 import javax.inject.Inject
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class KtorClient @Inject constructor(
     private val context: Context,
     private val baseUrl: String,
+    private var cacheManager: CacheManager
 ) {
 
     private val gson = Gson()
@@ -51,11 +53,13 @@ class KtorClient @Inject constructor(
             header("device-id", deviceId)
             header(HttpHeaders.ContentType, ContentType.Application.Json)
 
-            val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
-            val json = prefs.getString("authToken", null)
+            //val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
+            val json = cacheManager.preferences.getString("authToken", null)
 
             val type = object : TypeToken<AuthToken>() {}.type
             var token = AuthToken()
+
+            Log.d("KTOR", json.toString())
 
             if (json != null) {
                 val state: AuthToken = try {
@@ -82,8 +86,8 @@ class KtorClient @Inject constructor(
 
                 loadTokens {
 
-                    val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
-                    val json = prefs.getString("authToken", null)
+                    //val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
+                    val json = cacheManager.preferences.getString("authToken", null)
 
                     val type = object : TypeToken<AuthToken>() {}.type
                     var token = AuthToken()

@@ -1,6 +1,5 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data
 
-import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
