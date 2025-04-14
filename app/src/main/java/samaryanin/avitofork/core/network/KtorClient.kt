@@ -46,15 +46,28 @@ class KtorClient @Inject constructor(
         }
 
         install(DefaultRequest) {
+
             val deviceId = DeviceIdProvider.getDeviceId(context)
             header("device-id", deviceId)
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
 
-            // токен авторизации
-//            val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
-//            val token = prefs.getString("access_token", null)
-//            if (!token.isNullOrBlank()) {
-//                header(HttpHeaders.Authorization, "Bearer $token")
-//            }
+            val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
+            val json = prefs.getString("authToken", null)
+
+            val type = object : TypeToken<AuthToken>() {}.type
+            var token = AuthToken()
+
+            if (json != null) {
+                val state: AuthToken = try {
+                    gson.fromJson(json, type)
+                } catch (_: Exception) { AuthToken() }
+                token = state
+            }
+
+            if (token.accessToken.isNotBlank()) {
+                header(HttpHeaders.Authorization, "Bearer ${token.accessToken}")
+            }
+
         }
 
         install(HttpTimeout) {

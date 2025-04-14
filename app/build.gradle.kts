@@ -91,7 +91,7 @@ dependencies {
     // Domain Lib
     implementation(files("libs/domain-jvm-1.0.2.jar"))
 
-    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation (libs.androidx.datastore.preferences)
 
     // Decompose
     implementation(libs.decompose)
