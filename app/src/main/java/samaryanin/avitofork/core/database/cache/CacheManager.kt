@@ -13,7 +13,7 @@ import androidx.core.content.edit
 @Singleton
 @Immutable
 class CacheManager @Inject constructor(
-    private val preferences: SharedPreferences
+    val preferences: SharedPreferences
 ) {
 
     private val gson = Gson()
@@ -39,7 +39,7 @@ class CacheManager @Inject constructor(
 
     fun saveAppState(appState: AppState) {
         val json = gson.toJson(appState)
-        preferences.edit() { putString("uiAppState", json) }
+        preferences.edit { putString("uiAppState", json) }
     }
 
     fun getAuthToken(): AuthToken {
@@ -62,7 +62,7 @@ class CacheManager @Inject constructor(
 
     fun saveAuthToken(authToken: AuthToken) {
         val json = gson.toJson(authToken)
-        preferences.edit() { putString("authToken", json) }
+        preferences.edit { putString("authToken", json) }
     }
 
 }

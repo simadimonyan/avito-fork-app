@@ -1,21 +1,31 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data
 
 import androidx.compose.runtime.Stable
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import samaryanin.avitofork.core.domain.PostUseCase
 import samaryanin.avitofork.core.ui.start.data.state.AppStateStore
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
-import samaryanin.avitofork.core.domain.PostUseCase
 import javax.inject.Inject
 
 @Stable
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     val appStateStore: AppStateStore,
-    private val postUseCase: PostUseCase
+    private val postUseCase: PostUseCase,
+    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
+
+    private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
 
     fun handleEvent(event: CategoryEvent) {
         when (event) {
@@ -44,6 +54,7 @@ class CategoryViewModel @Inject constructor(
         mapping[subCategory] = draft
 
         appStateStore.categoryStateHolder.updateDrafts(mapping)
+        saveDraftsStateToCache()
     }
 
     private fun clearDraft(subCategory: String) {
@@ -54,6 +65,7 @@ class CategoryViewModel @Inject constructor(
         mapping.remove(subCategory)
 
         appStateStore.categoryStateHolder.updateDrafts(mapping)
+        saveDraftsStateToCache()
     }
 
     private fun updateConfiguration() {
@@ -64,6 +76,22 @@ class CategoryViewModel @Inject constructor(
             appStateStore.categoryStateHolder.updateLoading(false)
         }
 
+    }
+
+    // ---
+
+    private fun saveDraftsStateToCache() {
+        viewModelScope.launch {
+
+            val gson = Gson()
+            val json = gson.toJson(appStateStore.categoryStateHolder.categoryState.value.drafts)
+
+            withContext(Dispatchers.IO) {
+                dataStore.edit { preferences ->
+                    preferences[DRAFTS_KEY] = mutableSetOf(json)
+                }
+            }
+        }
     }
 
 }
