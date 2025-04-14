@@ -64,9 +64,9 @@ class AdRepo @Inject constructor(
         .body<List<AdDto>>()
         .map { it.toDomain() }
 
-    suspend fun toggleFavouriteAd(adId: String, isFavorite: Boolean): Any = httpClient
+    suspend fun toggleFavouriteAd(adId: String, isFavorite: Boolean) = httpClient
         .post("user/toggleFavouriteAd"){
-            setBody(ToggleFavouriteRequestDto(adId, isFavorite))
+            setBody(ToggleFavouriteRequestDto(adId = adId, isFavourite = isFavorite))
         }
 
     suspend fun getAllCategories(): List<Category> = httpClient

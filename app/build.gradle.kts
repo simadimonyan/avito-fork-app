@@ -89,12 +89,15 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.0.1.jar"))
+    implementation(files("libs/domain-jvm-1.0.2.jar"))
+
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
     // Decompose
     implementation(libs.decompose)
     implementation(libs.decompose.extensions.compose)
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.datastore.core.android)
 
     // Hilt
     kapt(libs.hilt.android.compiler)

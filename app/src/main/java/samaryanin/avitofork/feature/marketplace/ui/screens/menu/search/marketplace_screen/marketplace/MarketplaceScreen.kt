@@ -85,7 +85,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     items(ads.orEmpty()) { ad ->
                         ProductCard(
                             ad = ad,
-                            isFav = favoriteIds.contains(ad.id),
+                            isFav = viewModel.isFavorite(ad.id),
                             globalNavController = globalNavController,
                             onFavoriteClick = {
                                viewModel.toggleFavoriteAd(ad.id)
