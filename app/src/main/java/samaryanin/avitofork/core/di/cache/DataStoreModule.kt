@@ -24,4 +24,5 @@ object DataStoreModule {
     fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return context.dataStore
     }
+
 }
