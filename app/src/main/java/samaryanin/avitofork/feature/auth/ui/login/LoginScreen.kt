@@ -36,16 +36,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
-import samaryanin.avitofork.core.utils.components.utils.textField.AppTextFieldPlaceholder
+import samaryanin.avitofork.core.ui.navigation.MainRoutes
+import samaryanin.avitofork.core.ui.start.data.MainViewModel
+import samaryanin.avitofork.core.ui.start.data.state.AppEvent
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.feature.auth.ui.data.AuthEvent
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
-import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
 
 /**
  * Функция для предпросмотра макета
@@ -65,6 +68,7 @@ fun LoginPreview() {
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
+    mainViewModel: MainViewModel,
     navHostController: NavHostController
 ) {
 
@@ -83,11 +87,19 @@ fun LoginScreen(
 
     // обработчик авторизации
     val onLogin = {
-        navHostController.navigate(AuthRoutes.Verification.createRoute(false)) {
+        navHostController.navigate(MainRoutes.MainScreen.route) {
+            popUpTo(navHostController.graph.findStartDestination().id) {
+                saveState = true
+            }
             launchSingleTop = true
             restoreState = true
         }
+//        navHostController.navigate(AuthRoutes.Verification.createRoute(false)) {
+//            launchSingleTop = true
+//            restoreState = true
+//        }
         keyboardController?.hide()
+        mainViewModel.handleEvent(AppEvent.SaveAppState) // isLoggedIn state
     }
 
     // обработчик событий

@@ -1,6 +1,5 @@
 package samaryanin.avitofork.core.ui.start.data
 
-
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,11 +19,15 @@ class MainViewModel @Inject constructor(
         when(event) {
             is AppEvent.SaveAppState -> saveAppState()
             is AppEvent.RestoreCache -> restoreCache()
-            is AppEvent.FirstStartUp -> appStateStore.appStateHolder.setFirstStartUpSettings(event.isFirstStartUp)
+            is AppEvent.FirstStartUp -> firstStartUp(event.isFirstStartUp)
             is AppEvent.ToggleAuthRequest -> appStateStore.appStateHolder.toggleAuthRequest()
             is AppEvent.ProfileHasLoggedIn -> appStateStore.appStateHolder.authorizeProfile()
         }
         saveAppState()
+    }
+
+    private fun firstStartUp(bool: Boolean) {
+        appStateStore.appStateHolder.setFirstStartUpSettings(bool)
     }
 
     private fun saveAppState() {

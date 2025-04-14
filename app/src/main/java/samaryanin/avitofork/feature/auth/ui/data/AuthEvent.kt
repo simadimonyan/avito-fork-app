@@ -20,13 +20,24 @@ sealed class AuthEvent {
      * Валидация кода подтверждения
      */
     @Immutable
-    data class CheckEmailCodeValidation(val email: String, val code: String) : AuthEvent()
+    data class CheckEmailCodeValidation(val email: String, val code: String) : AuthEvent() //val password: String
 
     /**
      * Проверка существования аккаунта и соответствия пароля
      */
     @Immutable
     data class VerifyAccountCredentials(val email: String, val pass: String) : AuthEvent()
+
+    /**
+     * Регистрация аккаунта
+     */
+    @Immutable
+    data class RegisterAccount(val email: String, val pass: String, val name: String) : AuthEvent()
+
+    /**
+     * Обновить сессию
+     */
+    object Refresh : AuthEvent()
 
     /**
      * Отправить код подтверждения

@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import samaryanin.avitofork.core.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 
 @Composable
 fun SelectableLazyRow() {

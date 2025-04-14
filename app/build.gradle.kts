@@ -106,6 +106,7 @@ dependencies {
     // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.contentNegotiation)
     implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.client.logging)
@@ -144,6 +145,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.ui.tooling)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.security.crypto)
 
     // Baseline Profiler
     implementation(libs.androidx.profileinstaller)

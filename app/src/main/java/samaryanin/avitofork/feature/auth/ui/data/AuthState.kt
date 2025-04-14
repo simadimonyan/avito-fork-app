@@ -14,6 +14,7 @@ data class AuthState(
      * Персональные данные от аккаунта
      */
     val profile: String = "",
+    //val password: String = "",
     val email: String = "",
 
     /**
@@ -39,7 +40,12 @@ data class AuthState(
     /**
      * Состояние валидации сложности пароля
      */
-    val passwordFormIsValid: Boolean = false
+    val passwordFormIsValid: Boolean = false,
+
+    /**
+     * Неизвестная ошибка при входе после регистрации
+     */
+    val postRegLoginError: Boolean = false
 
 )
 
@@ -71,6 +77,10 @@ class AuthStateHolder @Inject constructor() {
         _authState.update { it.copy(passwordFormIsValid = isValid) }
     }
 
+//    fun setPassword(password: String) {
+//        _authState.update { it.copy(password = password) }
+//    }
+
     fun setCredentialsValid(isValid: Boolean) {
         _authState.update { it.copy(credentialsAreValid = isValid) }
     }
@@ -82,4 +92,9 @@ class AuthStateHolder @Inject constructor() {
     fun setEmailFieldValid(isValid: Boolean) {
         _authState.update { it.copy(emailIsValid = isValid) }
     }
+
+    fun setPostRegLoginError(isError: Boolean) {
+        _authState.update { it.copy(postRegLoginError = isError) }
+    }
+
 }

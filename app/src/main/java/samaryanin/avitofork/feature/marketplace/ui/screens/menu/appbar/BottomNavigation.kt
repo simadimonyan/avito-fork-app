@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.core.ui.start.data.state.AppState
-import samaryanin.avitofork.core.utils.theme.navigationSelected
+import samaryanin.avitofork.core.ui.utils.theme.navigationSelected
 
 @Composable
 fun BottomAppNavigation(

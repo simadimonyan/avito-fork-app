@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.auth.domain
+package samaryanin.avitofork.feature.auth.domain.models
 
 sealed class AuthStatus(val label: String) {
 
@@ -15,6 +15,10 @@ sealed class AuthStatus(val label: String) {
     object USER_NOT_FOUND_ERROR : AuthStatus("User is not found!")
 
     object USER_ALREADY_EXISTS_ERROR : AuthStatus("User already exists!")
+
+    object TOKEN_REFRESH_SUCCEED : AuthStatus("Token successfully refreshed!")
+
+    object TOKEN_REFRESH_ERROR : AuthStatus("Token is out of date!")
 
     data class ERROR(val message: String) : AuthStatus("Unknown error: $message")
 

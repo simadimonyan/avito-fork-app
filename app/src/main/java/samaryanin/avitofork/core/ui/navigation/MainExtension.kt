@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.navigation
+package samaryanin.avitofork.core.ui.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

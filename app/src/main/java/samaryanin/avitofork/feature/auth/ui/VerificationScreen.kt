@@ -41,14 +41,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.navigation.MainRoutes
+import samaryanin.avitofork.core.ui.navigation.MainRoutes
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.core.ui.start.data.state.AppEvent
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextBody
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
-import samaryanin.avitofork.core.utils.components.utils.textField.AppDigitsTextField
-import samaryanin.avitofork.core.utils.theme.greyButton
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextBody
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppDigitsTextField
+import samaryanin.avitofork.core.ui.utils.theme.greyButton
 import samaryanin.avitofork.feature.auth.ui.data.AuthEvent
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
@@ -69,14 +69,14 @@ fun VerificationPreview() {
  * @param authViewModel модель обработки состояний регистрации
  * @param mainViewModel модель глобальной обработки состояний приложения
  * @param navHostController контроллер навигации
- * @param profileCreating условие для регистрации профиля
+// * @param profileCreating условие для регистрации профиля
  */
 @Composable
 fun VerificationScreen(
     authViewModel: AuthViewModel,
     mainViewModel: MainViewModel,
     navHostController: NavHostController,
-    profileCreating: Boolean = false
+   // profileCreating: Boolean = false
 ) {
 
     val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
@@ -90,17 +90,22 @@ fun VerificationScreen(
 
     // обработчик навигации входа
     val onLogin = {
-        navHostController.navigate(if (profileCreating) AuthRoutes.CreateProfile.route else MainRoutes.MainScreen.route) {
-            if (!profileCreating) {
-                popUpTo(navHostController.graph.findStartDestination().id) {
-                    saveState = true
-                }
+        navHostController.navigate(MainRoutes.MainScreen.route) { // if (profileCreating) AuthRoutes.CreateProfile.route else
+//            if (!profileCreating) {
+//                popUpTo(navHostController.graph.findStartDestination().id) {
+//                    saveState = true
+//                }
+//            }
+            popUpTo(navHostController.graph.findStartDestination().id) {
+                saveState = true
             }
             launchSingleTop = true
             restoreState = true
         }
         keyboardController?.hide()
-        if (!profileCreating) mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
+        mainViewModel.handleEvent(AppEvent.SaveAppState) // isLoggedIn state
+
+        //if (!profileCreating) mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
     }
 
     // обработчик событий
@@ -129,7 +134,7 @@ fun VerificationScreen(
 @Composable
 fun VerificationContent(
     onExit: () -> Unit?,
-    onLogin: () -> Unit,
+    onLogin: () -> Unit?,
     state: AuthState,
     handleEvent: (AuthEvent) -> Unit
 ) {
@@ -141,16 +146,19 @@ fun VerificationContent(
     var errorFrame by remember { mutableStateOf(false) }
     var errorCodeIsNotValid by remember { mutableStateOf(false) }
     var sendCodeState by remember { mutableStateOf(false) }
+    var launchedEffectFlagTrigger by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.isLoading) {
+    LaunchedEffect(launchedEffectFlagTrigger, state.isLoading) {
         if (code.isNotEmpty() && !state.isLoading) {
             if (state.emailCodeIsValid) {
                 onLogin()
             } else {
                 errorCodeIsNotValid = true
+                launchedEffectFlagTrigger = false
             }
         }
     }
+
 
     Scaffold(
         containerColor = Color.White,
@@ -194,7 +202,8 @@ fun VerificationContent(
                         if (code.isBlank()) {
                             errorFrame = true
                         } else {
-                            handleEvent(AuthEvent.CheckEmailCodeValidation(state.email, code))
+                            handleEvent(AuthEvent.CheckEmailCodeValidation(state.email, code)) //state.password
+                            launchedEffectFlagTrigger = true
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Black),

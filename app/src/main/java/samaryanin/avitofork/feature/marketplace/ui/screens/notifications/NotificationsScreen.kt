@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import samaryanin.avitofork.core.utils.theme.navigationSelected
+import samaryanin.avitofork.core.ui.utils.theme.navigationSelected
 
 /**
  * Функция для предпросмотра макета

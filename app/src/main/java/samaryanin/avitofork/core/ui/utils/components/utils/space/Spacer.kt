@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.utils.components.utils.space
+package samaryanin.avitofork.core.ui.utils.components.utils.space
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding

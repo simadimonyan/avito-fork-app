@@ -36,12 +36,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.navigation.MainRoutes
+import samaryanin.avitofork.core.ui.navigation.MainRoutes
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
-import samaryanin.avitofork.core.ui.start.data.state.AppEvent
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
-import samaryanin.avitofork.core.utils.components.utils.textField.AppTextFieldPlaceholder
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
 import samaryanin.avitofork.feature.auth.ui.data.AuthEvent
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
@@ -53,7 +52,7 @@ import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
 @Preview(showSystemUi = false)
 @Composable
 fun CreateProfilePreview() {
-    CreateProfileContent({}, {}, { AuthState() }, {}) // пустой обработчик
+    CreateProfileContent({}, { _: String, _: String -> }, { AuthState() }, {}) // пустой обработчик
 }
 
 /**
@@ -80,8 +79,8 @@ fun CreateProfileScreen(
     }
 
     // обработчик авторизации
-    val onLogin = {
-        navHostController.navigate(MainRoutes.MainScreen.route) {
+    val onRegister: (name: String, pass: String) -> Unit = { name, pass ->
+        navHostController.navigate(AuthRoutes.Verification.route) { // MainRoutes.MainScreen.route
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -89,7 +88,8 @@ fun CreateProfileScreen(
             restoreState = true
         }
         keyboardController?.hide()
-        mainViewModel.handleEvent(AppEvent.ProfileHasLoggedIn)
+
+        authViewModel.handleEvent(AuthEvent.RegisterAccount(state.email, pass, name))
     }
 
     // обработчик событий
@@ -100,7 +100,7 @@ fun CreateProfileScreen(
     // содержимое окна
     CreateProfileContent(
         onExit = onExit,
-        onLogin = onLogin,
+        onRegister = onRegister,
         state = { state },
         handleEvent = handleEvent
     )
@@ -110,14 +110,14 @@ fun CreateProfileScreen(
  * Встраиваемый компонент окна
  * -------------------------------------
  * @param onExit обработчик навигации выхода
- * @param onLogin обработчик авторизации
+ * @param onRegister обработчик авторизации
  * @param state получение состояния
  * @param handleEvent обработчик событий
  */
 @Composable
 fun CreateProfileContent(
     onExit: () -> Unit?,
-    onLogin: () -> Unit,
+    onRegister: (name: String, pass: String) -> Unit,
     state: () -> AuthState,
     handleEvent: (AuthEvent) -> Unit
 ) {
@@ -155,7 +155,7 @@ fun CreateProfileContent(
                                     if (password != repeatPassword) {
                                         errorPassNotEquals = true // ошибка на несовпадение паролей
                                     } else {
-                                        onLogin()
+                                        onRegister(profile, password)
                                     }
                                 }
                             }

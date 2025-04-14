@@ -4,10 +4,8 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.navArgument
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.VerificationScreen
 import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
@@ -47,7 +45,7 @@ fun NavGraphBuilder.authGraph(
                 )
             }
         ) {
-            LoginScreen(authViewModel, globalNavController)
+            LoginScreen(authViewModel, mainViewModel, globalNavController)
         }
         composable(
             route = AuthRoutes.SignUp.route,
@@ -72,11 +70,11 @@ fun NavGraphBuilder.authGraph(
         }
         composable(
             route = AuthRoutes.Verification.route,
-            arguments = listOf(
-                navArgument("createProfile") {
-                    type = NavType.BoolType
-                }
-            ),
+//            arguments = listOf(
+//                navArgument("createProfile") {
+//                    type = NavType.BoolType
+//                }
+//            ),
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -93,9 +91,9 @@ fun NavGraphBuilder.authGraph(
                     )
                 )
             }
-        ) { backStackEntry ->
-            val createProfile = backStackEntry.arguments?.getBoolean("createProfile") ?: false
-            VerificationScreen(authViewModel, mainViewModel, globalNavController, createProfile)
+        ) { //backStackEntry ->
+            //val createProfile = backStackEntry.arguments?.getBoolean("createProfile") ?: false
+            VerificationScreen(authViewModel, mainViewModel, globalNavController) //, createProfile
         }
         composable(
             route = AuthRoutes.CreateProfile.route,

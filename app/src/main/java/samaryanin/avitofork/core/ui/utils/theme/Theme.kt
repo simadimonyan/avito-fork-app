@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.utils.theme
+package samaryanin.avitofork.core.ui.utils.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

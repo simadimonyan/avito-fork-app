@@ -43,7 +43,7 @@ import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.core.ui.start.data.state.AppState
-import samaryanin.avitofork.core.utils.components.utils.text.AppTextTitle
+import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes

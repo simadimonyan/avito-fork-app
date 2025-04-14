@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.ui.start.data.state.AppStateStore
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
-import samaryanin.avitofork.feature.auth.domain.usecase.PostUseCase
+import samaryanin.avitofork.core.domain.PostUseCase
 import javax.inject.Inject
 
 @Stable

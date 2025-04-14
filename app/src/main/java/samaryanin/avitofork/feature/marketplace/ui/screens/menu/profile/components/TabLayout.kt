@@ -31,9 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.core.utils.components.placeholders.ProfileEmptyPublication
-import samaryanin.avitofork.core.utils.components.placeholders.ProfilePublication
-import samaryanin.avitofork.core.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.placeholders.ProfileEmptyPublication
+import samaryanin.avitofork.core.ui.utils.components.placeholders.ProfilePublication
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostData
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 

@@ -1,6 +1,5 @@
 package samaryanin.avitofork.feature.auth.ui.navigation
 
-import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 
 /**
@@ -28,13 +27,15 @@ sealed class AuthRoutes(val route: String) {
      * Окно для верификации кода
      * - /{createProfile} условие навигации окна создания профиля
      */
-    @Serializable
-    @Stable
-    object Verification : AuthRoutes("verification/{createProfile}") {
-        fun createRoute(createProfile: Boolean): String {
-            return route.replace("{createProfile}", createProfile.toString())
-        }
-    }
+//    @Serializable
+//    @Stable
+//    object Verification : AuthRoutes("verification/{createProfile}") {
+//        fun createRoute(createProfile: Boolean): String {
+//            return route.replace("{createProfile}", createProfile.toString())
+//        }
+//    }
+
+    @Serializable object Verification : AuthRoutes("verification")
 
     /**
      * Окно для создания профиля

@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.utils.components.utils.textField
+package samaryanin.avitofork.core.ui.utils.components.utils.textField
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.utils.theme.lightGrayColor
+import samaryanin.avitofork.core.ui.utils.theme.lightGrayColor
 
 @Composable
 fun AppDigitsTextField(

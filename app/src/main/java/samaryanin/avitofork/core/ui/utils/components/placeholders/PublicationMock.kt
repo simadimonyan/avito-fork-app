@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.utils.components.placeholders
+package samaryanin.avitofork.core.ui.utils.components.placeholders
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -29,8 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import samaryanin.avitofork.R
-import samaryanin.avitofork.core.utils.components.utils.space.Space
-import samaryanin.avitofork.core.utils.theme.lightGrayColor
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.theme.lightGrayColor
 
 @Preview
 @Composable
