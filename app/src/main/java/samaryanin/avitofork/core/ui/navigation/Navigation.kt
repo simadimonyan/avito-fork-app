@@ -15,7 +15,9 @@ import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
 import samaryanin.avitofork.feature.auth.ui.navigation.authGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.FavoritesScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.navigation.FavoriteRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.navigation.MessagesRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.MessagesScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.data.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes
@@ -36,6 +38,7 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val categoriesViewModel: CategoryViewModel = hiltViewModel()
+    val messagesViewModel: MessagesViewModel = hiltViewModel()
 
     NavHost(
         navController = globalNavController,
@@ -47,6 +50,8 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
         ) {
             MainScreen(
                 mainViewModel,
+                profileViewModel,
+                messagesViewModel,
                 globalNavController
             )
         }
@@ -79,10 +84,10 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
 fun NestedScreenGraph(
     screenNavController: NavHostController,
     mainViewModel: MainViewModel,
+    profileViewModel: ProfileViewModel,
+    messagesViewModel: MessagesViewModel,
     globalNavController: NavHostController
 ) {
-
-    val profileViewModel: ProfileViewModel = hiltViewModel()
 
     NavHost(
         navController = screenNavController,
@@ -132,7 +137,7 @@ fun NestedScreenGraph(
                 ExitTransition.None
             }
         ) {
-            Box {} //TODO
+            MessagesScreen(messagesViewModel)
         }
 
         // ------------------------- Профиль --------------------------

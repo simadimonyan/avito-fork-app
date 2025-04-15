@@ -19,6 +19,8 @@ data class PostState(
 @Immutable
 data class PostData(
 
+    val name: String = "",
+
     val photos: List<String> = mutableListOf(),
 
     val price: String = "",
