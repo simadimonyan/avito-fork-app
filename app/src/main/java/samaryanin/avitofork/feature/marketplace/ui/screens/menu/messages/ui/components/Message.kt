@@ -174,7 +174,7 @@ fun MessageItem(userId: String, chat: Chat) {
                         Text(
                             text = lastMessage.timestamp,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Normal,
                             color = Color.Gray
                         )
 
