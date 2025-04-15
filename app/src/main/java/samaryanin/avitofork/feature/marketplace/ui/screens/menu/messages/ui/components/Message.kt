@@ -4,22 +4,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Divider
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.theme.greyButton
@@ -27,38 +32,81 @@ import samaryanin.avitofork.feature.marketplace.domain.model.post.PostData
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Chat
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Message
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.MessageState
 
 @Preview(showBackground = true)
 @Composable
 fun MessagePreview() {
     Box {
-        MessageItemList(mutableListOf(
+        MessageItemList("myId", mutableListOf(
             Chat(
                 "",
                 "Поддержка AvitoFork",
                 mutableListOf(
                     Message(
                         "",
+                        "anotherId",
                         "Рады вам помочь!",
-                        ""
+                        "15:00",
+                        MessageState.READ
                     )
                 ),
             ),
             Chat(
                 "",
-                "Евгений",
+                "Иван",
                 mutableListOf(
                     Message(
                         "",
-                        "Рады вам помочь!",
-                        ""
+                        "myId",
+                        "Когда можем созвониться?",
+                        "17:37",
+                        MessageState.READ
                     )
                 ),
                 PostState(
                     "",
                     "",
                     PostData(
-                        "Macbook 14 pro M1",
+                        "IPhone 15 Pro",
+                        mutableListOf(),
+                        "150 000",
+                        "руб."
+                    )
+                )
+            ),
+            Chat(
+                "",
+                "Алексей",
+                mutableListOf(
+                    Message(
+                        "",
+                        "myId",
+                        "Послезавтра готов забрать",
+                        "10:13",
+                        MessageState.SENT
+                    )
+                ),
+                PostState(
+                    "",
+                    "",
+                    PostData(
+                        "Мангал для дачи",
+                        mutableListOf(),
+                        "150 000",
+                        "руб."
+                    )
+                )
+            ),
+            Chat(
+                "",
+                "Евгений",
+                mutableListOf(),
+                PostState(
+                    "",
+                    "",
+                    PostData(
+                        "Macbook 14 pro M1 1T 32GB ",
                         mutableListOf(),
                         "150 000",
                         "руб."
@@ -70,17 +118,17 @@ fun MessagePreview() {
 }
 
 @Composable
-fun MessageItemList(chats: List<Chat>) {
+fun MessageItemList(userId: String, chats: List<Chat>) {
     LazyColumn {
         items(chats.size) { index ->
-            MessageItem(chats[index])
+            MessageItem(userId, chats[index])
             if (index < chats.size) Divider()
         }
     }
 }
 
 @Composable
-fun MessageItem(chat: Chat) {
+fun MessageItem(userId: String, chat: Chat) {
 
     val post = chat.postReference.data
 
@@ -88,11 +136,12 @@ fun MessageItem(chat: Chat) {
         modifier = Modifier.background(Color.Transparent)
             .wrapContentSize().fillMaxWidth().padding(10.dp)
     ) {
+
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
             Box(
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(74.dp)
                     .clip(CircleShape)
                     .background(greyButton),
                 contentAlignment = Alignment.Center
@@ -107,33 +156,128 @@ fun MessageItem(chat: Chat) {
 
             Column(modifier = Modifier.padding(start = 15.dp)) {
 
-                Text(
-                    text = chat.profileName,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Space(2.dp)
-
-                if (chat.messages.size > 1) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
 
                     Text(
-                        text = chat.messages[chat.messages.size - 1].content,
+                        text = chat.profileName,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+
+                    Spacer(Modifier.weight(1f))
+
+                    if (chat.messages.isNotEmpty()) {
+
+                        val lastMessage = chat.messages[chat.messages.size - 1]
+
+                        Text(
+                            text = lastMessage.timestamp,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Gray
+                        )
+
+                        Space(5.dp)
+
+                    }
+
+                }
+
+                if (post.name.isNotBlank()) {
+
+                    Space(1.dp)
+
+                    val postName = if (post.name.length > 25) {
+                        "${post.name.take(25)}..."
+                    } else {
+                        post.name
+                    }
+
+                    Text(
+                        text = postName,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Normal,
-                        color = Color.Gray
+                        color = Color.Black
                     )
 
                 }
-                else {
 
-                    Text(
-                        text = post.name,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray
-                    )
+                if (chat.messages.isNotEmpty()) {
+
+                    Space(if (post.name.isNotBlank()) 2.dp else 4.dp)
+
+                    Row {
+
+                        val lastMessage = chat.messages[chat.messages.size - 1]
+
+                        val message = if (lastMessage.content.length > 20) {
+                            "${lastMessage.content.take(20)}..."
+                        } else {
+                            lastMessage.content
+                        }
+
+                        Text(
+                            text = if (userId == lastMessage.user) "Вы: $message"
+                                else message,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.Gray
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if (lastMessage.user == userId) {
+
+                            chat.messages[chat.messages.size - 1].state.let { state ->
+
+                                var messageStateResource = 0
+                                var size = 0
+                                var offset = 0
+                                var readFlag = false
+
+                                when (state) {
+
+                                    MessageState.RECEIVED -> {
+                                        messageStateResource = R.drawable.received_mark
+                                        readFlag = false
+                                        size = 15
+                                        offset = 0
+                                    }
+
+                                    MessageState.SENT -> {
+                                        messageStateResource = R.drawable.sent_mark
+                                        readFlag = false
+                                        size = 12
+                                        offset = 3
+                                    }
+
+                                    MessageState.READ -> {
+                                        messageStateResource = R.drawable.received_mark
+                                        readFlag = true
+                                        size = 15
+                                        offset = 0
+                                    }
+
+                                }
+
+                                Icon(
+                                    painter = painterResource(messageStateResource),
+                                    tint = if (readFlag) Color.Blue else Color.Black,
+                                    contentDescription = "mark",
+                                    modifier = Modifier.size(size.dp).offset(-offset.dp, 3.dp)
+                                )
+
+                            }
+
+                        }
+
+                        Space(5.dp)
+
+                    }
+
+                }
+                else {
 
                     Space(2.dp)
 
@@ -149,6 +293,7 @@ fun MessageItem(chat: Chat) {
             }
 
         }
+
     }
 
 }
