@@ -1,8 +1,5 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen
 
-import android.content.SharedPreferences
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.core.ui.UiState
 import samaryanin.avitofork.core.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Category
@@ -34,27 +32,52 @@ class MarketplaceViewModel @Inject constructor(
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
     val favoriteIds = favoriteManager.favorites
 
+    val adsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
+    val categoriesState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
+
     init {
-        // Загрузка избранных товаров из DataStore
         loadFavorites()
-        // Синхронизация избранных товаров с сервером
-        viewModelScope.launch {
-            favoriteManager.syncWithServer()
-            Log.d("SYNCH", "${favoriteManager.favorites.value} ")
+
+        if (favoriteIds.value.isNotEmpty()) {
+            viewModelScope.launch {
+                favoriteManager.syncWithServer()
+            }
         }
 
         viewModelScope.launch {
-            // Обработка изменения выбранных категорий
             selectedCategoryIds
                 .debounce(250.milliseconds)
                 .collectLatest { ids ->
-                    allAds.value = getFilteredAdsUseCase(ids)
+                    adsState.value = UiState.Loading
+                    try {
+                        val result = getFilteredAdsUseCase(ids)
+                        adsState.value = UiState.Success(result)
+                    } catch (e: Exception) {
+                        adsState.value = UiState.Error(e)
+                    }
                 }
         }
 
         viewModelScope.launch {
-            // Загрузка всех категорий
-            allCategories.value = getAllCategoriesUseCase()
+            categoriesState.value = UiState.Loading
+            try {
+                val result = getAllCategoriesUseCase()
+                categoriesState.value = UiState.Success(result)
+            } catch (e: Exception) {
+                categoriesState.value = UiState.Error(e)
+            }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            try {
+                adsState.value = UiState.Loading
+                val result = getFilteredAdsUseCase(selectedCategoryIds.value)
+                adsState.value = UiState.Success(result)
+            } catch (e: Exception) {
+                adsState.value = UiState.Error(e)
+            }
         }
     }
 
