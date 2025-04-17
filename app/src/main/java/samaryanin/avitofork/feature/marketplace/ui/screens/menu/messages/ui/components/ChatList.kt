@@ -1,6 +1,7 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -36,9 +39,10 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.
 
 @Preview(showBackground = true)
 @Composable
-fun MessagePreview() {
+fun ChatItemPreview() {
     Box {
-        MessageItemList("myId", mutableListOf(
+        ChatItemList(
+            rememberLazyListState(), "myId", mutableListOf(
             Chat(
                 "",
                 "Поддержка AvitoFork",
@@ -113,22 +117,39 @@ fun MessagePreview() {
                     )
                 )
             )
-        ))
+        )) {}
     }
 }
 
 @Composable
-fun MessageItemList(userId: String, chats: List<Chat>) {
-    LazyColumn {
+fun ChatItemList(
+    state: LazyListState = rememberLazyListState(),
+    userId: String,
+    chats: List<Chat>,
+    onItemClicked: (String) -> Unit
+) {
+    LazyColumn(state = state) {
         items(chats.size) { index ->
-            MessageItem(userId, chats[index])
-            if (index < chats.size) Divider()
+            Box(
+                modifier = Modifier.wrapContentSize()
+                    .clickable { onItemClicked(chats[index].toString()) }
+            ) {
+                ChatItem(userId, chats[index])
+                if (index != 0 && index < chats.size - 1) Divider()
+            }
+        }
+
+        item {
+            Space(40.dp)
         }
     }
 }
 
 @Composable
-fun MessageItem(userId: String, chat: Chat) {
+fun ChatItem(
+    userId: String,
+    chat: Chat
+) {
 
     val post = chat.postReference.data
 

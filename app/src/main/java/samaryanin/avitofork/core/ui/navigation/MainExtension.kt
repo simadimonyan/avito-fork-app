@@ -4,6 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigation
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.utilMessagesGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.utilProfileGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
@@ -21,6 +23,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigatio
  */
 fun NavGraphBuilder.utilGraph(
     mainViewModel: MainViewModel,
+    messagesViewModel: MessagesViewModel,
     profileViewModel: ProfileViewModel,
     categoriesViewModel: CategoryViewModel,
     globalNavController: NavHostController
@@ -30,6 +33,7 @@ fun NavGraphBuilder.utilGraph(
         utilProfileGraph(globalNavController)
         utilSearchGraph(globalNavController)
         utilPosterGraph(globalNavController, profileViewModel, categoriesViewModel)
+        utilMessagesGraph(messagesViewModel, globalNavController)
 
     }
 }

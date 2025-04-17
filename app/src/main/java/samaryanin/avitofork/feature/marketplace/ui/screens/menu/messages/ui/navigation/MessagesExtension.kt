@@ -6,20 +6,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import samaryanin.avitofork.core.ui.start.data.MainViewModel
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.DirectMessagesScreen
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.data.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.ChatScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
 
 /**
  * Расширение навигации авторизации Navigation Graph выше слоя BottomSheet
  * ----------------------------------------------
  * @param viewModel модель сообщений
- * @param mainViewModel главная модель приложения
  * @param globalNavController глобальный контроллер навигации
  */
-fun NavGraphBuilder.messagesGraph(
+fun NavGraphBuilder.utilMessagesGraph(
     viewModel: MessagesViewModel,
-    mainViewModel: MainViewModel,
     globalNavController: NavHostController,
 ) {
 
@@ -45,7 +42,7 @@ fun NavGraphBuilder.messagesGraph(
         ) { backStackEntry ->
 
             val id = backStackEntry.arguments?.getString("directId") ?: ""
-            DirectMessagesScreen(viewModel, id)
+            ChatScreen(viewModel, id)
 
         }
 

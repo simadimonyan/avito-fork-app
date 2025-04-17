@@ -17,7 +17,7 @@ import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
 
-@Preview(showSystemUi = true)
+@Preview
 @Composable
 fun SearchBarPreview() {
     SearchBar(search = "", onSearchChange = {}, showShadow = true)

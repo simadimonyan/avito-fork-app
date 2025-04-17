@@ -2,7 +2,6 @@ package samaryanin.avitofork.core.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -16,7 +15,7 @@ import samaryanin.avitofork.feature.auth.ui.navigation.authGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.FavoritesScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.navigation.FavoriteRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.MessagesScreen
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.data.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
@@ -58,6 +57,7 @@ fun GlobalGraph(mainViewModel: MainViewModel) {
 
         utilGraph(
             mainViewModel,
+            messagesViewModel,
             profileViewModel,
             categoriesViewModel,
             globalNavController
@@ -137,7 +137,7 @@ fun NestedScreenGraph(
                 ExitTransition.None
             }
         ) {
-            MessagesScreen(messagesViewModel)
+            MessagesScreen(globalNavController, messagesViewModel)
         }
 
         // ------------------------- Профиль --------------------------

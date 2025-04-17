@@ -26,7 +26,7 @@ import samaryanin.avitofork.feature.auth.ui.AuthBottomSheet
 import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.appbar.BottomAppNavigation
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.navigation.FavoriteRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.data.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes

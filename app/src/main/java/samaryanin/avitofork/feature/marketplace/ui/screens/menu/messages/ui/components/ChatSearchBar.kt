@@ -1,0 +1,43 @@
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.components
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import samaryanin.avitofork.R
+import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
+import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.marketplace.IconButton
+
+@Preview
+@Composable
+fun ChatSearchBarPreview() {
+    ChatTopBar(search = "", onSearchChange = {})
+}
+
+@Composable
+fun ChatTopBar(search: String, onSearchChange: (String) -> Unit) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 17.dp, vertical = 12.dp)
+    ) {
+
+        IconButton(R.drawable.search) {}
+
+        Space()
+
+        AppTextFieldPlaceholder(
+            value = search,
+            onValueChange = onSearchChange,
+            placeholder = "Поиск по сообщениям",
+            errorListener = false,
+            modifier = Modifier.weight(1f)
+        )
+
+    }
+
+}

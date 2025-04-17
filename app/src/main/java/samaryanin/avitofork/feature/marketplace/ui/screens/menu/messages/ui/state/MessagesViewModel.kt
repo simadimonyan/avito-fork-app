@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.data
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel

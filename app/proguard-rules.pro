@@ -113,3 +113,5 @@
 -dontwarn com.google.errorprone.annotations.InlineMe
 -dontwarn com.google.errorprone.annotations.RestrictedApi
 -dontwarn org.joda.time.Instant
+
+-dontwarn android.test.**

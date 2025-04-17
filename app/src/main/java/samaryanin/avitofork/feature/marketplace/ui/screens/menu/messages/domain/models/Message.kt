@@ -14,3 +14,4 @@ data class Message(
 enum class MessageState {
     RECEIVED, SENT, READ
 }
+
