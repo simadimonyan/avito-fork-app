@@ -28,10 +28,8 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.ui.UiState
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
-import samaryanin.avitofork.core.ui.start.data.state.AppState
 import samaryanin.avitofork.core.ui.utils.components.ShimmerAdCard
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
-import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 
 @Composable
@@ -39,40 +37,8 @@ fun FavoritesScreen(
     mainViewModel: MainViewModel,
     globalNavController: NavHostController,
 ) {
-    val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
-    val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
-    val navigateTo = 0
-//        { index: Int ->
-//        when (index) {
-//            0 -> { // 0 - индекс навигации на экран уведомлений
-//                globalNavController.navigate(ProfileRoutes.Notifications.route) {
-//                    popUpTo(globalNavController.graph.findStartDestination().id) {
-//                        saveState = true
-//                    }
-//                    restoreState = true
-//                    launchSingleTop = true
-//                }
-//            }
-//            1 -> { // 1 - индекс навигации на экран настроек
-//                globalNavController.navigate(SettingsRoutes.Settings.route) {
-//                    popUpTo(globalNavController.graph.findStartDestination().id) {
-//                        saveState = true
-//                    }
-//                    restoreState = true
-//                    launchSingleTop = true
-//                }
-//            }
-//        }
-//    }
-    // обработчик событий для AuthBottomSheet
-    val authRequest = {
-        //  mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
-    }
 
     FavoritesScreenContent(
-        { appState },
-        //navigateTo,
-        authRequest, { authState },
         globalNavController
     )
 }
@@ -80,9 +46,6 @@ fun FavoritesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreenContent(
-    appState: () -> AppState,
-    authRequest: () -> Unit,
-    authState: () -> AuthState,
     globalNavController: NavHostController
 ) {
     val viewModel: FavoritesScreenViewModel = hiltViewModel()
@@ -101,8 +64,8 @@ fun FavoritesScreenContent(
         is UiState.Loading -> (favoritesState as? UiState.Success<List<Ad>>)?.data ?: emptyList()
         else -> emptyList()
     }
-    val showShimmer = favoritesState is UiState.Loading && ads.isEmpty()
-    val showError = favoritesState is UiState.Error && ads.isEmpty()
+    val showShimmer = favoritesState is UiState.Loading
+    val showError = favoritesState is UiState.Error
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
