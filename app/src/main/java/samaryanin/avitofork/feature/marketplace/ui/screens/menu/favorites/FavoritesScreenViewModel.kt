@@ -6,45 +6,46 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.core.database.cache.FavoriteIds
-import samaryanin.avitofork.core.database.cache.FavoriteIds.favIdsFlow
+import samaryanin.avitofork.core.ui.UiState
+import samaryanin.avitofork.core.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.data.repository.ad.AdRepo
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import javax.inject.Inject
-
 @Stable
 @HiltViewModel
 class FavoritesScreenViewModel @Inject constructor(
     private val adRepo: AdRepo,
+    val favoriteManager: FavoriteManager,
 ) : ViewModel() {
 
-    private val _favoriteAds = MutableStateFlow<List<Ad>>(emptyList())
-    val favoriteAds: StateFlow<List<Ad>> = _favoriteAds.asStateFlow()
+    private val _favoriteAdsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
+    val favoriteAdsState: StateFlow<UiState<List<Ad>>> = _favoriteAdsState
 
-    fun getFavoriteAds() {
+    init {
+        observeFavorites()
+    }
+
+    fun observeFavorites() {
         viewModelScope.launch {
-            if (favIdsFlow.value?.isEmpty() == true) {
-                _favoriteAds.value = emptyList()
-            } else {
-                val ads = adRepo.getAdsByIds(favIdsFlow.value.toList())
-                _favoriteAds.value = ads
+            favoriteManager.favorites.collect { ids ->
+                _favoriteAdsState.value = UiState.Loading
+                try {
+                    if (ids.isEmpty()) {
+                        _favoriteAdsState.value = UiState.Success(emptyList())
+                    } else {
+                        val ads = adRepo.getAdsByIds(ids.toList())
+                        _favoriteAdsState.value = UiState.Success(ads)
+                    }
+                } catch (e: Exception) {
+                    _favoriteAdsState.value = UiState.Error(e)
+                }
             }
-
         }
     }
 
     fun toggleFavorite(ad: Ad) {
-        viewModelScope.launch {
-            val current = FavoriteIds.favIdsFlow.value.toMutableSet()
-            if (current.contains(ad.id)) {
-                current.remove(ad.id)
-            } else {
-                current.add(ad.id)
-            }
-            FavoriteIds.favIdsFlow.value = current
-            getFavoriteAds()
-        }
+        favoriteManager.toggleFavorite(ad.id)
+        // больше не нужно вызывать getFavoriteAds() вручную
     }
 }

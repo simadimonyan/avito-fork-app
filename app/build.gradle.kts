@@ -98,6 +98,7 @@ dependencies {
     implementation(libs.decompose.extensions.compose)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.benchmark.macro)
 
     // Hilt
     kapt(libs.hilt.android.compiler)
@@ -134,6 +135,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material)
+    implementation(libs.androidx.material3)
     implementation(libs.androidx.animation)
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.preference.ktx)
@@ -144,7 +146,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.ui.tooling)
-    implementation(libs.androidx.material3)
+    //implementation(libs.androidx.material3)
     implementation(libs.androidx.security.crypto)
 
     // Baseline Profiler

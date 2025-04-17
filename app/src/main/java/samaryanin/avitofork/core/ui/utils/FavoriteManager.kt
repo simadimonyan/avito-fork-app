@@ -10,9 +10,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetFavoriteAdsUseCase
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.ToggleFavoriteAdUseCase
 import javax.inject.Inject
 
-class FavoriteManager @Inject constructor(  // Добавить @Inject
+class FavoriteManager @Inject constructor(
+    private val getFavoriteAdsUseCase: GetFavoriteAdsUseCase,
+    private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
     private val dataStore: DataStore<Preferences>
 ) {
     companion object {
@@ -65,7 +69,24 @@ class FavoriteManager @Inject constructor(  // Добавить @Inject
         saveFavorites(emptySet())
     }
 
-    fun syncWithServer() {
-        // Логика синхронизации с сервером
+    suspend fun syncWithServer() {
+        val localFavorites = _favorites.value
+        val remoteAds = getFavoriteAdsUseCase()
+        val remoteFavorites = remoteAds.map { it.id }.toSet()
+
+        val toAddToServer = localFavorites - remoteFavorites
+        val toRemoveFromServer = remoteFavorites - localFavorites
+
+        toAddToServer.forEach { id ->
+            toggleFavoriteAdUseCase(id, true)
+        }
+
+        toRemoveFromServer.forEach { id ->
+            toggleFavoriteAdUseCase(id, false)
+        }
+
+        val syncedFavorites = getFavoriteAdsUseCase().map { it.id }.toSet()
+        _favorites.value = syncedFavorites
+        saveFavorites(syncedFavorites)
     }
 }

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.core.ui.UiState
 import samaryanin.avitofork.core.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Category
@@ -23,7 +24,7 @@ class MarketplaceViewModel @Inject constructor(
     private val getFilteredAdsUseCase: GetFilteredAdsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
-    private val favoriteManager: FavoriteManager
+    private val favoriteManager: FavoriteManager,
 ) : ViewModel() {
 
     val allAds = MutableStateFlow<List<Ad>?>(null)
@@ -31,27 +32,52 @@ class MarketplaceViewModel @Inject constructor(
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
     val favoriteIds = favoriteManager.favorites
 
+    val adsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
+    val categoriesState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
+
     init {
-        // Загрузка избранных товаров из DataStore
         loadFavorites()
 
-        // Синхронизация избранных товаров с сервером
-        viewModelScope.launch {
-      //      favoriteManager.syncWithServer()
+        if (favoriteIds.value.isNotEmpty()) {
+            viewModelScope.launch {
+                favoriteManager.syncWithServer()
+            }
         }
 
         viewModelScope.launch {
-            // Обработка изменения выбранных категорий
             selectedCategoryIds
                 .debounce(250.milliseconds)
                 .collectLatest { ids ->
-                    allAds.value = getFilteredAdsUseCase(ids)
+                    adsState.value = UiState.Loading
+                    try {
+                        val result = getFilteredAdsUseCase(ids)
+                        adsState.value = UiState.Success(result)
+                    } catch (e: Exception) {
+                        adsState.value = UiState.Error(e)
+                    }
                 }
         }
 
         viewModelScope.launch {
-            // Загрузка всех категорий
-            allCategories.value = getAllCategoriesUseCase()
+            categoriesState.value = UiState.Loading
+            try {
+                val result = getAllCategoriesUseCase()
+                categoriesState.value = UiState.Success(result)
+            } catch (e: Exception) {
+                categoriesState.value = UiState.Error(e)
+            }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            try {
+                adsState.value = UiState.Loading
+                val result = getFilteredAdsUseCase(selectedCategoryIds.value)
+                adsState.value = UiState.Success(result)
+            } catch (e: Exception) {
+                adsState.value = UiState.Error(e)
+            }
         }
     }
 
@@ -59,7 +85,12 @@ class MarketplaceViewModel @Inject constructor(
     fun toggleFavoriteAd(id: String) {
         favoriteManager.toggleFavorite(id)
         viewModelScope.launch {
-            toggleFavoriteAdUseCase.invoke(id, favoriteManager.isFavorite(id))
+            try{
+                toggleFavoriteAdUseCase.invoke(id, favoriteManager.isFavorite(id))
+
+            } catch (e: Exception){
+
+            }
         }
     }
 
