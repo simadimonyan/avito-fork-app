@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.ui.UiState
 import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.core.ui.start.data.state.AppState
+import samaryanin.avitofork.core.ui.utils.components.ShimmerAdCard
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.auth.ui.data.AuthState
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
@@ -94,6 +95,15 @@ fun FavoritesScreenContent(
     LaunchedEffect(Unit) {
         viewModel.observeFavorites()
     }
+
+    val ads = when (favoritesState) {
+        is UiState.Success -> (favoritesState as UiState.Success<List<Ad>>).data
+        is UiState.Loading -> (favoritesState as? UiState.Success<List<Ad>>)?.data ?: emptyList()
+        else -> emptyList()
+    }
+    val showShimmer = favoritesState is UiState.Loading && ads.isEmpty()
+    val showError = favoritesState is UiState.Error && ads.isEmpty()
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         state = refreshState,
@@ -117,31 +127,31 @@ fun FavoritesScreenContent(
                     .fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                when (favoritesState) {
-                    is UiState.Success -> {
-                        val ads = (favoritesState as UiState.Success<List<Ad>>).data
-                        if (ads.isEmpty()) {
-                            item {
-                                EmptyFavoritesMessage(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(32.dp)
-                                )
-                            }
-                        } else {
-                            items(ads) { ad ->
-                                val isFavorite = viewModel.favoriteManager.isFavorite(ad.id)
-                                FavoriteAdCard(
-                                    ad = ad,
-                                    isFavorite = isFavorite,
-                                    onLikeClick = { viewModel.toggleFavorite(ad) },
-                                    globalNavController
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-                            }
+                when {
+                    showShimmer -> {
+                        items(3) {
+                            ShimmerAdCard(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical = 8.dp)
+                            )
                         }
                     }
-                    is UiState.Error -> {
+
+                    ads.isNotEmpty() -> {
+                        items(ads) { ad ->
+                            val isFavorite = viewModel.favoriteManager.isFavorite(ad.id)
+                            FavoriteAdCard(
+                                ad = ad,
+                                isFavorite = isFavorite,
+                                onLikeClick = { viewModel.toggleFavorite(ad) },
+                                globalNavController
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+
+                    showError -> {
                         item {
                             Text(
                                 text = "Ошибка загрузки: ${(favoritesState as UiState.Error).exception.message}",
@@ -151,13 +161,20 @@ fun FavoritesScreenContent(
                         }
                     }
 
-                    is UiState.Loading -> {}
+                    else -> {
+                        item {
+                            EmptyFavoritesMessage(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(32.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
-
 // Предпросмотр для дизайна
 @Preview(showBackground = true)
 @Composable

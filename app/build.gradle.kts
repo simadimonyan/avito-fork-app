@@ -130,6 +130,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.converter.gson)
     implementation(libs.gson)
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.32.0")
 
     // Compose
     implementation(libs.kotlinx.serialization.json)
