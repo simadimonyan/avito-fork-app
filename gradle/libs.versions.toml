@@ -2,6 +2,7 @@
 agp = "8.9.1"
 coilCompose = "3.1.0"
 coilComposeVersion = "2.4.0"
+constraintlayoutCompose = "1.1.1"
 converterGson = "2.9.0"
 datastorePreferences = "1.1.4"
 extensionsCompose = "3.3.0"
@@ -38,6 +39,7 @@ benchmarkMacro = "1.3.4"
 #material3 = "1.3.0"
 
 [libraries]
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
