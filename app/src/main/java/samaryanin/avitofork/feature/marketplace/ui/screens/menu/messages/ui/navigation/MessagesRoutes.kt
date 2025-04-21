@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.nav
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Chat
 
 @Serializable
 sealed class MessagesRoutes(val route: String) {
@@ -20,9 +21,10 @@ sealed class MessagesRoutes(val route: String) {
 
     /**
      * Окно личных сообщений  (над BottomNavigation)
+     * @param chat объект чата
      */
     @Serializable
     @Immutable
-    data class MessagesDirect(val directId: String) : MessagesRoutes("messages_direct")
+    data class MessagesDirect(val chat: Chat) : MessagesRoutes("messages_direct")
 
 }

@@ -126,13 +126,13 @@ fun ChatItemList(
     state: LazyListState = rememberLazyListState(),
     userId: String,
     chats: List<Chat>,
-    onItemClicked: (String) -> Unit
+    onItemClicked: (Chat) -> Unit
 ) {
     LazyColumn(state = state) {
         items(chats.size) { index ->
             Box(
                 modifier = Modifier.wrapContentSize()
-                    .clickable { onItemClicked(chats[index].toString()) }
+                    .clickable { onItemClicked(chats[index]) }
             ) {
                 ChatItem(userId, chats[index])
                 if (index != 0 && index < chats.size - 1) Divider()

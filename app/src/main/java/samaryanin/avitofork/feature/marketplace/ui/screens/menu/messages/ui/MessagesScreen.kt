@@ -53,8 +53,8 @@ fun MessagesPreview() {
 fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesViewModel) {
 
     // навигация в личные сообщения по чату
-    val message: (String) -> Unit = { chatId ->
-        navHostController.navigate(MessagesRoutes.MessagesDirect(chatId)) {
+    val message: (Chat) -> Unit = { chat ->
+        navHostController.navigate(MessagesRoutes.MessagesDirect(chat)) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -72,7 +72,7 @@ fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesView
  * @param message callback функция навигации в личные сообщения
  */
 @Composable
-fun MessagesContent(message: (String) -> Unit) {
+fun MessagesContent(message: (Chat) -> Unit) {
     val scrollState = rememberLazyListState()
 
     val isNextEnabled by remember {

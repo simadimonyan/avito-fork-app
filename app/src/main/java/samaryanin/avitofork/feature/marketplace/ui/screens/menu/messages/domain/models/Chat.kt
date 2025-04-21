@@ -1,9 +1,11 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models
 
 import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 
 @Immutable
+@Serializable
 data class Chat(
 
     /**

@@ -1,8 +1,10 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models
 
 import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
 
 @Immutable
+@Serializable
 data class Message(
     val id: String,
     val user: String,

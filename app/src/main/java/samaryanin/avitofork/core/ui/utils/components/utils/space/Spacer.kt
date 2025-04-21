@@ -8,6 +8,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Space(value: Dp = 8.dp) {
-    Spacer(modifier = Modifier.padding(value))
+fun Space(value: Dp = 8.dp, modifier: Modifier = Modifier) {
+    Spacer(modifier = modifier.padding(value))
 }
