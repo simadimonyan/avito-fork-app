@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,9 +23,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -32,31 +38,43 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.core.ui.utils.theme.navigationSelected
 
 @Preview
 @Composable
 fun SettingsPreview() {
-    SettingsContent(onExit = {true})
+    SettingsContent(onExit = { true })
 }
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
 ) {
-    val onExit = {
-        navController.navigateUp()
-    }
-
+    val viewModel: SettingsViewModel = hiltViewModel()
     SettingsContent(
-        onExit = onExit
+        onExit = {
+            navController.navigateUp()
+            true
+        },
+        onLogoutConfirmed = {
+            viewModel.logout()
+            navController.navigate("login") {
+                popUpTo("settings") { inclusive = true }
+            }
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsContent(onExit: () -> Boolean) {
+fun SettingsContent(
+    onExit: () -> Boolean,
+    onLogoutConfirmed: () -> Unit = {}
+) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -69,13 +87,9 @@ fun SettingsContent(onExit: () -> Boolean) {
                         fontSize = 20.sp
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                ),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 navigationIcon = {
-                    IconButton(
-                        onClick = { onExit() }
-                    ) {
+                    IconButton(onClick = { onExit() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад",
@@ -92,14 +106,33 @@ fun SettingsContent(onExit: () -> Boolean) {
                 .padding(innerPadding)
         ) {
             SettingsList(
-                onLogout = { /* TODO: показать диалог */ },
+                onLogout = { showLogoutDialog = true },
                 onDismiss = { onExit() },
                 onClearHistory = { /* TODO: очистить историю */ },
                 onRateApp = { /* TODO: открыть Play Store */ },
-                onNavigate = { screen ->
-                    // TODO: навигация по названию экрана
-                }
+                onNavigate = { screen -> /* TODO: навигация */ }
             )
+
+            if (showLogoutDialog) {
+                AlertDialog(
+                    onDismissRequest = { showLogoutDialog = false },
+                    title = { Text("Выход") },
+                    text = { Text("Вы уверены, что хотите выйти из аккаунта?") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showLogoutDialog = false
+                            onLogoutConfirmed()
+                        }) {
+                            Text("Выйти")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showLogoutDialog = false }) {
+                            Text("Отмена")
+                        }
+                    }
+                )
+            }
         }
     }
 }

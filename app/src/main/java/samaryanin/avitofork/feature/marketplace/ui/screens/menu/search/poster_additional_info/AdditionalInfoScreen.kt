@@ -18,6 +18,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
-import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
+import samaryanin.avitofork.core.ui.utils.components.RemoteImage
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.NavigationHolder
 
 @Composable
 fun AdditionalInfoScreen(
@@ -42,17 +43,23 @@ fun AdditionalInfoScreen(
     val onBack = {
         globalNavController.navigateUp()
     }
-    val viewModel: AdditionalInfoViewModel = hiltViewModel()
-    val ad by viewModel.adById.collectAsState()
 
-    AdditionalInfoContent(onBack, ad)
+
+    AdditionalInfoContent(onBack, )
 }
 
 @Composable
 fun AdditionalInfoContent(
     onBack: () -> Boolean,
-    ad: Ad?
+   // ad: Ad?
 ) {
+    val viewModel: AdditionalInfoViewModel = hiltViewModel()
+    SideEffect {
+        NavigationHolder.id?.let { viewModel.getAdById(it) }
+    }
+
+    val ad by viewModel.adById.collectAsState()
+
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
@@ -67,31 +74,34 @@ fun AdditionalInfoContent(
             elevation = 4.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column() {
-                AsyncImage(
-                    model = ad?.imageUrl, // или URL, если изображение из сети
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(400.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
+
+            Column {
+                if (ad != null) {
+                    RemoteImage(
+                        imageId = ad!!.imageIds.firstOrNull().orEmpty(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .size(400.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = ad?.title?: "-/-",
+                        text = ad?.title?: "",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = ad?.address?: "г. Москва, улица Булгакова 20",
+                        text = ad?.address?: "",
                         fontSize = 14.sp,
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = ad?.price?:"99999$",
+                        text = ad?.price?:"",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -102,7 +112,7 @@ fun AdditionalInfoContent(
                     Text(text = "Описание", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = ad?.description?:" 34efds",
+                        text = ad?.description?:"",
                         fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                         color = Color.Black

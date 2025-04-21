@@ -11,13 +11,15 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigatio
 
 @HiltViewModel
 class AdditionalInfoViewModel
-@javax.inject.Inject constructor(private val adRepo: AdRepo) : ViewModel() {
+@javax.inject.Inject constructor(
+    private val adRepo: AdRepo,
+) : ViewModel() {
 
     private val _adById = MutableStateFlow<Ad?>(null)
     val adById: MutableStateFlow<Ad?> get() = _adById
 
     init {
-        getAdById(NavigationHolder.id ?: "1")
+        NavigationHolder.id?.let { getAdById(it) }
 
     }
 
