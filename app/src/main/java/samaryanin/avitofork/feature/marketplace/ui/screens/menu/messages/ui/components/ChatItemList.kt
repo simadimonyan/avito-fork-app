@@ -117,7 +117,7 @@ fun ChatItemPreview() {
                     )
                 )
             )
-        )) {}
+        ), {}) {}
     }
 }
 
@@ -126,17 +126,58 @@ fun ChatItemList(
     state: LazyListState = rememberLazyListState(),
     userId: String,
     chats: List<Chat>,
-    onItemClicked: (Chat) -> Unit
+    onItemClicked: (Chat) -> Unit,
+    onItemDelete: (Chat) -> Unit
 ) {
     LazyColumn(state = state) {
         items(chats.size) { index ->
+
+//            val swipeState = rememberSwipeToDismissBoxState(
+//                confirmValueChange = { value ->
+//                    when (value) {
+//                        SwipeToDismissBoxValue.EndToStart -> {
+//                            onItemDelete(chats[index])
+//                        }
+//                        else -> {}
+//                    }
+//                    true
+//                }
+//            )
+//
+//            SwipeToDismissBox(
+//                state = swipeState,
+//                backgroundContent = {
+//                    Box(
+//                        Modifier.fillMaxSize().background(Color.Red),
+//                        contentAlignment = Alignment.CenterEnd
+//                    ) {
+//                        Row {
+//                            Space(10.dp)
+//                            Icon(
+//                                Icons.Default.DeleteSweep,
+//                                contentDescription = "delete_chat",
+//                                tint = Color.White,
+//                                modifier = Modifier.size(40.dp)
+//                            )
+//                            Space(10.dp)
+//                        }
+//                    }
+//                },
+//                enableDismissFromStartToEnd = false
+//            ) {
+//
+//            }
+
             Box(
-                modifier = Modifier.wrapContentSize()
+                modifier = Modifier
+                    .wrapContentSize()
+                    .background(Color.White)
                     .clickable { onItemClicked(chats[index]) }
             ) {
                 ChatItem(userId, chats[index])
                 if (index != 0 && index < chats.size - 1) Divider()
             }
+
         }
 
         item {
@@ -154,8 +195,11 @@ fun ChatItem(
     val post = chat.postReference.data
 
     Box(
-        modifier = Modifier.background(Color.Transparent)
-            .wrapContentSize().fillMaxWidth().padding(10.dp)
+        modifier = Modifier
+            .background(Color.Transparent)
+            .wrapContentSize()
+            .fillMaxWidth()
+            .padding(10.dp)
     ) {
 
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -286,7 +330,9 @@ fun ChatItem(
                                     painter = painterResource(messageStateResource),
                                     tint = if (readFlag) Color.Blue else Color.Black,
                                     contentDescription = "mark",
-                                    modifier = Modifier.size(size.dp).offset(-offset.dp, 3.dp)
+                                    modifier = Modifier
+                                        .size(size.dp)
+                                        .offset(-offset.dp, 3.dp)
                                 )
 
                             }

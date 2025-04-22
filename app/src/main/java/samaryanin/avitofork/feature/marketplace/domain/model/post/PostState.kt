@@ -11,7 +11,9 @@ data class PostState(
 
     val subcategory: String = "",
 
-    val data: PostData = PostData()
+    val data: PostData = PostData(),
+
+    val timestamp: String = ""
 
 )
 

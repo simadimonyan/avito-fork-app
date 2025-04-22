@@ -7,15 +7,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -29,7 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
@@ -37,11 +51,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Divider
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.theme.greyButton
+import samaryanin.avitofork.core.ui.utils.theme.lightBlue
 import samaryanin.avitofork.core.ui.utils.theme.saladGreen
 import samaryanin.avitofork.core.ui.utils.theme.veryLightBlueColor
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostData
@@ -79,11 +95,11 @@ fun ChatPreview() {
                     mutableListOf(),
                     "150 000",
                     "руб."
-                )
+                ),
+                "22.04.25"
             )
-        ),
-        {}
-    )
+        )
+    ) {}
 }
 
 /**
@@ -94,8 +110,11 @@ fun ChatPreview() {
 @Composable
 fun ChatScreen(globalNavController: NavHostController, viewModel: MessagesViewModel, chat: Chat) {
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     // навигация в личные сообщения по чату
     val navigateUp: () -> Unit = {
+        keyboardController?.hide()
         globalNavController.navigateUp()
     }
 
@@ -112,62 +131,227 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit) {
         containerColor = Color.White,
         topBar = {
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column {
 
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow),
-                    modifier = Modifier.size(30.dp).clickable {
-                        navigateUp()
-                    },
-                    contentDescription = "back"
-                )
+                Row(modifier = Modifier
+                    .fillMaxWidth().background(Color.White).zIndex(2f)
+                    .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
 
-                Space(7.dp)
-
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(50.dp)
-                        .background(greyButton),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "${chat.profileName.toCharArray()[0]}",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                    Icon(
+                        painter = painterResource(R.drawable.ic_arrow),
+                        modifier = Modifier.size(30.dp).clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            navigateUp()
+                        },
+                        contentDescription = "back"
                     )
+
+                    Space()
+
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(50.dp)
+                            .background(greyButton),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = chat.profileName.firstOrNull()?.toString() ?: "",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+
+                    Space()
+
+                    Column(modifier = Modifier.padding(vertical = 2.dp)) {
+
+                        Row {
+
+                            Text(
+                                text = chat.profileName.take(12),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = Color.Black,
+                                textAlign = TextAlign.Left,
+                                maxLines = 1,
+                                modifier = Modifier.wrapContentWidth()
+                                    .drawWithContent {
+                                        if (chat.profileName.length >= 12) {
+                                            val fadeWidth = size.width * 0.5f
+                                            drawContent()
+                                            drawRect(
+                                                brush = Brush.horizontalGradient(
+                                                    colors = listOf(Color.Transparent, Color.White),
+                                                    startX = size.width - fadeWidth,
+                                                    endX = size.width,
+                                                    tileMode = TileMode.Clamp
+                                                ),
+                                                size = size
+                                            )
+                                        } else {
+                                            drawContent()
+                                        }
+                                    }
+                            )
+
+                            Space(1.dp)
+
+                            Icon(
+                                Icons.Default.NotificationsActive,
+                                modifier = Modifier.size(12.dp),
+                                contentDescription = "notfication",
+                                tint = Color.LightGray
+                            )
+                        }
+
+                        Space(1.dp)
+
+                        Text(
+                            text = "в сети",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = saladGreen
+                        )
+
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Icon(
+                        painter = painterResource(R.drawable.phone_call),
+                        modifier = Modifier.size(25.dp).clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            // TODO (сделать звонок)
+                        },
+                        contentDescription = "phone_call",
+                        tint = lightBlue
+                    )
+
+                    Space(15.dp)
+
+                    Icon(
+                        painter = painterResource(R.drawable.video_call),
+                        modifier = Modifier.size(35.dp).clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            // TODO (сделать видеозвонок)
+                        },
+                        contentDescription = "video_call",
+                        tint = lightBlue
+                    )
+
+                    Space()
+
                 }
 
-                Space()
+                Card(
+                    modifier = Modifier.fillMaxWidth().zIndex(1f),
+                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.elevatedCardElevation(2.dp)
+                ) {
 
-                Column(modifier = Modifier.padding(vertical = 2.dp)) {
+                    if (chat.postReference.data.name.isNotEmpty()) {
 
-                    Text(
-                        text = chat.profileName,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Black,
-                        textAlign = TextAlign.Left
-                    )
+                        Space()
 
-                    Space(1.dp)
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
-                    Text(
-                        text = "В сети",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = saladGreen
-                    )
+                            Space()
+
+                            Row {
+                                Box(
+                                    modifier = Modifier.size(50.dp).background(greyButton,
+                                        RoundedCornerShape(5.dp)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = chat.postReference.data.name.firstOrNull()?.toString() ?: "",
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                }
+
+                                Space()
+
+                                Column(modifier = Modifier.padding(vertical = 2.dp).align(Alignment.CenterVertically)) {
+
+                                    val name = if (chat.postReference.data.name.length > 15) {
+                                        "${chat.postReference.data.name.take(15)}..."
+                                    } else {
+                                        chat.postReference.data.name
+                                    }
+
+                                    Text(
+                                        text = name,
+                                        fontSize = 19.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        color = Color.Black,
+                                        textAlign = TextAlign.Left
+                                    )
+
+                                    Space(1.dp)
+
+                                    Text(
+                                        text = "от ${chat.postReference.timestamp}",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        color = Color.Gray
+                                    )
+
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Text(
+                                text = chat.postReference.data.price + " " + chat.postReference.data.unit,
+                                fontSize = 19.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+
+                            Space()
+
+                        }
+
+                        Space()
+
+                    }
 
                 }
 
             }
 
         },
+        content = { innerPadding ->
 
+            Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()).consumeWindowInsets(innerPadding).fillMaxSize()) {
+
+                Column (modifier = Modifier
+                    .background(veryLightBlueColor)
+                    .wrapContentSize().fillMaxWidth()
+                    .padding(horizontal = 5.dp)
+                ) {
+
+                    Space(modifier = Modifier.weight(1f))
+
+                    MessageItemList("", chat.messages as MutableList<Message>)
+
+                    Space(1.dp)
+                }
+
+            }
+
+        },
         bottomBar = {
 
             Divider()
@@ -176,54 +360,55 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit) {
                     .fillMaxWidth()
                     .imePadding().consumeWindowInsets(WindowInsets(0))
                     .padding(vertical = 15.dp, horizontal = 17.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Bottom
             ) {
+
+                var flagMessageReady by remember { mutableStateOf(false) }
+                var message by remember { mutableStateOf("") }
+                var placeholder by remember { mutableStateOf("") }
 
                 Icon(
                     painter = painterResource(R.drawable.attach_file),
-                    modifier = Modifier.size(25.dp),
-                    contentDescription = "back",
+                    modifier = Modifier.size(25.dp).clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        // TODO (добавить файл)
+                    },
+                    contentDescription = "attach_file",
                     tint = Color.LightGray
                 )
 
                 Space()
 
-                MessageTextField("", "Сообщение...") {}
+                Box(modifier = Modifier.weight(1f)) {
+                    MessageTextField(message, "Сообщение...") { it ->
+                        message = it
+                        placeholder = if (it.isEmpty()) placeholder else ""
+                        flagMessageReady = !it.isEmpty()
+                    }
+                }
 
-                Space(modifier = Modifier.weight(1f))
+                Space()
 
                 Icon(
                     painter = painterResource(R.drawable.send_message),
-                    modifier = Modifier.size(25.dp),
-                    contentDescription = "back",
-                    tint = Color.LightGray
+                    modifier = Modifier.size(25.dp).clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        message = ""
+                        flagMessageReady = false
+                        // TODO (отправить сообщение)
+                    },
+                    contentDescription = "send_message",
+                    tint = if (flagMessageReady) lightBlue else Color.LightGray
                 )
 
             }
 
         }
-    ) { innerPadding ->
-
-        Column(modifier = Modifier.padding(innerPadding)) {
-
-            Divider()
-
-            Column (modifier = Modifier
-                .background(veryLightBlueColor)
-                .wrapContentSize().fillMaxWidth()
-                .padding(horizontal = 5.dp)
-            ) {
-
-                Space(modifier = Modifier.weight(1f))
-
-                MessageItemList("", chat.messages as MutableList<Message>)
-
-                Space(1.dp)
-            }
-
-        }
-
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -231,30 +416,29 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit) {
 fun MessageTextField(value: String, placeholder: String, onValueChanged: (String) -> Unit = {}) {
 
     val interactionSource = remember { MutableInteractionSource() }
-    var mutableValue by remember { mutableStateOf(value) }
-    var mutablePlaceholder by remember { mutableStateOf(placeholder) }
 
     Box(
         modifier = Modifier
             .background(Color.White)
+            .heightIn(max = 100.dp)
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             BasicTextField(
-                value = mutableValue,
+                value = value,
                 onValueChange = {
-                    mutableValue = it
-                    mutablePlaceholder = ""
+
                     onValueChanged(it)
                 },
+                modifier = Modifier.weight(1f),
                 decorationBox = @Composable { innerTextField ->
                     TextFieldDefaults.DecorationBox(
                         value = value,
                         innerTextField = innerTextField,
                         enabled = true,
                         placeholder = @Composable {
-                            Text(text = mutablePlaceholder, fontSize = 15.sp, color = Color.Gray)
+                            Text(text = placeholder, fontSize = 15.sp, color = Color.Gray)
                         },
                         singleLine = false,
                         visualTransformation = VisualTransformation.None,
