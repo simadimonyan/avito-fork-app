@@ -89,7 +89,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.0.2.jar"))
+    implementation(files("libs/domain-jvm-1.1.0.jar"))
 
     implementation (libs.androidx.datastore.preferences)
 
@@ -130,6 +130,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.converter.gson)
     implementation(libs.gson)
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.32.0")
 
     // Compose
     implementation(libs.kotlinx.serialization.json)

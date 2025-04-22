@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.ui.UiState
+import samaryanin.avitofork.core.ui.utils.components.ShimmerAdCard
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.theme.AvitoForkTheme
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
@@ -45,42 +46,42 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
 
     var search by remember { mutableStateOf("") }
     val viewModel: MarketplaceViewModel = hiltViewModel()
-    val ads by viewModel.allAds.collectAsState()
     val categories by viewModel.allCategories.collectAsState()
     val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
     val favoriteIds by viewModel.favoriteIds.collectAsState()
-    val lazyGridState = rememberLazyGridState()
-
-    val showShadow by remember {
-        derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
-    }
-
     val adsState by viewModel.adsState.collectAsState()
-    val isRefreshing = adsState is UiState.Loading
+
+    val lazyGridState = rememberLazyGridState()
+    val showShadow by remember { derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 } }
+
     val refreshingState = rememberPullToRefreshState()
-    val coroutineScope = rememberCoroutineScope ()
+    val coroutineScope = rememberCoroutineScope()
+    val isRefreshing = adsState is UiState.Loading
+
+    val ads = when (adsState) {
+        is UiState.Success -> (adsState as UiState.Success<List<Ad>>).data
+        is UiState.Loading -> (adsState as? UiState.Success<List<Ad>>)?.data ?: emptyList()
+        else -> emptyList()
+    }
+    val showShimmer = adsState is UiState.Loading && ads.isEmpty()
+    val showError = adsState is UiState.Error && ads.isEmpty()
 
     AvitoForkTheme {
         PullToRefreshBox(
             isRefreshing = isRefreshing,
             state = refreshingState,
             onRefresh = {
-                coroutineScope.launch {
-                    viewModel.refresh()
-                }
-            },
+                coroutineScope.launch { viewModel.refresh() }
+            }
         ) {
-        Scaffold(
-            containerColor = Color.White,
-        ) { paddingValues ->
-
-
+            Scaffold(
+                containerColor = Color.White
+            ) { paddingValues ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-
                     LazyVerticalGrid(
                         state = lazyGridState,
                         columns = GridCells.Adaptive(minSize = 150.dp),
@@ -89,7 +90,6 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                             .padding(bottom = 50.dp),
                         contentPadding = PaddingValues(bottom = 50.dp)
                     ) {
-
                         item { Space(40.dp) }
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -106,44 +106,41 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                             SelectableLazyRow()
                         }
 
-                        when (adsState) {
-                            is UiState.Loading -> { }
-                            is UiState.Error -> {
-                                item(span = { GridItemSpan(maxLineSpan) }) {
-                                    Text(
-                                        text = "Ошибка загрузки: ${(adsState as UiState.Error).exception.message}",
-                                        modifier = Modifier.padding(16.dp),
-                                        color = Color.Red
-                                    )
-                                }
+                        if (showShimmer) {
+                            items(8) {
+                                ShimmerAdCard(
+                                    modifier = Modifier.padding(8.dp)
+                                )
                             }
-                            is UiState.Success -> {
-                                val ads = (adsState as UiState.Success<List<Ad>>).data
-                                items(ads) { ad ->
-                                    ProductCard(
-                                        ad = ad,
-                                        isFav = viewModel.isFavorite(ad.id),
-                                        globalNavController = globalNavController,
-                                        onFavoriteClick = {
-                                            viewModel.toggleFavoriteAd(ad.id)
-                                        }
-                                    )
-                                }
+                        } else {
+                            items(ads) { ad ->
+                                ProductCard(
+                                    ad = ad,
+                                    isFav = viewModel.isFavorite(ad.id),
+                                    globalNavController = globalNavController,
+                                    onFavoriteClick = {
+                                        viewModel.toggleFavoriteAd(ad.id)
+                                    }
+                                )
                             }
                         }
 
-//                        items(ads.orEmpty()) { ad ->
-//                            ProductCard(
-//                                ad = ad,
-//                                isFav = viewModel.isFavorite(ad.id),
-//                                globalNavController = globalNavController,
-//                                onFavoriteClick = {
-//                                    viewModel.toggleFavoriteAd(ad.id)
-//                                }
-//                            )
-//                        }
+                        if (showError) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                Text(
+                                    text = "Ошибка загрузки: ${(adsState as UiState.Error).exception.message}",
+                                    modifier = Modifier.padding(16.dp),
+                                    color = Color.Red
+                                )
+                            }
+                        }
                     }
-                    SearchBar(search = search, onSearchChange = { search = it }, showShadow)
+
+                    SearchBar(
+                        search = search,
+                        onSearchChange = { search = it },
+                        showShadow = showShadow
+                    )
                 }
             }
         }

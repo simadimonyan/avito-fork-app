@@ -6,14 +6,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import samaryanin.avitofork.core.database.cache.CacheManager
 import samaryanin.avitofork.core.ui.start.data.state.AppEvent
 import samaryanin.avitofork.core.ui.start.data.state.AppStateStore
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetImageBytesByIdUseCase
 import javax.inject.Inject
 
 @Stable
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val cacheManager: CacheManager,
-    val appStateStore: AppStateStore
+    val appStateStore: AppStateStore,
+    private val getImageBytesByIdUseCase: GetImageBytesByIdUseCase
 ) : ViewModel() {
+
+    private val _imageCache = mutableMapOf<String, ByteArray>()
+    val imageCache: Map<String, ByteArray> get() = _imageCache
+
 
     fun handleEvent(event: AppEvent) {
         when(event) {
@@ -37,6 +43,16 @@ class MainViewModel @Inject constructor(
     private fun restoreCache() {
         val cachedState = cacheManager.getAppState()
         appStateStore.appStateHolder.updateState(cachedState)
+    }
+
+    suspend fun loadImage(id: String): ByteArray? {
+        return _imageCache[id] ?: try {
+            val bytes = getImageBytesByIdUseCase.invoke(id)
+            _imageCache[id] = bytes
+            bytes
+        } catch (e: Exception) {
+            null
+        }
     }
 
 }

@@ -8,10 +8,10 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import ru.dimagor555.avito.dto.AdDto
-import ru.dimagor555.avito.dto.CategoryDto
-import ru.dimagor555.avito.request.GetAdsByIdsRequestDto
-import ru.dimagor555.avito.request.GetFilteredAdsRequestDto
+import ru.dimagor555.avito.ad.dto.AdDto
+import ru.dimagor555.avito.ad.dto.CategoryDto
+import ru.dimagor555.avito.ad.request.GetAdsByIdsRequestDto
+import ru.dimagor555.avito.ad.request.GetFilteredAdsRequestDto
 import ru.dimagor555.avito.user.request.ToggleFavouriteRequestDto
 import samaryanin.avitofork.core.network.KtorClient
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
@@ -73,6 +73,10 @@ class AdRepo @Inject constructor(
         .get("ad/categories")
         .body<List<CategoryDto>>()
         .map { it.toDomain() }
+
+    suspend fun getImageBytesById(imageId: String): ByteArray = httpClient
+        .get("images/$imageId")
+        .body()
 }
 
 
@@ -81,9 +85,9 @@ private fun AdDto.toDomain(): Ad {
     return Ad(
         id = id,
         title = title,
-        price = "${(price.amountMinor / 100)} RUB",
+        price = "${(price!!.amountMinor / 100)} RUB",
         address = address.orEmpty(),
-        imageUrl = imageUrl.orEmpty(),
+        imageIds = imageIds.orEmpty(),
         description = description.orEmpty()
     )
 
@@ -94,7 +98,7 @@ private fun CategoryDto.toDomain(): Category {
     return Category(
         id = id,
         name = name,
-        imageUrl = iconUrl.orEmpty(),
+        imageId = imageId.orEmpty(),
     )
 
 }

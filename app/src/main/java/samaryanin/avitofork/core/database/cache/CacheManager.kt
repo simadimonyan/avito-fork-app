@@ -2,13 +2,13 @@ package samaryanin.avitofork.core.database.cache
 
 import android.content.SharedPreferences
 import androidx.compose.runtime.Immutable
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import samaryanin.avitofork.core.ui.start.data.state.AppState
 import samaryanin.avitofork.feature.auth.data.dto.AuthToken
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.edit
 
 @Singleton
 @Immutable
@@ -58,6 +58,10 @@ class CacheManager @Inject constructor(
         }
         else
             return AuthToken()
+    }
+
+    fun clearAuthToken() {
+        preferences.edit { remove("authToken") }
     }
 
     fun saveAuthToken(authToken: AuthToken) {

@@ -32,9 +32,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil3.compose.AsyncImage
 import samaryanin.avitofork.R
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
+import samaryanin.avitofork.core.ui.utils.components.RemoteImage
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.NavigationHolder
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
 
@@ -65,8 +65,8 @@ fun ProductCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = ad.imageUrl, // или URL, если изображение из сети
+            RemoteImage(
+                imageId = ad.imageIds.firstOrNull().orEmpty(),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()

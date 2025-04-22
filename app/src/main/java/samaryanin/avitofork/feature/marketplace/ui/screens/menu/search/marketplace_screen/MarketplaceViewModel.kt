@@ -14,6 +14,7 @@ import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Category
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetAllCategoriesUseCase
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetFilteredAdsUseCase
+import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetImageBytesByIdUseCase
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.ToggleFavoriteAdUseCase
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -24,6 +25,7 @@ class MarketplaceViewModel @Inject constructor(
     private val getFilteredAdsUseCase: GetFilteredAdsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
+    private val downloadImageUseCase: GetImageBytesByIdUseCase,
     private val favoriteManager: FavoriteManager,
 ) : ViewModel() {
 
@@ -34,6 +36,8 @@ class MarketplaceViewModel @Inject constructor(
 
     val adsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
     val categoriesState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
+
+
 
     init {
         loadFavorites()
@@ -68,6 +72,8 @@ class MarketplaceViewModel @Inject constructor(
             }
         }
     }
+
+
 
     fun refresh() {
         viewModelScope.launch {

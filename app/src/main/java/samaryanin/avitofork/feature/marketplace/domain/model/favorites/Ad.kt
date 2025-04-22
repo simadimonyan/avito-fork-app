@@ -6,5 +6,5 @@ data class Ad(
     val description: String?,
     val price: String = "",
     val address: String = "",
-    val imageUrl: String? = null
+    val imageIds: List<String>,
 )
