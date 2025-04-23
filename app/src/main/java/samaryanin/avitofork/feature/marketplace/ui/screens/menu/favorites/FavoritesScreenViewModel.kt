@@ -12,6 +12,7 @@ import samaryanin.avitofork.core.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.data.repository.ad.AdRepo
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import javax.inject.Inject
+
 @Stable
 @HiltViewModel
 class FavoritesScreenViewModel @Inject constructor(
@@ -32,7 +33,7 @@ class FavoritesScreenViewModel @Inject constructor(
             try {
                 favoriteManager.loadFromServer()
                 val ids = favoriteManager.favorites.value
-                val ads = if (ids.isEmpty()) emptyList() else adRepo.getAdsByIds(ids.toList())
+                val ads = adRepo.getAdsByIds(ids.toList())
                 _favoriteAdsState.value = UiState.Success(ads)
             } catch (e: Exception) {
                 _favoriteAdsState.value = UiState.Error(e)
@@ -41,9 +42,18 @@ class FavoritesScreenViewModel @Inject constructor(
     }
 
     fun toggleFavorite(ad: Ad) {
-        viewModelScope.launch {
-            favoriteManager.toggleFavorite(ad.id)
-            loadFavorites()
-        }
+        favoriteManager.toggleFavorite(ad.id)
+        removeFavoriteLocally(ad)
+
+//        viewModelScope.launch {
+//            delay(500)
+//            loadFavorites()
+//        }
+    }
+
+    private fun removeFavoriteLocally(ad: Ad) {
+        val current = (favoriteAdsState.value as? UiState.Success)?.data?.toMutableList() ?: return
+        current.removeAll { it.id == ad.id }
+        _favoriteAdsState.value = UiState.Success(current)
     }
 }

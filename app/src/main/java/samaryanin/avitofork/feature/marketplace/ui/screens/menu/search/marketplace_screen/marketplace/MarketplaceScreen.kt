@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -65,6 +66,10 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     }
     val showShimmer = adsState is UiState.Loading && ads.isEmpty()
     val showError = adsState is UiState.Error && ads.isEmpty()
+
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
 
     AvitoForkTheme {
         PullToRefreshBox(
