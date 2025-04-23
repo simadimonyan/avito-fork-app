@@ -39,7 +39,6 @@ class FavoriteManager @Inject constructor(
 
         scope.launch {
             toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
-            // Перезагружаем с сервера, чтобы убедиться в консистентности
             loadFromServer()
         }
     }

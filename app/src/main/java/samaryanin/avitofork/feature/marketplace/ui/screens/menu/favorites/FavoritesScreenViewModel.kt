@@ -30,7 +30,6 @@ class FavoritesScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _favoriteAdsState.value = UiState.Loading
             try {
-                // Получаем избранные с сервера
                 favoriteManager.loadFromServer()
                 val ids = favoriteManager.favorites.value
                 val ads = if (ids.isEmpty()) emptyList() else adRepo.getAdsByIds(ids.toList())
