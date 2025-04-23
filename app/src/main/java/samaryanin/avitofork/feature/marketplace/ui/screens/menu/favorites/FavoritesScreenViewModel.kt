@@ -44,11 +44,6 @@ class FavoritesScreenViewModel @Inject constructor(
     fun toggleFavorite(ad: Ad) {
         favoriteManager.toggleFavorite(ad.id)
         removeFavoriteLocally(ad)
-
-//        viewModelScope.launch {
-//            delay(500)
-//            loadFavorites()
-//        }
     }
 
     private fun removeFavoriteLocally(ad: Ad) {
