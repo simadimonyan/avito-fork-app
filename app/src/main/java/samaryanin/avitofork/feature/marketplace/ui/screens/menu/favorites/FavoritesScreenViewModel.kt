@@ -23,29 +23,28 @@ class FavoritesScreenViewModel @Inject constructor(
     val favoriteAdsState: StateFlow<UiState<List<Ad>>> = _favoriteAdsState
 
     init {
-        observeFavorites()
+        loadFavorites()
     }
 
-    fun observeFavorites() {
+    fun loadFavorites() {
         viewModelScope.launch {
-            favoriteManager.favorites.collect { ids ->
-                _favoriteAdsState.value = UiState.Loading
-                try {
-                    if (ids.isEmpty()) {
-                        _favoriteAdsState.value = UiState.Success(emptyList())
-                    } else {
-                        val ads = adRepo.getAdsByIds(ids.toList())
-                        _favoriteAdsState.value = UiState.Success(ads)
-                    }
-                } catch (e: Exception) {
-                    _favoriteAdsState.value = UiState.Error(e)
-                }
+            _favoriteAdsState.value = UiState.Loading
+            try {
+                // Получаем избранные с сервера
+                favoriteManager.loadFromServer()
+                val ids = favoriteManager.favorites.value
+                val ads = if (ids.isEmpty()) emptyList() else adRepo.getAdsByIds(ids.toList())
+                _favoriteAdsState.value = UiState.Success(ads)
+            } catch (e: Exception) {
+                _favoriteAdsState.value = UiState.Error(e)
             }
         }
     }
 
     fun toggleFavorite(ad: Ad) {
-        favoriteManager.toggleFavorite(ad.id)
-        // больше не нужно вызывать getFavoriteAds() вручную
+        viewModelScope.launch {
+            favoriteManager.toggleFavorite(ad.id)
+            loadFavorites()
+        }
     }
 }

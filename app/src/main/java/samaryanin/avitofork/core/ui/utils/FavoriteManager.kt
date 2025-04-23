@@ -1,9 +1,7 @@
 package samaryanin.avitofork.core.utils
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +12,12 @@ import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetFavoriteAds
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.ToggleFavoriteAdUseCase
 import javax.inject.Inject
 
+
 class FavoriteManager @Inject constructor(
     private val getFavoriteAdsUseCase: GetFavoriteAdsUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
     private val dataStore: DataStore<Preferences>
 ) {
-    companion object {
-        private val FAVORITES_KEY = stringSetPreferencesKey("favorite_ad_ids")
-    }
 
     private val _favorites = MutableStateFlow<Set<String>>(emptySet())
     val favorites: StateFlow<Set<String>> = _favorites.asStateFlow()
@@ -29,34 +25,22 @@ class FavoriteManager @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
-        loadFavorites()
-    }
-
-    fun loadFavorites() {
         scope.launch {
-            dataStore.data
-                .collect { preferences ->
-                    _favorites.value = preferences[FAVORITES_KEY] ?: emptySet()
-                }
+            loadFromServer()
         }
     }
 
     fun toggleFavorite(id: String) {
-        val currentFavorites = _favorites.value.toMutableSet()
-        if (currentFavorites.contains(id)) {
-            currentFavorites.remove(id)
-        } else {
-            currentFavorites.add(id)
+        val isCurrentlyFavorite = _favorites.value.contains(id)
+        val updatedFavorites = _favorites.value.toMutableSet().apply {
+            if (isCurrentlyFavorite) remove(id) else add(id)
         }
-        _favorites.value = currentFavorites
-        saveFavorites(currentFavorites)
-    }
+        _favorites.value = updatedFavorites
 
-    private fun saveFavorites(favoritesSet: Set<String>) {
         scope.launch {
-            dataStore.edit { preferences ->
-                preferences[FAVORITES_KEY] = favoritesSet
-            }
+            toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
+            // Перезагружаем с сервера, чтобы убедиться в консистентности
+            loadFromServer()
         }
     }
 
@@ -66,7 +50,12 @@ class FavoriteManager @Inject constructor(
 
     fun clearFavorites() {
         _favorites.value = emptySet()
-        saveFavorites(emptySet())
+    }
+
+    suspend fun loadFromServer() {
+        val remoteAds = getFavoriteAdsUseCase()
+        val remoteFavorites = remoteAds.map { it.id }.toSet()
+        _favorites.value = remoteFavorites
     }
 
     suspend fun syncWithServer() {
@@ -85,8 +74,6 @@ class FavoriteManager @Inject constructor(
             toggleFavoriteAdUseCase(id, false)
         }
 
-        val syncedFavorites = getFavoriteAdsUseCase().map { it.id }.toSet()
-        _favorites.value = syncedFavorites
-        saveFavorites(syncedFavorites)
+        loadFromServer()
     }
 }

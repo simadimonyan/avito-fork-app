@@ -37,15 +37,9 @@ class MarketplaceViewModel @Inject constructor(
     val adsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
     val categoriesState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
 
-
-
     init {
-        loadFavorites()
-
-        if (favoriteIds.value.isNotEmpty()) {
-            viewModelScope.launch {
-                favoriteManager.syncWithServer()
-            }
+        viewModelScope.launch {
+            favoriteManager.loadFromServer() // всегда актуальные избранные с сервера
         }
 
         viewModelScope.launch {
@@ -67,18 +61,18 @@ class MarketplaceViewModel @Inject constructor(
             try {
                 val result = getAllCategoriesUseCase()
                 categoriesState.value = UiState.Success(result)
+                allCategories.value = result
             } catch (e: Exception) {
                 categoriesState.value = UiState.Error(e)
             }
         }
     }
 
-
-
     fun refresh() {
         viewModelScope.launch {
             try {
                 adsState.value = UiState.Loading
+                favoriteManager.loadFromServer()
                 val result = getFilteredAdsUseCase(selectedCategoryIds.value)
                 adsState.value = UiState.Success(result)
             } catch (e: Exception) {
@@ -87,27 +81,13 @@ class MarketplaceViewModel @Inject constructor(
         }
     }
 
-    // Добавить/удалить товар из избранного
     fun toggleFavoriteAd(id: String) {
-        favoriteManager.toggleFavorite(id)
         viewModelScope.launch {
-            try{
-                toggleFavoriteAdUseCase.invoke(id, favoriteManager.isFavorite(id))
-
-            } catch (e: Exception){
-
-            }
+            favoriteManager.toggleFavorite(id) // автоматически отправляется на сервер
         }
     }
 
     fun isFavorite(id: String): Boolean {
         return favoriteManager.isFavorite(id)
-    }
-
-    // Загрузка избранных товаров из хранилища
-    private fun loadFavorites() {
-        viewModelScope.launch {
-            favoriteManager.loadFavorites()
-        }
     }
 }

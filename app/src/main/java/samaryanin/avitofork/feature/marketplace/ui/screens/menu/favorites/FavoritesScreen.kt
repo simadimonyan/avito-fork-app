@@ -37,10 +37,7 @@ fun FavoritesScreen(
     mainViewModel: MainViewModel,
     globalNavController: NavHostController,
 ) {
-
-    FavoritesScreenContent(
-        globalNavController
-    )
+    FavoritesScreenContent(globalNavController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,8 +52,9 @@ fun FavoritesScreenContent(
     val isRefreshing = favoritesState is UiState.Loading
     val coroutineScope = rememberCoroutineScope()
 
+    // Обновляем избранное при открытии экрана
     LaunchedEffect(Unit) {
-        viewModel.observeFavorites()
+        viewModel.loadFavorites()
     }
 
     val ads = when (favoritesState) {
@@ -64,6 +62,7 @@ fun FavoritesScreenContent(
         is UiState.Loading -> (favoritesState as? UiState.Success<List<Ad>>)?.data ?: emptyList()
         else -> emptyList()
     }
+
     val showShimmer = favoritesState is UiState.Loading
     val showError = favoritesState is UiState.Error
 
@@ -72,7 +71,7 @@ fun FavoritesScreenContent(
         state = refreshState,
         onRefresh = {
             coroutineScope.launch {
-                viewModel.observeFavorites()
+                viewModel.loadFavorites()
             }
         }
     ) {
