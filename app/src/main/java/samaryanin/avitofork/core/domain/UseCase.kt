@@ -6,6 +6,7 @@ import samaryanin.avitofork.feature.auth.domain.usecases.RefreshUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.RegisterUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.VerifyUseCase
 import samaryanin.avitofork.feature.marketplace.domain.usecase.poster.ConfigurationUseCase
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.usecases.LoadChatsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,6 +20,15 @@ data class AuthUseCase @Inject constructor(
     val registerUseCase: RegisterUseCase,
     val verifyUseCase: VerifyUseCase,
     val refreshUseCase: RefreshUseCase
+)
+
+/**
+ * Группа use case для сообщений
+ */
+@Singleton
+@Immutable
+data class MessagesUseCase @Inject constructor(
+    val loadChatsUseCase: LoadChatsUseCase
 )
 
 /**

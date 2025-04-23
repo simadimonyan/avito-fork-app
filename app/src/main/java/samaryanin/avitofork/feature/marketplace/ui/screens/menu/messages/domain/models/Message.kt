@@ -1,16 +1,16 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 
-@Immutable
+@Stable
 @Serializable
 data class Message(
-    val id: String,
-    val user: String,
-    val content: String,
-    val timestamp: String,
-    val state: MessageState
+    val id: String = "",
+    val user: String = "",
+    val content: String = "",
+    var timestamp: String = "",
+    val state: MessageState = MessageState.SENT
 )
 
 enum class MessageState {

@@ -36,88 +36,95 @@ import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Chat
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Message
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.MessageState
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesState
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
 fun ChatItemPreview() {
     Box {
         ChatItemList(
-            rememberLazyListState(), "myId", mutableListOf(
-            Chat(
-                "",
-                "Поддержка AvitoFork",
+            rememberLazyListState(), "myId", MessagesState(
                 mutableListOf(
-                    Message(
+                    Chat(
                         "",
-                        "anotherId",
-                        "Рады вам помочь!",
-                        "15:00",
-                        MessageState.READ
-                    )
-                ),
-            ),
-            Chat(
-                "",
-                "Иван",
-                mutableListOf(
-                    Message(
+                        "Поддержка AvitoFork",
+                        mutableListOf(
+                            Message(
+                                "",
+                                "anotherId",
+                                "Рады вам помочь!",
+                                "1745406402992",
+                                MessageState.READ
+                            )
+                        ),
+                    ),
+                    Chat(
                         "",
-                        "myId",
-                        "Когда можем созвониться?",
-                        "17:37",
-                        MessageState.READ
-                    )
-                ),
-                PostState(
-                    "",
-                    "",
-                    PostData(
-                        "IPhone 15 Pro",
-                        mutableListOf(),
-                        "150 000",
-                        "руб."
-                    )
-                )
-            ),
-            Chat(
-                "",
-                "Алексей",
-                mutableListOf(
-                    Message(
+                        "Иван",
+                        mutableListOf(
+                            Message(
+                                "",
+                                "myId",
+                                "Когда можем созвониться?",
+                                "1745406425571",
+                                MessageState.READ
+                            )
+                        ),
+                        PostState(
+                            "",
+                            "",
+                            PostData(
+                                "IPhone 15 Pro",
+                                mutableListOf(),
+                                "1745406402992",
+                                "руб."
+                            )
+                        )
+                    ),
+                    Chat(
                         "",
-                        "myId",
-                        "Послезавтра готов забрать",
-                        "10:13",
-                        MessageState.SENT
-                    )
-                ),
-                PostState(
-                    "",
-                    "",
-                    PostData(
-                        "Мангал для дачи",
+                        "Алексей",
+                        mutableListOf(
+                            Message(
+                                "",
+                                "myId",
+                                "Послезавтра готов забрать",
+                                "1745406425571",
+                                MessageState.SENT
+                            )
+                        ),
+                        PostState(
+                            "",
+                            "",
+                            PostData(
+                                "Мангал для дачи",
+                                mutableListOf(),
+                                "150 000",
+                                "руб."
+                            )
+                        )
+                    ),
+                    Chat(
+                        "",
+                        "Евгений",
                         mutableListOf(),
-                        "150 000",
-                        "руб."
-                    )
-                )
-            ),
-            Chat(
-                "",
-                "Евгений",
-                mutableListOf(),
-                PostState(
-                    "",
-                    "",
-                    PostData(
-                        "Macbook 14 pro M1 1T 32GB ",
-                        mutableListOf(),
-                        "150 000",
-                        "руб."
+                        PostState(
+                            "",
+                            "",
+                            PostData(
+                                "Macbook 14 pro M1 1T 32GB ",
+                                mutableListOf(),
+                                "150 000",
+                                "руб."
+                            )
+                        )
                     )
                 )
             )
-        ), {}) {}
+        ) {}
     }
 }
 
@@ -125,12 +132,11 @@ fun ChatItemPreview() {
 fun ChatItemList(
     state: LazyListState = rememberLazyListState(),
     userId: String,
-    chats: List<Chat>,
+    chatsState: MessagesState,
     onItemClicked: (Chat) -> Unit,
-    onItemDelete: (Chat) -> Unit
 ) {
     LazyColumn(state = state) {
-        items(chats.size) { index ->
+        items(chatsState.chats.size) { index ->
 
 //            val swipeState = rememberSwipeToDismissBoxState(
 //                confirmValueChange = { value ->
@@ -172,10 +178,10 @@ fun ChatItemList(
                 modifier = Modifier
                     .wrapContentSize()
                     .background(Color.White)
-                    .clickable { onItemClicked(chats[index]) }
+                    .clickable { onItemClicked(chatsState.chats[index]) }
             ) {
-                ChatItem(userId, chats[index])
-                if (index != 0 && index < chats.size - 1) Divider()
+                ChatItem(userId, chatsState.chats[index])
+                if (index != 0 && index < chatsState.chats.size - 1) Divider()
             }
 
         }
@@ -237,7 +243,8 @@ fun ChatItem(
                         val lastMessage = chat.messages[chat.messages.size - 1]
 
                         Text(
-                            text = lastMessage.timestamp,
+                            text = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                .format(Date(lastMessage.timestamp.toLong())),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Normal,
                             color = Color.Gray

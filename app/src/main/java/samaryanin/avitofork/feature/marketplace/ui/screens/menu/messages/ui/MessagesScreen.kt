@@ -11,12 +11,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -34,8 +33,10 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.components.ChatItemList
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.components.ChatTopBar
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.components.FilterItemList
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.MessagesRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesEvent
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesState
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
 
 /**
  * Функция для предпросмотра макета
@@ -43,7 +44,84 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navi
 @Preview
 @Composable
 fun MessagesPreview() {
-    MessagesContent({})
+    MessagesContent({}, MessagesState(
+        mutableListOf(
+            Chat(
+                "",
+                "Поддержка AvitoFork",
+                mutableListOf(
+                    Message(
+                        "",
+                        "anotherId",
+                        "Рады вам помочь!",
+                        "15:00",
+                        MessageState.READ
+                    )
+                ),
+            ),
+            Chat(
+                "",
+                "Иван",
+                mutableListOf(
+                    Message(
+                        "",
+                        "myId",
+                        "Когда можем созвониться?",
+                        "17:37",
+                        MessageState.READ
+                    )
+                ),
+                PostState(
+                    "",
+                    "",
+                    PostData(
+                        "IPhone 15 Pro",
+                        mutableListOf(),
+                        "150 000",
+                        "руб."
+                    )
+                )
+            ),
+            Chat(
+                "",
+                "Алексей",
+                mutableListOf(
+                    Message(
+                        "",
+                        "myId",
+                        "Послезавтра готов забрать",
+                        "10:13",
+                        MessageState.SENT
+                    )
+                ),
+                PostState(
+                    "",
+                    "",
+                    PostData(
+                        "Мангал для дачи",
+                        mutableListOf(),
+                        "150 000",
+                        "руб."
+                    )
+                )
+            ),
+            Chat(
+                "",
+                "Евгений",
+                mutableListOf(),
+                PostState(
+                    "",
+                    "",
+                    PostData(
+                        "Macbook 14 pro M1 1T 32GB ",
+                        mutableListOf(),
+                        "150 000",
+                        "руб."
+                    )
+                )
+            )
+        )
+    ))
 }
 
 /**
@@ -55,9 +133,14 @@ fun MessagesPreview() {
 @Composable
 fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesViewModel) {
 
+    val chats by viewModel.appStateStore.messageStateHolder.messagesState.collectAsState()
+
+    // обновление сообщений
+    viewModel.handleEvent(MessagesEvent.ChatsRefresh)
+
     // навигация в личные сообщения по чату
     val message: (Chat) -> Unit = { chat ->
-        navHostController.navigate(MessagesRoutes.MessagesDirect(chat)) {
+        navHostController.navigate(MessagesRoutes.MessagesDirect(chat.chatId)) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -66,7 +149,7 @@ fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesView
         }
     }
 
-    MessagesContent(message)
+    MessagesContent(message, chats)
 }
 
 /**
@@ -76,7 +159,7 @@ fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesView
  */
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun MessagesContent(message: (Chat) -> Unit) {
+fun MessagesContent(message: (Chat) -> Unit, chats: MessagesState) {
     val scrollState = rememberLazyListState()
 
     val isNextEnabled by remember {
@@ -110,238 +193,7 @@ fun MessagesContent(message: (Chat) -> Unit) {
                 Space(5.dp)
             }
 
-            var chats by remember { mutableStateOf(
-                mutableListOf(
-                    Chat(
-                        "",
-                        "Поддержка AvitoFork",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "anotherId",
-                                "Рады вам помочь!",
-                                "15:00",
-                                MessageState.READ
-                            )
-                        ),
-                    ),
-                    Chat(
-                        "",
-                        "Иван",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "myId",
-                                "Когда можем созвониться?",
-                                "17:37",
-                                MessageState.READ
-                            )
-                        ),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "IPhone 15 Pro",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Алексей",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "myId",
-                                "Послезавтра готов забрать",
-                                "10:13",
-                                MessageState.SENT
-                            )
-                        ),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "Мангал для дачи",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Евгений",
-                        mutableListOf(),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "Macbook 14 pro M1 1T 32GB ",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Поддержка AvitoFork",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "anotherId",
-                                "Рады вам помочь!",
-                                "15:00",
-                                MessageState.READ
-                            )
-                        ),
-                    ),
-                    Chat(
-                        "",
-                        "Иван",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "myId",
-                                "Когда можем созвониться?",
-                                "17:37",
-                                MessageState.READ
-                            )
-                        ),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "IPhone 15 Pro",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Алексей",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "myId",
-                                "Послезавтра готов забрать",
-                                "10:13",
-                                MessageState.SENT
-                            )
-                        ),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "Мангал для дачи",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Евгений",
-                        mutableListOf(),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "Macbook 14 pro M1 1T 32GB ",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Поддержка AvitoFork",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "anotherId",
-                                "Рады вам помочь!",
-                                "15:00",
-                                MessageState.READ
-                            )
-                        ),
-                    ),
-                    Chat(
-                        "",
-                        "Иван",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "myId",
-                                "Когда можем созвониться?",
-                                "17:37",
-                                MessageState.READ
-                            )
-                        ),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "IPhone 15 Pro",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Алексей",
-                        mutableListOf(
-                            Message(
-                                "",
-                                "myId",
-                                "Послезавтра готов забрать",
-                                "10:13",
-                                MessageState.SENT
-                            )
-                        ),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "Мангал для дачи",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    ),
-                    Chat(
-                        "",
-                        "Евгений",
-                        mutableListOf(),
-                        PostState(
-                            "",
-                            "",
-                            PostData(
-                                "Macbook 14 pro M1 1T 32GB ",
-                                mutableListOf(),
-                                "150 000",
-                                "руб."
-                            )
-                        )
-                    )
-                )
-            ) }
-
-            val onDelete: (Chat) -> Unit = { chat ->
-                chats.remove(chat)
-            }
-
-            ChatItemList(scrollState, "myId", chats, message, onDelete)
+            ChatItemList(scrollState, "myId", chats, message)
 
         }
 

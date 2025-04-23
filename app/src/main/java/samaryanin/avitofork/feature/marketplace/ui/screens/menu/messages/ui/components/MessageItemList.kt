@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -14,12 +15,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -44,6 +50,9 @@ import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.theme.lightBlueColor
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Message
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.MessageState
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
@@ -54,42 +63,42 @@ fun MessageItemPreview() {
                 "",
                 "myId",
                 "Привет!",
-                "10:10",
+                "1745406402992",
                 MessageState.READ
             ),
             Message(
                 "",
                 "myId",
                 "Как дела?",
-                "10:10",
+                "1745406402992",
                 MessageState.READ
             ),
             Message(
                 "",
                 "anotherId",
                 "Привет!",
-                "10:12",
+                "1745406402992",
                 MessageState.SENT
             ),
             Message(
                 "",
                 "anotherId",
                 "Все хорошо!",
-                "10:12",
+                "1745406425571",
                 MessageState.SENT
             ),
             Message(
                 "",
                 "myId",
                 "Супер!",
-                "10:14",
+                "1745406425571",
                 MessageState.RECEIVED
             ),
             Message(
                 "",
                 "myId",
                 "Рад за тебя!",
-                "10:15",
+                "1745406425571",
                 MessageState.SENT
             )
         ))
@@ -101,14 +110,32 @@ fun MessageItemPreview() {
  * @param messages список сообщений
  */
 @Composable
-fun MessageItemList(userId: String, messages: MutableList<Message>) {
-    LazyColumn {
+fun MessageItemList(userId: String, messages: MutableList<Message>, modifier: Modifier = Modifier) {
+    val listState = rememberLazyListState()
+    val userScrolling by remember { derivedStateOf { listState.isScrollInProgress } }
+
+    LaunchedEffect(messages.size) {
+        if (!userScrolling && messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.lastIndex)
+        }
+    }
+
+    LazyColumn(
+        state = listState,
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+
+        item {
+            Space()
+        }
+
         items(messages.size) { index ->
 
             // условие отличия сообщений авторизованного пользователя от других
             val personal = messages[index].user == userId
 
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomStart) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = if (personal) Arrangement.End else Arrangement.Start) {
                     if (personal) {
 
@@ -131,7 +158,7 @@ fun MessageItemList(userId: String, messages: MutableList<Message>) {
                 }
             }
 
-            if (index < messages.size) Space(2.dp)
+            if (index < messages.size) Space(4.dp)
         }
     }
 }
@@ -141,12 +168,12 @@ fun MessageItemList(userId: String, messages: MutableList<Message>) {
 fun MessageSentItem(message: Message, tail: Boolean) {
     Row(verticalAlignment = Alignment.Bottom) {
         Card(
-            modifier = Modifier.wrapContentSize().zIndex(2f)
-                .shadow(10.dp, RoundedCornerShape(
+            modifier = Modifier.wrapContentSize().zIndex(1f)
+                .shadow(5.dp, RoundedCornerShape(
                     topStart = 10.dp,
                     topEnd = 10.dp,
-                    bottomStart = if (tail) 0.dp else 10.dp,
-                    bottomEnd = 10.dp),
+                    bottomStart = 10.dp,
+                    bottomEnd = if (tail) 0.dp else 10.dp),
                     clip = false,
                     ambientColor = Color.Black,
                     spotColor = Color.LightGray
@@ -157,7 +184,8 @@ fun MessageSentItem(message: Message, tail: Boolean) {
                 topEnd = 10.dp,
                 bottomStart = 10.dp,
                 bottomEnd = if (tail) 0.dp else 10.dp
-            )
+            ),
+            border = BorderStroke(0.1.dp, Color.Unspecified)
         ) {
             Box(
                 modifier = Modifier
@@ -171,10 +199,11 @@ fun MessageSentItem(message: Message, tail: Boolean) {
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Left
                     )
-                    Row(modifier = Modifier.align(Alignment.Bottom).offset(0.dp, (2).dp)) {
+                    Row(modifier = Modifier.align(Alignment.Bottom).offset(0.dp, (4).dp)) {
                         Space(2.dp)
                         Text(
-                            text = message.timestamp,
+                            text = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                .format(Date(message.timestamp.toLong())),
                             fontSize = 10.sp,
                             color = Color.Gray,
                         )
@@ -186,26 +215,24 @@ fun MessageSentItem(message: Message, tail: Boolean) {
         }
         if (tail) {
             Canvas(
-                modifier = Modifier.size(8.dp, 10.dp).offset((-2).dp).zIndex(1f)
+                modifier = Modifier.size(8.dp, 10.dp).offset((-0.3).dp).zIndex(2f).padding(end = 1.dp)
             ) {
                 val width = size.width
                 val height = size.height
 
                 val path = Path().apply {
                     moveTo(0f, height)
-                    lineTo(width, height)
-                    lineTo(width / 2f, height / 1.2f)
-                    lineTo(0f, 0f)
+                    cubicTo(width, height, width / 1.4f, height / 1.4f, 0f, 0f)
                     close()
                 }
 
                 drawIntoCanvas { canvas ->
                     val paint = Paint().apply {
-                        color = Color.Gray.copy(alpha = 0.1f)
+                        color = Color.Gray.copy(alpha = 0.07f)
                     }
 
                     val shadowPath = path.copy()
-                    shadowPath.translate(Offset(1f, 1f))
+                    shadowPath.translate(Offset(0.7f, -0.2f))
 
                     canvas.drawOutline(
                         outline = Outline.Generic(shadowPath),
@@ -218,7 +245,7 @@ fun MessageSentItem(message: Message, tail: Boolean) {
                         outline = Outline.Generic(path),
                         paint = Paint().apply {
                             color = lightBlueColor
-                            pathEffect = PathEffect.cornerPathEffect(5f)
+                            pathEffect = PathEffect.cornerPathEffect(2f)
                         }
                     )
                 }
@@ -235,16 +262,14 @@ fun MessageReceivedItem(message: Message, tail: Boolean) {
 
         if (tail) {
             Canvas(
-                modifier = Modifier.size(8.dp, 10.dp).offset((2).dp)
+                modifier = Modifier.size(8.dp, 10.dp).offset((0.3).dp).zIndex(2f)
             ) {
                 val width = size.width
                 val height = size.height
 
                 val path = Path().apply {
                     moveTo(width, height)
-                    lineTo(0f, height)
-                    lineTo(width / 2f, height / 1.2f)
-                    lineTo(width, 0f)
+                    cubicTo(0f, height, width / 1.4f, height / 1.4f, width, 0f)
                     close()
                 }
 
@@ -254,7 +279,7 @@ fun MessageReceivedItem(message: Message, tail: Boolean) {
                     }
 
                     val shadowPath = path.copy()
-                    shadowPath.translate(Offset(1f, 1f))
+                    shadowPath.translate(Offset(-0.7f, 0.2f))
 
                     canvas.drawOutline(
                         outline = Outline.Generic(shadowPath),
@@ -267,7 +292,7 @@ fun MessageReceivedItem(message: Message, tail: Boolean) {
                         outline = Outline.Generic(path),
                         paint = Paint().apply {
                             color = Color.White
-                            pathEffect = PathEffect.cornerPathEffect(5f)
+                            pathEffect = PathEffect.cornerPathEffect(2f)
                         }
                     )
                 }
@@ -276,7 +301,7 @@ fun MessageReceivedItem(message: Message, tail: Boolean) {
         }
         Card(
             modifier = Modifier.wrapContentSize()
-                .shadow(10.dp, RoundedCornerShape(
+                .shadow(5.dp, RoundedCornerShape(
                     topStart = 10.dp,
                     topEnd = 10.dp,
                     bottomStart = if (tail) 0.dp else 10.dp,
@@ -307,10 +332,11 @@ fun MessageReceivedItem(message: Message, tail: Boolean) {
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Left
                     )
-                    Row(modifier = Modifier.align(Alignment.Bottom).offset(0.dp, (2).dp)) {
+                    Row(modifier = Modifier.align(Alignment.Bottom).offset(0.dp, (4).dp)) {
                         Space(2.dp)
                         Text(
-                            text = message.timestamp,
+                            text = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                .format(Date(message.timestamp.toLong())),
                             fontSize = 10.sp,
                             color = Color.Gray,
                         )
@@ -338,7 +364,7 @@ fun MessageState(state: MessageState) {
             readFlag = false
             size = 13
             offsetX = -2
-            offsetY = -2
+            offsetY = 2
         }
 
         MessageState.SENT -> {
@@ -346,7 +372,7 @@ fun MessageState(state: MessageState) {
             readFlag = false
             size = 10
             offsetX = -3
-            offsetY = -1
+            offsetY = 3
         }
 
         MessageState.READ -> {
@@ -354,7 +380,7 @@ fun MessageState(state: MessageState) {
             readFlag = true
             size = 13
             offsetX = -2
-            offsetY = -2
+            offsetY = 2
         }
 
     }

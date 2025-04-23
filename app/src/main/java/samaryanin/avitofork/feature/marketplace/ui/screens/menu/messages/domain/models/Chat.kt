@@ -21,7 +21,7 @@ data class Chat(
     /**
      * Список сообщений
      */
-    val messages: List<Message> = mutableListOf(),
+    val messages: MutableList<Message> = mutableListOf(),
 
     /**
      * Референс на публикацию

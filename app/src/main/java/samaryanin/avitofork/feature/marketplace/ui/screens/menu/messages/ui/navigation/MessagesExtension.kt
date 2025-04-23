@@ -6,11 +6,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import kotlinx.serialization.json.Json
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.models.Chat
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.ChatScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
-import kotlin.reflect.typeOf
 
 /**
  * Расширение навигации авторизации Navigation Graph выше слоя BottomSheet
@@ -23,12 +20,9 @@ fun NavGraphBuilder.utilMessagesGraph(
     globalNavController: NavHostController,
 ) {
 
-    navigation(startDestination = MessagesRoutes.MessagesDirect(Chat()).route, route = MessagesRoutes.RouteID.route) {
+    navigation(startDestination = MessagesRoutes.MessagesDirect("").route, route = MessagesRoutes.RouteID.route) {
 
         composable<MessagesRoutes.MessagesDirect>(
-            typeMap = mapOf(
-                typeOf<Chat>() to ChatNavType.ChatType
-            ),
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -46,16 +40,9 @@ fun NavGraphBuilder.utilMessagesGraph(
                 )
             }
         ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("directId") ?: ""
 
-            val json = Json {
-                ignoreUnknownKeys = true
-            }
-
-            val chat = backStackEntry.arguments?.getString("chat")?.let {
-                json.decodeFromString<Chat>(it)
-            } ?: Chat()
-
-            ChatScreen(globalNavController, viewModel, chat)
+            ChatScreen(globalNavController, viewModel, id)
 
         }
 

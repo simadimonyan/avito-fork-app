@@ -21,10 +21,10 @@ sealed class MessagesRoutes(val route: String) {
 
     /**
      * Окно личных сообщений  (над BottomNavigation)
-     * @param chat объект чата
+     * @param directId id чата
      */
     @Serializable
     @Immutable
-    data class MessagesDirect(val chat: Chat) : MessagesRoutes("messages_direct")
+    data class MessagesDirect(val directId: String) : MessagesRoutes("messages_direct")
 
 }
