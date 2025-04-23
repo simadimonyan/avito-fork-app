@@ -28,7 +28,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.appbar.BottomApp
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.navigation.FavoriteRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 
 /**
  * Управляющий Composable

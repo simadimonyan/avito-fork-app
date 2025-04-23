@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.favorites_items
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,8 +29,8 @@ import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.utils.components.RemoteImage
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.NavigationHolder
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.NavigationHolder
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 
 // Компонент карточки объявления
 @Composable

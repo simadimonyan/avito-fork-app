@@ -8,8 +8,8 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.Pro
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.utilProfileGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.navigation.utilPosterGraph
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.utilSearchGraph
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.utilSearchGraph
 
 /**
  * Расширение утилитной навигации Navigation Graph выше слоя BottomNavigation

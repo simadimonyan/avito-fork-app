@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.marketplace
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,10 +36,10 @@ import samaryanin.avitofork.core.ui.utils.components.ShimmerAdCard
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.theme.AvitoForkTheme
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.MarketplaceViewModel
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.additional_categories.CategoriesWithPhotos
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.main_categories.SelectableLazyRow
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.product.ProductCard
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.SearchBar
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.additional_categories.CategoriesWithPhotos
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.main_categories.SelectableLazyRow
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.product.ProductCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable

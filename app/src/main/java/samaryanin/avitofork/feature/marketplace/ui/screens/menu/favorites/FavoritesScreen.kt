@@ -29,6 +29,8 @@ import samaryanin.avitofork.core.ui.start.data.MainViewModel
 import samaryanin.avitofork.core.ui.utils.components.ShimmerAdCard
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.favorites_items.EmptyFavoritesMessage
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.favorites_items.FavoriteAdCard
 
 @Composable
 fun FavoritesScreen(

@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel

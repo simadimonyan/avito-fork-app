@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.poster_additional_info.AdditionalInfoScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.additional_info_ad.AdditionalInfoScreen
 
 /**
  * Расширение утилитной навигации поиска объявлений выше слоя BottomNavigation

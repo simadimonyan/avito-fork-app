@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.poster_additional_info
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.additional_info_ad
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.feature.marketplace.data.repository.ad.AdRepo
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.NavigationHolder
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.NavigationHolder
 
 @HiltViewModel
 class AdditionalInfoViewModel

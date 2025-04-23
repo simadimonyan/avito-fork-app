@@ -20,8 +20,8 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.ProfileS
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.marketplace.MarketplaceScreen
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.MarketplaceScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 
 /**
  * Главный Navigation Host Graph от [MainScreen]
