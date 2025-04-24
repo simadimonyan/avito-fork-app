@@ -39,7 +39,12 @@ class MarketplaceViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            favoriteManager.loadFromServer() // всегда актуальные избранные с сервера
+            try {
+                favoriteManager.loadFromServer()
+            } catch (e: Exception) {
+
+            }
+            // всегда актуальные избранные с сервера
         }
 
         viewModelScope.launch {

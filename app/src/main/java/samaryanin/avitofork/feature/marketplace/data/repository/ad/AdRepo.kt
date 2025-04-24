@@ -8,6 +8,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.network.sockets.SocketTimeoutException
+import kotlinx.coroutines.delay
 import ru.dimagor555.avito.ad.dto.AdDto
 import ru.dimagor555.avito.ad.dto.CategoryDto
 import ru.dimagor555.avito.ad.request.GetAdsByIdsRequestDto
@@ -58,6 +60,19 @@ class AdRepo @Inject constructor(
         .body<List<AdDto>>()
         .map { it.toDomain() }
 
+//    suspend fun safePostAdFavourite(categoryIds: List<String>): List<Ad>? {
+//        return retryOnTimeout {
+//            httpClient
+//                .post("ad/all") {
+//                    header(HttpHeaders.ContentType, ContentType.Application.Json)
+//                    setBody(GetFilteredAdsRequestDto(categoryIds = categoryIds.ifEmpty { null }))
+//                }
+//                .body<List<AdDto>>()
+//                .map { it.toDomain() }
+//            }
+//        }
+
+
     suspend fun getFavoriteAds(): List<Ad> = httpClient
         .get("ad/favourite") {
         }
@@ -101,4 +116,23 @@ private fun CategoryDto.toDomain(): Category {
         imageId = imageId.orEmpty(),
     )
 
+}
+
+private suspend inline fun <T> retryOnTimeout(
+    retries: Int = 3,
+    delayMillis: Long = 1000,
+    block: () -> T
+): T? {
+    repeat(retries - 1) { attempt ->
+        try {
+            return block()
+        } catch (e: SocketTimeoutException) {
+            delay(delayMillis * (attempt + 1))
+        }
+    }
+    return try {
+        block()
+    } catch (e: SocketTimeoutException) {
+        null
+    }
 }
