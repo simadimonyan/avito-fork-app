@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation
 
 import kotlinx.serialization.Serializable
 

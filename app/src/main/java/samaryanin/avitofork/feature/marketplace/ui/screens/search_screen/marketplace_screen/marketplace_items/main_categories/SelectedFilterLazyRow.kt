@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.main_categories
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.main_categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

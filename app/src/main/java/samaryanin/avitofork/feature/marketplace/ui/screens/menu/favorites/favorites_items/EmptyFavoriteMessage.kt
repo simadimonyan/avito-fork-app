@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.favorites_items
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

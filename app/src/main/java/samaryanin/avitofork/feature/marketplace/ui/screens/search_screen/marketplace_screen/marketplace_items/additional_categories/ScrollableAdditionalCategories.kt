@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.additional_categories
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.additional_categories
 
 //@Composable
 //fun ScrollableAdditionalCategories() {

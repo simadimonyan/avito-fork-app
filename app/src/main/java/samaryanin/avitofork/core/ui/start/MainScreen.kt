@@ -30,7 +30,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.stat
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.SearchRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 
 /**
  * Управляющий Composable

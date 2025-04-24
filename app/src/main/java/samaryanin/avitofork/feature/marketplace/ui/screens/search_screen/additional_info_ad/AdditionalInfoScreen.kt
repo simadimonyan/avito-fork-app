@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.poster_additional_info
+package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.additional_info_ad
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,7 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.utils.components.RemoteImage
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.navigation.NavigationHolder
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.NavigationHolder
 
 @Composable
 fun AdditionalInfoScreen(
