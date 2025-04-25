@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.R
 import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.components.utils.textField.AppTextFieldPlaceholder
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.search.marketplace_screen.marketplace.IconButton
+import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.IconButton
 
 @Preview
 @Composable
