@@ -72,8 +72,8 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.domain.
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.components.MessageItemList
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesEvent
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.theme.AdaptiveLayout
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.theme.Dimensions
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.theme.getParams
 
 /**
  * Функция для предпросмотра макета
@@ -145,13 +145,13 @@ fun ChatScreen(globalNavController: NavHostController, viewModel: MessagesViewMo
 fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Unit) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        val LocalDimensions = staticCompositionLocalOf<Dimensions> {
+        val Dimensions = staticCompositionLocalOf<Dimensions> {
             error("No dimensions provided")
         }
 
-        CompositionLocalProvider(LocalDimensions provides getParams(maxWidth)) {
+        CompositionLocalProvider(Dimensions provides AdaptiveLayout.getThemeSize(maxWidth)) {
 
-            val dimensions = LocalDimensions.current
+            val LocalDimensions = Dimensions.current
 
             Scaffold(
                 containerColor = Color.White,
@@ -168,11 +168,11 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                             Row(modifier = Modifier
                                 .fillMaxWidth().background(Color.White).zIndex(2f)
-                                .padding(dimensions.smallPadding1), verticalAlignment = Alignment.CenterVertically) {
+                                .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
 
                                 Icon(
                                     painter = painterResource(R.drawable.ic_arrow),
-                                    modifier = Modifier.size(dimensions.mediumIcon1).clickable(
+                                    modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar2).clickable(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null
                                     ) {
@@ -181,18 +181,18 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
                                     contentDescription = "back"
                                 )
 
-                                Space(dimensions.smallPadding2)
+                                Space(6.dp)
 
                                 Box(
                                     modifier = Modifier
                                         .clip(CircleShape)
-                                        .size(dimensions.largeIcon1)
+                                        .size(LocalDimensions.Chat.IconSize.iconSizeTopBar4)
                                         .background(greyButton),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         text = chat.profileName.firstOrNull()?.toString() ?: "",
-                                        fontSize = dimensions.mediumFont1,
+                                        fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle3,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White
                                     )
@@ -200,13 +200,13 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                                 Space()
 
-                                Column(modifier = Modifier.padding(vertical = dimensions.smallPadding5)) {
+                                Column(modifier = Modifier.padding(vertical = 2.dp)) {
 
                                     Row {
 
                                         Text(
                                             text = chat.profileName.take(12),
-                                            fontSize = dimensions.mediumFont2,
+                                            fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle2,
                                             fontWeight = FontWeight.Normal,
                                             color = Color.Black,
                                             textAlign = TextAlign.Left,
@@ -231,21 +231,21 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
                                                 }
                                         )
 
-                                        Space(dimensions.smallPadding4)
+                                        Space(1.dp)
 
                                         Icon(
                                             Icons.Default.NotificationsActive,
-                                            modifier = Modifier.size(dimensions.smallIcon1),
+                                            modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar1),
                                             contentDescription = "notification",
                                             tint = Color.LightGray
                                         )
                                     }
 
-                                    Space(dimensions.smallPadding4)
+                                    Space(1.dp)
 
                                     Text(
                                         text = "в сети",
-                                        fontSize = dimensions.smallFont1,
+                                        fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle1,
                                         fontWeight = FontWeight.Normal,
                                         color = saladGreen
                                     )
@@ -260,7 +260,7 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                                     Icon(
                                         painter = painterResource(R.drawable.phone_call),
-                                        modifier = Modifier.size(dimensions.mediumIcon2).clickable(
+                                        modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar2).clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
                                         ) {
@@ -270,11 +270,11 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
                                         tint = lightBlue
                                     )
 
-                                    Space(dimensions.smallPadding1)
+                                    Space(10.dp)
 
                                     Icon(
                                         painter = painterResource(R.drawable.video_call),
-                                        modifier = Modifier.size(dimensions.mediumIcon3).clickable(
+                                        modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar3).clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
                                         ) {
@@ -284,14 +284,14 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
                                         tint = lightBlue
                                     )
 
-                                    Space(dimensions.smallPadding3)
+                                    Space(5.dp)
                                 }
 
                             }
 
                             if (chat.postReference.data.name.isNotEmpty()) {
 
-                                Space(dimensions.smallPadding5)
+                                Space(2.dp)
 
                                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
@@ -299,13 +299,13 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                                     Row {
                                         Box(
-                                            modifier = Modifier.size(dimensions.largeIcon1).background(greyButton,
+                                            modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar4).background(greyButton,
                                                 RoundedCornerShape(5.dp)),
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Text(
                                                 text = chat.postReference.data.name.firstOrNull()?.toString() ?: "",
-                                                fontSize = dimensions.mediumFont1,
+                                                fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachment3,
                                                 fontWeight = FontWeight.Bold,
                                                 color = Color.White
                                             )
@@ -313,7 +313,7 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                                         Space()
 
-                                        Column(modifier = Modifier.padding(vertical = dimensions.smallPadding5).align(Alignment.CenterVertically)) {
+                                        Column(modifier = Modifier.padding(vertical = 2.dp).align(Alignment.CenterVertically)) {
 
                                             val name = if (chat.postReference.data.name.length > 15) {
                                                 "${chat.postReference.data.name.take(15)}..."
@@ -323,17 +323,17 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                                             Text(
                                                 text = name,
-                                                fontSize = dimensions.mediumFont3,
+                                                fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachment2,
                                                 fontWeight = FontWeight.Normal,
                                                 color = Color.Black,
                                                 textAlign = TextAlign.Left
                                             )
 
-                                            Space(dimensions.smallPadding4)
+                                            Space(1.dp)
 
                                             Text(
                                                 text = "от ${chat.postReference.timestamp}",
-                                                fontSize = dimensions.smallFont1,
+                                                fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachment1,
                                                 fontWeight = FontWeight.Normal,
                                                 color = Color.Gray
                                             )
@@ -345,7 +345,7 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
 
                                     Text(
                                         text = chat.postReference.data.price + " " + chat.postReference.data.unit,
-                                        fontSize = dimensions.mediumFont3,
+                                        fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachment2,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Black
                                     )

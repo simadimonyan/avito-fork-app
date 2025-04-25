@@ -103,7 +103,7 @@ class KtorClient @Inject constructor(
 
                 refreshTokens {
 
-                    val token = this.client.post("$baseUrl/auth/refresh") {
+                    var token = this.client.post("$baseUrl/auth/refresh") {
                         header(HttpHeaders.ContentType, ContentType.Application.Json)
                         setBody(
                             RefreshRequestDto(
@@ -114,7 +114,9 @@ class KtorClient @Inject constructor(
                     }.let { response -> if (response.status.value != 200) null
                         else response.body<AuthToken>() }
 
-                    BearerTokens(token!!.accessToken, token.refreshToken)
+                    if (token == null) token = AuthToken()
+
+                    BearerTokens(token.accessToken, token.refreshToken)
 
                 }
 
