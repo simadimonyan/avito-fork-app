@@ -7,7 +7,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.them
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.theme.chat.ChatFontSize
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.theme.chat.ChatIconSize
 
-object AdaptiveLayout : Adaptive {
+class AdaptiveLayout : Adaptive {
 
     data class Compact(
         override val Chat: Chat = Chat(

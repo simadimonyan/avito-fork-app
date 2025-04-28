@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navi
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesEvent
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesState
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.theme.Dimensions
 
 /**
  * Функция для предпросмотра макета
