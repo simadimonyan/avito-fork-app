@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.ui.UiState
-import samaryanin.avitofork.core.utils.FavoriteManager
+import samaryanin.avitofork.core.ui.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.data.repository.ad.AdRepo
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import javax.inject.Inject
@@ -24,31 +24,31 @@ class FavoritesScreenViewModel @Inject constructor(
     val favoriteAdsState: StateFlow<UiState<List<Ad>>> = _favoriteAdsState
 
     init {
-        loadFavorites()
+        //loadFavorites()
     }
 
     fun loadFavorites() {
         viewModelScope.launch {
-            _favoriteAdsState.value = UiState.Loading
-            try {
-                favoriteManager.loadFromServer()
-                val ids = favoriteManager.favorites.value
-                val ads = adRepo.getAdsByIds(ids.toList())
-                _favoriteAdsState.value = UiState.Success(ads)
-            } catch (e: Exception) {
-                _favoriteAdsState.value = UiState.Error(e)
-            }
+//            _favoriteAdsState.value = UiState.Loading
+//            try {
+//                favoriteManager.loadFromServer()
+//                val ids = favoriteManager.favorites.value
+//                val ads = adRepo.getAdsByIds(ids.toList())
+//                _favoriteAdsState.value = UiState.Success(ads)
+//            } catch (e: Exception) {
+//                _favoriteAdsState.value = UiState.Error(e)
+//            }
         }
     }
 
     fun toggleFavorite(ad: Ad) {
-        favoriteManager.toggleFavorite(ad.id)
-        removeFavoriteLocally(ad)
+//        favoriteManager.toggleFavorite(ad.id)
+//        removeFavoriteLocally(ad)
     }
 
     private fun removeFavoriteLocally(ad: Ad) {
-        val current = (favoriteAdsState.value as? UiState.Success)?.data?.toMutableList() ?: return
-        current.removeAll { it.id == ad.id }
-        _favoriteAdsState.value = UiState.Success(current)
+//        val current = (favoriteAdsState.value as? UiState.Success)?.data?.toMutableList() ?: return
+//        current.removeAll { it.id == ad.id }
+//        _favoriteAdsState.value = UiState.Success(current)
     }
 }

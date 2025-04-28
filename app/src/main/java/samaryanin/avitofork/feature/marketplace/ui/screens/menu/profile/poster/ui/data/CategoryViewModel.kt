@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data
 
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import samaryanin.avitofork.feature.auth.ui.data.AuthStateHolder
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessageStateHolder
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileStateHolder
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryStateHolder
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryStateHolder
 import javax.inject.Inject
 import javax.inject.Singleton
 

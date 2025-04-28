@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import samaryanin.avitofork.core.database.cache.CacheManager
 import samaryanin.avitofork.core.ui.start.data.state.AppState
 import samaryanin.avitofork.core.ui.start.data.state.AppStateStore
-import samaryanin.avitofork.core.utils.FavoriteManager
+import samaryanin.avitofork.core.ui.utils.FavoriteManager
 import javax.inject.Inject
 
 @Stable

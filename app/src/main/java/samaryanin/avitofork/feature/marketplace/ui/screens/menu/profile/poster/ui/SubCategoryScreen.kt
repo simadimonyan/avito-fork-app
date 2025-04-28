@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -41,8 +41,8 @@ import samaryanin.avitofork.core.ui.utils.components.utils.space.Space
 import samaryanin.avitofork.core.ui.utils.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.marketplace.domain.model.post.CategoryField
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryEvent
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryEvent
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.navigation.PostRoutes
 
 @Preview

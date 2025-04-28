@@ -9,10 +9,10 @@ import androidx.navigation.navigation
 import kotlinx.serialization.json.Json
 import samaryanin.avitofork.feature.marketplace.domain.model.post.CategoryField
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.CategoryScreen
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.PostCreateScreen
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.SubCategoryScreen
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.CategoryScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.PostCreateScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.SubCategoryScreen
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.navigation.data.CategoryNavType
 import kotlin.reflect.typeOf
 

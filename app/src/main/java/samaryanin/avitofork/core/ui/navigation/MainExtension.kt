@@ -8,7 +8,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.stat
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.utilMessagesGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.utilProfileGraph
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.navigation.utilPosterGraph
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.utilSearchGraph
