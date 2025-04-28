@@ -11,13 +11,17 @@ data class PostState(
 
     val subcategory: String = "",
 
-    val data: PostData = PostData()
+    val data: PostData = PostData(),
+
+    val timestamp: String = ""
 
 )
 
 @Serializable
 @Immutable
 data class PostData(
+
+    val name: String = "",
 
     val photos: List<String> = mutableListOf(),
 

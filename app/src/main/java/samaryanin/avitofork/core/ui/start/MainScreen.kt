@@ -26,7 +26,9 @@ import samaryanin.avitofork.feature.auth.ui.AuthBottomSheet
 import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.appbar.BottomAppNavigation
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.favorites.navigation.FavoriteRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.navigation.MessagesRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.state.MessagesViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navigation.MessagesRoutes
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 
@@ -35,10 +37,12 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigat
  */
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
+    mainViewModel: MainViewModel,
+    profileViewModel: ProfileViewModel,
+    messagesViewModel: MessagesViewModel,
     globalNavHostController: NavHostController
 ) {
-    val uiAppState by viewModel.appStateStore.appStateHolder.appState.collectAsState()
+    val uiAppState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
     val screenController = rememberNavController()
     var currentRoute by remember { mutableStateOf("search") }
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -61,7 +65,7 @@ fun MainScreen(
 
     // обработчик событий для AuthBottomSheet
     val onToggleAuthRequest = {
-        viewModel.handleEvent(AppEvent.ToggleAuthRequest)
+        mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
     // глобальный обработчик навигации приложения
@@ -136,7 +140,7 @@ fun MainScreen(
         innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).background(Color.White)) {
 
-            NestedScreenGraph(screenController, viewModel, globalNavHostController)
+            NestedScreenGraph(screenController, mainViewModel, profileViewModel, messagesViewModel, globalNavHostController)
 
             if (uiAppState.authRequested) {
                 AuthBottomSheet(navigateTo, onToggleAuthRequest)

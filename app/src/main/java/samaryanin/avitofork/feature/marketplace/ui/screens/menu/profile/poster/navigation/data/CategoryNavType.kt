@@ -23,7 +23,6 @@ object CategoryNavType {
 
         override fun get(bundle: Bundle, key: String): CategoryField? {
             val rawString = bundle.getString(key)
-            Log.d("TYPE","Retrieved from bundle: $rawString")
             return rawString?.let { json.decodeFromString<CategoryField>(it) }
         }
 
@@ -37,7 +36,6 @@ object CategoryNavType {
 
         override fun put(bundle: Bundle, key: String, value: CategoryField) {
             val serialized = json.encodeToString(value)
-            Log.d("TYPE","Saving to bundle: $serialized")
             bundle.putString(key, serialized)
         }
 

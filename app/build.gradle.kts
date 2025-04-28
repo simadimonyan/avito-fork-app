@@ -147,8 +147,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.ui.tooling)
-    //implementation(libs.androidx.material3)
     implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.constraintlayout.compose)
 
     // Baseline Profiler
     implementation(libs.androidx.profileinstaller)
