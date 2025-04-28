@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.core.database.cache.CacheManager
 import samaryanin.avitofork.core.ui.UiState
 import samaryanin.avitofork.core.ui.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
@@ -27,6 +28,7 @@ class MarketplaceViewModel @Inject constructor(
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
     private val downloadImageUseCase: GetImageBytesByIdUseCase,
     private val favoriteManager: FavoriteManager,
+    private var cacheManager: CacheManager
 ) : ViewModel() {
 
     val allAds = MutableStateFlow<List<Ad>?>(null)
@@ -37,6 +39,8 @@ class MarketplaceViewModel @Inject constructor(
     val adsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
     val categoriesState = MutableStateFlow<UiState<List<Category>>>(UiState.Loading)
 
+    val isAuthorized = MutableStateFlow<Boolean>(false)
+
     init {
         viewModelScope.launch {
             try {
@@ -46,6 +50,8 @@ class MarketplaceViewModel @Inject constructor(
             }
             // всегда актуальные избранные с сервера
         }
+
+        isAuthorized.value = cacheManager.preferences.getString("authToken", null) != null
 
         viewModelScope.launch {
             selectedCategoryIds

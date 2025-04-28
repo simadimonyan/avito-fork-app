@@ -1,13 +1,12 @@
 package samaryanin.avitofork.core.ui.utils
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.core.database.cache.CacheManager
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetFavoriteAdsUseCase
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.ToggleFavoriteAdUseCase
 import javax.inject.Inject
@@ -16,7 +15,7 @@ import javax.inject.Inject
 class FavoriteManager @Inject constructor(
     private val getFavoriteAdsUseCase: GetFavoriteAdsUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
-    private val dataStore: DataStore<Preferences>
+    private var cacheManager: CacheManager
 ) {
 
     private val _favorites = MutableStateFlow<Set<String>>(emptySet())
@@ -52,9 +51,13 @@ class FavoriteManager @Inject constructor(
     }
 
     suspend fun loadFromServer() {
-        val remoteAds = getFavoriteAdsUseCase()
-        val remoteFavorites = remoteAds.map { it.id }.toSet()
-        _favorites.value = remoteFavorites
+        if(cacheManager.preferences.getString("authToken", null) != null){
+            val remoteAds = getFavoriteAdsUseCase()
+            val remoteFavorites = remoteAds.map { it.id }.toSet()
+            _favorites.value = remoteFavorites
+        } else {
+
+        }
     }
 
     suspend fun syncWithServer() {
