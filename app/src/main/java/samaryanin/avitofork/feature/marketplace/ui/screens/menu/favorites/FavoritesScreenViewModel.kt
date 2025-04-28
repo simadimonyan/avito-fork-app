@@ -24,31 +24,31 @@ class FavoritesScreenViewModel @Inject constructor(
     val favoriteAdsState: StateFlow<UiState<List<Ad>>> = _favoriteAdsState
 
     init {
-        //loadFavorites()
+        loadFavorites()
     }
 
     fun loadFavorites() {
         viewModelScope.launch {
-//            _favoriteAdsState.value = UiState.Loading
-//            try {
-//                favoriteManager.loadFromServer()
-//                val ids = favoriteManager.favorites.value
-//                val ads = adRepo.getAdsByIds(ids.toList())
-//                _favoriteAdsState.value = UiState.Success(ads)
-//            } catch (e: Exception) {
-//                _favoriteAdsState.value = UiState.Error(e)
-//            }
+            _favoriteAdsState.value = UiState.Loading
+            try {
+                favoriteManager.loadFromServer()
+                val ids = favoriteManager.favorites.value
+                val ads = adRepo.getAdsByIds(ids.toList())
+                _favoriteAdsState.value = UiState.Success(ads)
+            } catch (e: Exception) {
+                _favoriteAdsState.value = UiState.Error(e)
+            }
         }
     }
 
     fun toggleFavorite(ad: Ad) {
-//        favoriteManager.toggleFavorite(ad.id)
-//        removeFavoriteLocally(ad)
+        favoriteManager.toggleFavorite(ad.id)
+        removeFavoriteLocally(ad)
     }
 
     private fun removeFavoriteLocally(ad: Ad) {
-//        val current = (favoriteAdsState.value as? UiState.Success)?.data?.toMutableList() ?: return
-//        current.removeAll { it.id == ad.id }
-//        _favoriteAdsState.value = UiState.Success(current)
+        val current = (favoriteAdsState.value as? UiState.Success)?.data?.toMutableList() ?: return
+        current.removeAll { it.id == ad.id }
+        _favoriteAdsState.value = UiState.Success(current)
     }
 }
