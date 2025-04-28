@@ -25,7 +25,8 @@ class FavoriteManager @Inject constructor(
 
     init {
         scope.launch {
-            //loadFromServer()
+
+            loadFromServer()
         }
     }
 
@@ -37,8 +38,8 @@ class FavoriteManager @Inject constructor(
         _favorites.value = updatedFavorites
 
         scope.launch {
-//            toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
-//            loadFromServer()
+            toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
+            loadFromServer()
         }
     }
 
