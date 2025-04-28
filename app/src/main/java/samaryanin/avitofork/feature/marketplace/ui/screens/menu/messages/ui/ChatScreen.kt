@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -149,7 +150,9 @@ fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Uni
             error("No dimensions provided")
         }
 
-        CompositionLocalProvider(Dimensions provides AdaptiveLayout.getThemeSize(maxWidth)) {
+        val myDimensions = AdaptiveLayout.getThemeSize(maxWidth)
+
+        CompositionLocalProvider(Dimensions provides myDimensions) {
 
             val LocalDimensions = Dimensions.current
 
