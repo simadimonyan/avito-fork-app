@@ -20,7 +20,7 @@ import samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui.navi
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.ProfileScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.navigation.ProfileRoutes
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryViewModel
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.MarketplaceScreen
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 

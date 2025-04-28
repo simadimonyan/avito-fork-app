@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui
 
 import android.util.Log
 import android.widget.Toast
@@ -43,9 +43,9 @@ import samaryanin.avitofork.feature.marketplace.domain.model.post.PostData
 import samaryanin.avitofork.feature.marketplace.domain.model.post.PostState
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileEvent
 import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.data.ProfileViewModel
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.components.MetaTag
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryEvent
-import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.data.CategoryViewModel
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.components.MetaTag
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryEvent
+import samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.data.CategoryViewModel
 
 @Preview
 @Composable

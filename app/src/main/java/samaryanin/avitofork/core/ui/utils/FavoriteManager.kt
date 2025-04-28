@@ -1,4 +1,4 @@
-package samaryanin.avitofork.core.utils
+package samaryanin.avitofork.core.ui.utils
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -26,7 +26,7 @@ class FavoriteManager @Inject constructor(
 
     init {
         scope.launch {
-            loadFromServer()
+            //loadFromServer()
         }
     }
 
@@ -38,8 +38,8 @@ class FavoriteManager @Inject constructor(
         _favorites.value = updatedFavorites
 
         scope.launch {
-            toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
-            loadFromServer()
+//            toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
+//            loadFromServer()
         }
     }
 

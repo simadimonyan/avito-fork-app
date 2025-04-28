@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.components
+package samaryanin.avitofork.feature.marketplace.ui.screens.menu.profile.poster.ui.components
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

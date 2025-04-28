@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.ui.UiState
-import samaryanin.avitofork.core.utils.FavoriteManager
+import samaryanin.avitofork.core.ui.utils.FavoriteManager
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Category
 import samaryanin.avitofork.feature.marketplace.domain.usecase.ad.GetAllCategoriesUseCase
