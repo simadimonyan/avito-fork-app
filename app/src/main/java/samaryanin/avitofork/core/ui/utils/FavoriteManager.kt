@@ -25,6 +25,7 @@ class FavoriteManager @Inject constructor(
 
     init {
         scope.launch {
+
             loadFromServer()
         }
     }
