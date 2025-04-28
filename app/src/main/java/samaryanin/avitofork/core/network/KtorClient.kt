@@ -105,7 +105,7 @@ class KtorClient @Inject constructor(
 
                 refreshTokens {
 
-                    val token = this.client.post("$baseUrl/auth/refresh") {
+                    val token = this.client.post("auth/refresh") {
                         header(HttpHeaders.ContentType, ContentType.Application.Json)
                         setBody(
                             RefreshRequestDto(

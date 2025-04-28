@@ -21,19 +21,17 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     ktorClient: KtorClient,
 ) {
-
     private val httpClient = ktorClient.httpClient
-    private val strictUrl: String = "/api/v1"
 
     suspend fun register(email: String, password: String, name: String): Boolean =
-        httpClient.post("$strictUrl/auth/register") {
+        httpClient.post("auth/register") {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             setBody(RegistrationRequestDto(email, password, name))
         }.let { response -> response.status.value == 200 }
 
     suspend fun verify(email: String, code: String): AuthToken? {
         return try {
-            httpClient.post("$strictUrl/auth/verify") {
+            httpClient.post("auth/verify") {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
                 setBody(VerityCodeRequestDto(email, code))
             }.let { response ->
@@ -46,14 +44,14 @@ class AuthRepository @Inject constructor(
     }
 
     suspend fun login(email: String, password: String): AuthToken?  =
-        httpClient.post("$strictUrl/auth/login") {
+        httpClient.post("auth/login") {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             setBody(LoginRequestDto(email, password))
         }.let { response -> if (response.status.value != 200) null
             else response.body<AuthToken>() }
 
     suspend fun refresh(oldAccessToken: String, oldRefreshToken: String): AuthToken? =
-        httpClient.post("$strictUrl/auth/refresh") {
+        httpClient.post("auth/refresh") {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             setBody(RefreshRequestDto(oldAccessToken, oldRefreshToken))
         }.let { response -> if (response.status.value != 200) null

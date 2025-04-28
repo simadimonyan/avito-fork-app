@@ -125,7 +125,8 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                                     globalNavController = globalNavController,
                                     onFavoriteClick = {
                                         viewModel.toggleFavoriteAd(ad.id)
-                                    }
+                                    },
+                                    isAuthorized = viewModel.isAuthorized
                                 )
                             }
                         }

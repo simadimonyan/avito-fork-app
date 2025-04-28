@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.marketplace_screen.marketplace_items.product
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,13 +29,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.flow.MutableStateFlow
 import samaryanin.avitofork.R
-import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.core.ui.utils.components.RemoteImage
+import samaryanin.avitofork.feature.marketplace.domain.model.favorites.Ad
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.NavigationHolder
 import samaryanin.avitofork.feature.marketplace.ui.screens.search_screen.navigation.SearchRoutes
 
@@ -43,11 +46,12 @@ fun ProductCard(
     ad: Ad,
     isFav: Boolean?,
     globalNavController: NavHostController,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    isAuthorized: MutableStateFlow<Boolean>
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isFavoriteState by remember { mutableStateOf(isFav ?: false) } // Добавляем состояние для избранного
-
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -115,8 +119,13 @@ fun ProductCard(
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
-                                isFavoriteState = !isFavoriteState // Меняем состояние
-                                onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных
+                                if (isAuthorized.value){
+                                    isFavoriteState = !isFavoriteState // Меняем состояние
+                                    onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных
+                                }
+                                else {
+                                    Toast.makeText(context, "Вы не авторизованы", Toast.LENGTH_SHORT).show()
+                                }
                             }
                             .size(24.dp)
                     )

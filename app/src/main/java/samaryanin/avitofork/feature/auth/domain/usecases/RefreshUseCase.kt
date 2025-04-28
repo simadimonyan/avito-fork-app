@@ -17,9 +17,9 @@ class RefreshUseCase @Inject constructor(
     suspend fun refresh(): AuthStatus {
         val oldToken = cacheManager.getAuthToken()
 
-        val authToken = authRepository.refresh(oldToken!!.accessToken, oldToken.refreshToken)
+        val authToken = authRepository.refresh(oldToken.accessToken, oldToken.refreshToken)
 
-        return if (authToken!!.refreshToken.isNotBlank() && authToken.accessToken.isNotBlank()) {
+        return if (authToken?.refreshToken?.isNotBlank() == true && authToken.accessToken.isNotBlank()) {
             cacheManager.saveAuthToken(authToken)
             AuthStatus.TOKEN_REFRESH_SUCCEED
         } else {

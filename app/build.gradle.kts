@@ -89,7 +89,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.1.0.jar"))
+    implementation(files("libs/domain-jvm-1.1.2.jar"))
 
     implementation (libs.androidx.datastore.preferences)
 
