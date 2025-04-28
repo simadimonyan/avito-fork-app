@@ -1,6 +1,7 @@
 package samaryanin.avitofork.feature.marketplace.ui.screens.menu.messages.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,6 +36,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -146,13 +148,10 @@ fun ChatScreen(globalNavController: NavHostController, viewModel: MessagesViewMo
 fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Unit) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        val Dimensions = staticCompositionLocalOf<Dimensions> {
-            error("No dimensions provided")
-        }
+        val layout = AdaptiveLayout()
+        val Dimensions = compositionLocalOf<Dimensions> { layout.medium }
 
-        val myDimensions = AdaptiveLayout.getThemeSize(maxWidth)
-
-        CompositionLocalProvider(Dimensions provides myDimensions) {
+        CompositionLocalProvider(Dimensions provides layout.getThemeSize(maxWidth)) {
 
             val LocalDimensions = Dimensions.current
 

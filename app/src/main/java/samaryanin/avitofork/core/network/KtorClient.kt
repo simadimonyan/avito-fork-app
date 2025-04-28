@@ -59,8 +59,6 @@ class KtorClient @Inject constructor(
             val type = object : TypeToken<AuthToken>() {}.type
             var token = AuthToken()
 
-            Log.d("KTOR", json.toString())
-
             if (json != null) {
                 val state: AuthToken = try {
                     gson.fromJson(json, type)
@@ -115,8 +113,6 @@ class KtorClient @Inject constructor(
                         )
                     }.let { response -> if (response.status.value != 200) null
                         else response.body<AuthToken>() }
-
-                    if (token == null) token = AuthToken()
 
                     BearerTokens(token!!.accessToken, token!!.refreshToken)
 
