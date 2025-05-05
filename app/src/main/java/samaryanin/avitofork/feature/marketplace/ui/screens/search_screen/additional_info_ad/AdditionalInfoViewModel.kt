@@ -25,7 +25,7 @@ class AdditionalInfoViewModel
 
     fun getAdById(adId: String) {
         viewModelScope.launch {
-            //_adById.value = adRepo.getAdById(adId)
+            _adById.value = adRepo.getAdById(adId)
         }
     }
 }

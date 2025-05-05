@@ -25,8 +25,13 @@ class FavoriteManager @Inject constructor(
 
     init {
         scope.launch {
+            try {
+                loadFromServer()
 
-            loadFromServer()
+            } catch (e: Exception) {
+
+
+            }
         }
     }
 
@@ -52,7 +57,7 @@ class FavoriteManager @Inject constructor(
     }
 
     suspend fun loadFromServer() {
-        if(cacheManager.preferences.getString("authToken", null) != null){
+        if (cacheManager.preferences.getString("authToken", null) != null) {
             val remoteAds = getFavoriteAdsUseCase()
             val remoteFavorites = remoteAds.map { it.id }.toSet()
             _favorites.value = remoteFavorites

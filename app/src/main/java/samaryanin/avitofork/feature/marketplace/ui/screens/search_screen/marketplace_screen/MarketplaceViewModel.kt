@@ -48,7 +48,6 @@ class MarketplaceViewModel @Inject constructor(
             } catch (e: Exception) {
 
             }
-            // всегда актуальные избранные с сервера
         }
 
         isAuthorized.value = cacheManager.preferences.getString("authToken", null) != null
