@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.poster.ui.feature.create
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -78,7 +79,9 @@ private fun PostCreatePreview() {
         )
     )
 
-    PostCreateContent({ true }, sample, {}, {}, PostData())
+    val gap: (Int, Uri) -> Unit = { i, a -> }
+
+    PostCreateContent({ true }, sample, {}, {}, PostData(), gap)
 }
 
 @Composable
@@ -127,7 +130,11 @@ fun PostCreateScreen(
         categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(draftPost.tempDraft.category, draftPost.tempDraft.subcategory, data)))
     }
 
-    PostCreateContent(onExit, subcategory, updateDraft, onPublish, draftPost.tempDraft.data)
+    val uploadPhoto: (Int, Uri) -> Unit = { place, uri ->
+        categoriesViewModel.handleEvent(CategoryEvent.UploadPhoto(place, uri))
+    }
+
+    PostCreateContent(onExit, subcategory, updateDraft, onPublish, draftPost.tempDraft.data, uploadPhoto)
 }
 
 @Composable
@@ -137,6 +144,7 @@ private fun PostCreateContent(
     updateDraft: (PostData) -> Unit,
     onPublish: () -> Unit,
     data: PostData,
+    uploadPhoto: (Int, Uri) -> Unit
 ) {
 
     Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,
@@ -200,7 +208,7 @@ private fun PostCreateContent(
                 subcategory.fields.forEach { field ->
                     item {
                         if (field is CategoryField.MetaTag) {
-                            MetaTag(key = field.key, fields = field.fields, updateDraft, data)
+                            MetaTag(key = field.key, fields = field.fields, updateDraft, data, uploadPhoto)
                         }
                     }
                 }

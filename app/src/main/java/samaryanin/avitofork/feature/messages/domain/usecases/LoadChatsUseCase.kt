@@ -45,7 +45,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "IPhone 15 Pro",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -68,7 +68,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "Мангал для дачи",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -83,7 +83,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "Macbook 14 pro M1 1T 32GB ",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -119,7 +119,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "IPhone 15 Pro",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -142,7 +142,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "Мангал для дачи",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -157,7 +157,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "Macbook 14 pro M1 1T 32GB ",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -193,7 +193,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "IPhone 15 Pro",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -216,7 +216,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "Мангал для дачи",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -231,7 +231,7 @@ class LoadChatsUseCase @Inject constructor() {
                     "",
                     PostData(
                         "Macbook 14 pro M1 1T 32GB ",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )

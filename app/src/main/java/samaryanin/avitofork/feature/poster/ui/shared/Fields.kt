@@ -62,6 +62,9 @@ import samaryanin.avitofork.shared.ui.theme.veryLightGray
 @Preview
 @Composable
 fun FieldsPreview() {
+
+    val gap: (Int, Uri) -> Unit = { i, a -> }
+
     Column {
         MetaTag(
             key = "",
@@ -71,7 +74,8 @@ fun FieldsPreview() {
                 CategoryField.TextField("Описание 1:", ""),
             ),
             {},
-            PostData()
+            PostData(),
+            gap
         )
         MetaTag(
             key = "Характеристики 2",
@@ -80,16 +84,23 @@ fun FieldsPreview() {
                 CategoryField.NumberField("Объем двигателя:", "", "л")
             ),
             {},
-            PostData()
+            PostData(),
+            gap
         )
         MetaTag(
             key = "Характеристики 3",
             fields = mutableListOf(
-                CategoryField.DropdownField("Тип недвижимости:", "Не выбран", mutableListOf(), true),
+                CategoryField.DropdownField(
+                    "Тип недвижимости:",
+                    "Не выбран",
+                    mutableListOf(),
+                    true
+                ),
                 CategoryField.LocationField("Местоположение строения")
             ),
             {},
-            PostData()
+            PostData(),
+            gap
         )
     }
 }
@@ -100,7 +111,8 @@ fun MetaTag(
     fields: List<CategoryField>,
     observer: (PostData) -> Unit,
     data: PostData,
-    params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() }
+    uploadPhoto: (Int, Uri) -> Unit,
+    params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() },
 ) {
     Box(modifier = Modifier.background(veryLightGray)) {
 
@@ -140,13 +152,14 @@ fun MetaTag(
                     }
 
                     is CategoryField.PhotoPickerByCategoryField -> TODO()
-                    is CategoryField.PhotoPickerField -> PhotoPickerField(observer, field.key, field.count)
+                    is CategoryField.PhotoPickerField -> PhotoPickerField(observer, field.key, field.count, uploadPhoto)
 
                     is CategoryField.MetaTag -> MetaTag(
                         field.key,
                         field.fields,
                         observer,
                         data,
+                        uploadPhoto,
                         params
                     )
                     else -> {}
@@ -221,7 +234,12 @@ fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String) {
 }
 
 @Composable
-fun PhotoPickerField(draftOptionsObserver: (PostData) -> Unit, key: String, count: Int) {
+fun PhotoPickerField(
+    draftOptionsObserver: (PostData) -> Unit,
+    key: String,
+    count: Int,
+    uploadPhoto: (Int, Uri) -> Unit
+) {
 
     Box(
         modifier = Modifier
@@ -241,6 +259,7 @@ fun PhotoPickerField(draftOptionsObserver: (PostData) -> Unit, key: String, coun
                 selectedIndex?.let { index ->
                     if (uri != null) {
                         imageUris[index] = uri
+                        uploadPhoto(index, uri)
                     }
                 }
             }

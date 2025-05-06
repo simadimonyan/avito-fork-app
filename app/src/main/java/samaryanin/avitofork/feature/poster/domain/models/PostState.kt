@@ -23,7 +23,7 @@ data class PostData(
 
     val name: String = "",
 
-    val photos: List<String> = mutableListOf(),
+    val photos: MutableMap<Int, String> = mutableMapOf<Int, String>(),
 
     val price: String = "",
 

@@ -1,5 +1,7 @@
 package samaryanin.avitofork.feature.poster.ui.state
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
@@ -10,19 +12,23 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
+import samaryanin.avitofork.feature.poster.domain.usecases.UploadAdImageUseCase
 import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
 
 @Stable
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     val appStateStore: AppStateStore,
     private val configurationUseCase: ConfigurationUseCase,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val uploadAdImageUseCase: UploadAdImageUseCase
 ) : ViewModel() {
 
     private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
@@ -34,11 +40,21 @@ class CategoryViewModel @Inject constructor(
             is CategoryEvent.UpdateDraftParams -> updateDraftParams(event.draft)
             is CategoryEvent.PublishPost -> publish()
             is CategoryEvent.ClearDraft -> clearDraft(event.subCategory)
+            is CategoryEvent.UploadPhoto -> uploadImage(event.place, event.uri)
         }
     }
 
     private fun updateDraftParams(draft: PostState) {
         appStateStore.categoryStateHolder.updateTempDraftPost(draft)
+    }
+
+    private fun uploadImage(place: Int, uri: Uri) {
+        viewModelScope.launch {
+            val id = uploadAdImageUseCase.upload(context, uri)
+            val state = appStateStore.categoryStateHolder.categoryState.value.tempDraft
+            state.data.photos.put(place, id)
+            appStateStore.categoryStateHolder.updateTempDraftPost(state)
+        }
     }
 
     private fun publish() {

@@ -98,7 +98,7 @@ fun ChatPreview() {
                 "",
                 PostData(
                     "IPhone 15 Pro",
-                    mutableListOf(),
+                    mutableMapOf(),
                     "150 000",
                     "руб."
                 ),

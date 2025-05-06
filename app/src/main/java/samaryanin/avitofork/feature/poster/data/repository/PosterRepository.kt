@@ -40,12 +40,18 @@ class PosterRepository @Inject constructor(
 
             val responseDto = response.body<CreateAdRequestDto>()
 
+            val ids = mutableMapOf<Int, String>()
+
+            responseDto.imageIds.forEach { id ->
+                ids.put(responseDto.imageIds.indexOf(id), id)
+            }
+
             PostState(
                 category = responseDto.categoryId,
                 data = PostData(
                     name = responseDto.title,
                     description = responseDto.description.toString(),
-                    photos = responseDto.imageIds,
+                    photos = ids,
                     price = responseDto.price!!.amountMinor.toString(),
                     unit = responseDto.price!!.currency.name,
                     location = responseDto.address.toString()
