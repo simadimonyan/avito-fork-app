@@ -26,8 +26,8 @@ import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.dimagor555.avito.auth.request.RefreshRequestDto
-import samaryanin.avitofork.core.database.cache.CacheManager
-import samaryanin.avitofork.core.utils.DeviceIdProvider
+import samaryanin.avitofork.core.cache.CacheManager
+import samaryanin.avitofork.core.network.DeviceIdProvider
 import samaryanin.avitofork.feature.auth.data.dto.AuthToken
 import javax.inject.Inject
 

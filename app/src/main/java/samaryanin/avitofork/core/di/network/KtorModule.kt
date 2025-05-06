@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import samaryanin.avitofork.core.database.cache.CacheManager
+import samaryanin.avitofork.core.cache.CacheManager
 import samaryanin.avitofork.core.network.KtorClient
 import javax.inject.Singleton
 
