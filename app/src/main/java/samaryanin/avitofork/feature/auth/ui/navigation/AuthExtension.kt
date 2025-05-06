@@ -6,12 +6,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import samaryanin.avitofork.core.ui.start.data.MainViewModel
-import samaryanin.avitofork.feature.auth.ui.VerificationScreen
-import samaryanin.avitofork.feature.auth.ui.data.AuthViewModel
-import samaryanin.avitofork.feature.auth.ui.login.LoginScreen
-import samaryanin.avitofork.feature.auth.ui.signup.CreateProfileScreen
-import samaryanin.avitofork.feature.auth.ui.signup.SignUpScreen
+import samaryanin.avitofork.app.activity.data.MainViewModel
+import samaryanin.avitofork.feature.auth.ui.feature.verification.VerificationScreen
+import samaryanin.avitofork.feature.auth.ui.state.AuthViewModel
+import samaryanin.avitofork.feature.auth.ui.feature.login.LoginScreen
+import samaryanin.avitofork.feature.auth.ui.feature.signup.CreateProfileScreen
+import samaryanin.avitofork.feature.auth.ui.feature.signup.SignUpScreen
 
 /**
  * Расширение навигации авторизации Navigation Graph выше слоя BottomSheet

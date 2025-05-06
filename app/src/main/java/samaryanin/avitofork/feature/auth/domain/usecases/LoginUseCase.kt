@@ -1,7 +1,7 @@
 package samaryanin.avitofork.feature.auth.domain.usecases
 
 import androidx.compose.runtime.Immutable
-import samaryanin.avitofork.core.database.cache.CacheManager
+import samaryanin.avitofork.core.cache.CacheManager
 import samaryanin.avitofork.feature.auth.data.repository.AuthRepository
 import samaryanin.avitofork.feature.auth.domain.models.AuthStatus
 import javax.inject.Inject
