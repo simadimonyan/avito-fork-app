@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -11,8 +9,6 @@ plugins {
     alias(libs.plugins.baselineprofile)
     id("com.google.devtools.ksp")
 }
-
-val properties = Properties().apply { load(File(rootProject.rootDir, "gradle.properties").inputStream()) }
 
 android {
 
@@ -130,7 +126,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.converter.gson)
     implementation(libs.gson)
-    implementation("com.google.accompanist:accompanist-placeholder-material:0.32.0")
+    implementation(libs.accompanist.placeholder.material)
 
     // Compose
     implementation(libs.kotlinx.serialization.json)
@@ -148,7 +144,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.ui.tooling)
     implementation(libs.androidx.security.crypto)
-    implementation(libs.androidx.constraintlayout.compose)
 
     // Baseline Profiler
     implementation(libs.androidx.profileinstaller)
