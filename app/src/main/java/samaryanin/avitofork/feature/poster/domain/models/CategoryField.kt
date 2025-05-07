@@ -46,7 +46,7 @@ sealed class CategoryField {
     data class MetaTag(val key: String, val fields: List<CategoryField>) : CategoryField()
 
     /**
-     * Поле для ввода текстовых данных категории: описание, название
+     * Поле для ввода текстовых данных категории: описание
      * @param key ключ
      * @param value значение
      */
@@ -54,6 +54,16 @@ sealed class CategoryField {
     @SerialName("text-field")
     @Immutable
     data class TextField(val key: String, val value: String) : CategoryField()
+
+    /**
+     * Поле для ввода текстовых данных заголовка
+     * @param key ключ
+     * @param value значение
+     */
+    @Serializable
+    @SerialName("title-field")
+    @Immutable
+    data class TitleField(val key: String, val value: String) : CategoryField()
 
     /**
      * Поле для ввода данных описания

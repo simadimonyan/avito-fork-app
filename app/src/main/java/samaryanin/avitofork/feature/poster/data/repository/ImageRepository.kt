@@ -1,13 +1,11 @@
 package samaryanin.avitofork.feature.poster.data.repository
 
-import android.util.Log
 import androidx.compose.runtime.Stable
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import kotlinx.serialization.json.Json
 import ru.dimagor555.avito.image.dto.UploadImageTypeDto
 import samaryanin.avitofork.core.network.KtorClient
 import samaryanin.avitofork.feature.poster.data.models.ImageDto

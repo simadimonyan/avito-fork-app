@@ -32,6 +32,11 @@ class ConfigurationUseCase @Inject constructor() {
                         "count": 5
                       },
                       {
+                        "type": "title-field",
+                        "key": "Название",
+                        "value": ""
+                      },
+                      {
                         "type": "price-field",
                         "key": "Стоимость",
                         "value": "",

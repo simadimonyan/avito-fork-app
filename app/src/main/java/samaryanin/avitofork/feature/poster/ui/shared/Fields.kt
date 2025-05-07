@@ -131,6 +131,7 @@ fun MetaTag(
                     // data передается и для обновления колбеком и для получения данных из черновиков в value
                     is CategoryField.PriceField -> PriceField(observer, data, field.key, field.unitMeasure)
                     is CategoryField.DescriptionField -> DescriptionField(observer, data, field.key)
+                    is CategoryField.TitleField -> TitleField(observer, data, field.key)
 
                     is CategoryField.TextField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
@@ -169,6 +170,13 @@ fun MetaTag(
             }
 
         }
+    }
+}
+
+@Composable
+fun TitleField(updateDraft: (PostData) -> Unit, data: PostData, key: String) {
+    TextField(key = key, value = data.name, placeholder = "") {
+        updateDraft(data.copy(name = it))
     }
 }
 

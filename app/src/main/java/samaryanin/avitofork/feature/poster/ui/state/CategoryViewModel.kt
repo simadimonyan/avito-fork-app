@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
+import samaryanin.avitofork.feature.poster.domain.usecases.CreatePostUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.UploadAdImageUseCase
 import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
@@ -28,7 +29,8 @@ class CategoryViewModel @Inject constructor(
     val appStateStore: AppStateStore,
     private val configurationUseCase: ConfigurationUseCase,
     private val dataStore: DataStore<Preferences>,
-    private val uploadAdImageUseCase: UploadAdImageUseCase
+    private val uploadAdImageUseCase: UploadAdImageUseCase,
+    private val createPostUseCase: CreatePostUseCase
 ) : ViewModel() {
 
     private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
@@ -58,7 +60,10 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun publish() {
-        // TODO (опубликовать объявление)
+        viewModelScope.launch {
+            val state = appStateStore.categoryStateHolder.categoryState.value.tempDraft
+            createPostUseCase.create(state)
+        }
     }
 
     private fun saveDraft(subCategory: String) {
