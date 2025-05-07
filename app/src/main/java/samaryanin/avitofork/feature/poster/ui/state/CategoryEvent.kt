@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.poster.ui.state
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 
@@ -32,5 +33,11 @@ sealed class CategoryEvent {
      */
     @Immutable
     data class UpdateDraftParams(val draft: PostState) : CategoryEvent()
+
+    /**
+     * Загрузить фото на сервер
+     */
+    @Immutable
+    data class UploadPhoto(val place: Int, val uri: Uri) : CategoryEvent()
 
 }

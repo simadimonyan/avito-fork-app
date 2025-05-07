@@ -78,7 +78,7 @@ fun ChatItemPreview() {
                             "",
                             PostData(
                                 "IPhone 15 Pro",
-                                mutableListOf(),
+                                mutableMapOf(),
                                 "1745406402992",
                                 "руб."
                             )
@@ -101,7 +101,7 @@ fun ChatItemPreview() {
                             "",
                             PostData(
                                 "Мангал для дачи",
-                                mutableListOf(),
+                                mutableMapOf(),
                                 "150 000",
                                 "руб."
                             )
@@ -116,7 +116,7 @@ fun ChatItemPreview() {
                             "",
                             PostData(
                                 "Macbook 14 pro M1 1T 32GB ",
-                                mutableListOf(),
+                                mutableMapOf(),
                                 "150 000",
                                 "руб."
                             )

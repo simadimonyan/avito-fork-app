@@ -76,7 +76,7 @@ fun MessagesPreview() {
                     "",
                     PostData(
                         "IPhone 15 Pro",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -99,7 +99,7 @@ fun MessagesPreview() {
                     "",
                     PostData(
                         "Мангал для дачи",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
@@ -114,7 +114,7 @@ fun MessagesPreview() {
                     "",
                     PostData(
                         "Macbook 14 pro M1 1T 32GB ",
-                        mutableListOf(),
+                        mutableMapOf(),
                         "150 000",
                         "руб."
                     )
