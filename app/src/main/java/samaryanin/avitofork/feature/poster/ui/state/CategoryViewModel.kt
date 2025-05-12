@@ -4,21 +4,21 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.UploadAdImageUseCase
 import samaryanin.avitofork.shared.state.AppStateStore
+import samaryanin.avitofork.shared.view_model.safeScope
 import javax.inject.Inject
 
 @Stable
@@ -49,7 +49,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun uploadImage(place: Int, uri: Uri) {
-        viewModelScope.launch {
+        safeScope.launch {
             val id = uploadAdImageUseCase.upload(context, uri)
             val state = appStateStore.categoryStateHolder.categoryState.value.tempDraft
             state.data.photos.put(place, id)
@@ -86,7 +86,7 @@ class CategoryViewModel @Inject constructor(
 
     private fun updateConfiguration() {
 
-        viewModelScope.launch {
+        safeScope.launch {
             appStateStore.categoryStateHolder.updateLoading(true)
             appStateStore.categoryStateHolder.updateCategories(configurationUseCase.getCategories())
             appStateStore.categoryStateHolder.updateLoading(false)
@@ -97,7 +97,7 @@ class CategoryViewModel @Inject constructor(
     // ---
 
     private fun saveDraftsStateToCache() {
-        viewModelScope.launch {
+        safeScope.launch {
 
             val gson = Gson()
             val json = gson.toJson(appStateStore.categoryStateHolder.categoryState.value.drafts)
