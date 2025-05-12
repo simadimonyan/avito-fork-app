@@ -142,292 +142,286 @@ fun ChatScreen(globalNavController: NavHostController, viewModel: MessagesViewMo
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ChatContent(chat: Chat, navigateUp: () -> Unit, sendMessage: (String) -> Unit) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        CompositionLocalProvider(LocaleDimensions provides layout.getThemeSize(maxWidth)) {
+    val LocalDimensions = LocaleDimensions.current
 
-            val LocalDimensions = LocaleDimensions.current
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
 
-            Scaffold(
-                containerColor = Color.White,
-                topBar = {
+            Card(
+                modifier = Modifier.fillMaxWidth().zIndex(1f),
+                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.elevatedCardElevation(2.dp)
+            ) {
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth().zIndex(1f),
-                        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        elevation = CardDefaults.elevatedCardElevation(2.dp)
-                    ) {
-
-                        Column(verticalArrangement = Arrangement.Center) {
-
-                            Row(modifier = Modifier
-                                .fillMaxWidth().background(Color.White).zIndex(2f)
-                                .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_arrow),
-                                    modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar2).clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null
-                                    ) {
-                                        navigateUp()
-                                    },
-                                    contentDescription = "back"
-                                )
-
-                                Space(6.dp)
-
-                                Box(
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .size(LocalDimensions.Chat.IconSize.iconSizeTopBar4)
-                                        .background(greyButton),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = chat.profileName.firstOrNull()?.toString() ?: "",
-                                        fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle3,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.White
-                                    )
-                                }
-
-                                Space()
-
-                                Column(modifier = Modifier.padding(end = 15.dp), verticalArrangement = Arrangement.Center) {
-
-                                    Row {
-
-                                        Text(
-                                            text = chat.profileName.take(15),
-                                            fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle2,
-                                            fontWeight = FontWeight.Normal,
-                                            color = Color.Black,
-                                            textAlign = TextAlign.Left,
-                                            maxLines = 1,
-                                            modifier = Modifier.wrapContentWidth()
-                                                .drawWithContent {
-                                                    if (chat.profileName.length >= 12) {
-                                                        val fadeWidth = size.width * 0.5f
-                                                        drawContent()
-                                                        drawRect(
-                                                            brush = Brush.horizontalGradient(
-                                                                colors = listOf(Color.Transparent, Color.White),
-                                                                startX = size.width - fadeWidth,
-                                                                endX = size.width,
-                                                                tileMode = TileMode.Clamp
-                                                            ),
-                                                            size = size
-                                                        )
-                                                    } else {
-                                                        drawContent()
-                                                    }
-                                                }
-                                        )
-
-                                        Space(1.dp)
-
-                                        Icon(
-                                            Icons.Default.NotificationsActive,
-                                            modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar1),
-                                            contentDescription = "notification",
-                                            tint = Color.LightGray
-                                        )
-                                    }
-
-                                    Text(
-                                        text = "в сети",
-                                        fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle1,
-                                        fontWeight = FontWeight.Normal,
-                                        color = saladGreen
-                                    )
-
-                                }
-
-                                Spacer(Modifier.weight(1f))
-
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-
-                                    Icon(
-                                        painter = painterResource(R.drawable.phone_call),
-                                        modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar2).clickable(
-                                            interactionSource = remember { MutableInteractionSource() },
-                                            indication = null
-                                        ) {
-                                            // TODO (сделать звонок)
-                                        },
-                                        contentDescription = "phone_call",
-                                        tint = lightBlue
-                                    )
-
-                                    Space()
-
-                                    Icon(
-                                        painter = painterResource(R.drawable.video_call),
-                                        modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar3).clickable(
-                                            interactionSource = remember { MutableInteractionSource() },
-                                            indication = null
-                                        ) {
-                                            // TODO (сделать видеозвонок)
-                                        },
-                                        contentDescription = "video_call",
-                                        tint = lightBlue
-                                    )
-
-                                    Space(5.dp)
-                                }
-
-                            }
-
-                            if (chat.postReference.data.name.isNotEmpty()) {
-
-                                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-
-                                    Space()
-
-                                    Box(
-                                        modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar4).background(greyButton,
-                                            RoundedCornerShape(5.dp)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = chat.postReference.data.name.firstOrNull()?.toString() ?: "",
-                                            fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPost,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color.White
-                                        )
-                                    }
-
-                                    Space()
-
-                                    Column(modifier = Modifier.padding(vertical = 1.dp).align(Alignment.CenterVertically)) {
-
-                                        val name = if (chat.postReference.data.name.length > 15) {
-                                            "${chat.postReference.data.name.take(15)}..."
-                                        } else {
-                                            chat.postReference.data.name
-                                        }
-
-                                        Text(
-                                            text = name,
-                                            fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPost,
-                                            fontWeight = FontWeight.Normal,
-                                            color = Color.Black,
-                                            textAlign = TextAlign.Left
-                                        )
-
-                                        Text(
-                                            text = "от ${chat.postReference.timestamp}",
-                                            fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPost,
-                                            fontWeight = FontWeight.Normal,
-                                            color = Color.Gray
-                                        )
-
-                                    }
-
-                                    Spacer(modifier = Modifier.weight(1f))
-
-                                    Text(
-                                        text = chat.postReference.data.price + " " + chat.postReference.data.unit,
-                                        fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPrice,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.Black
-                                    )
-
-                                    Space()
-
-                                }
-
-                                Space()
-
-                            }
-                            else
-                                Space(1.dp)
-
-                        }
-
-                    }
-
-                },
-                content = { innerPadding ->
-
-                    Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()).consumeWindowInsets(innerPadding).fillMaxSize()) {
-
-                        Column (modifier = Modifier
-                            .background(blendWhite)
-                            .fillMaxSize()
-                            .padding(horizontal = 5.dp)
-                        ) {
-                            MessageItemList("myId", chat.messages, Modifier.padding(top = innerPadding.calculateTopPadding()))
-                        }
-
-                    }
-
-                },
-                bottomBar = {
-
-                    Divider()
+                Column(verticalArrangement = Arrangement.Center) {
 
                     Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .imePadding().consumeWindowInsets(WindowInsets(0))
-                        .padding(vertical = 15.dp, horizontal = 17.dp),
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-
-                        var flagMessageReady by remember { mutableStateOf(false) }
-                        var message by remember { mutableStateOf("") }
-                        var placeholder by remember { mutableStateOf("") }
+                        .fillMaxWidth().background(Color.White).zIndex(2f)
+                        .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
 
                         Icon(
-                            painter = painterResource(R.drawable.attach_file),
-                            modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeBottomBar1).clickable(
+                            painter = painterResource(R.drawable.ic_arrow),
+                            modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar2).clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                // TODO (добавить файл)
+                                navigateUp()
                             },
-                            contentDescription = "attach_file",
-                            tint = Color.LightGray
+                            contentDescription = "back"
                         )
 
-                        Space()
+                        Space(6.dp)
 
-                        Box(modifier = Modifier.weight(1f)) {
-                            MessageTextField(message, "Сообщение...") { it ->
-                                message = it
-                                placeholder = if (it.isEmpty()) placeholder else ""
-                                flagMessageReady = !it.isEmpty()
-                            }
+                        Box(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(LocalDimensions.Chat.IconSize.iconSizeTopBar4)
+                                .background(greyButton),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = chat.profileName.firstOrNull()?.toString() ?: "",
+                                fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle3,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         }
 
                         Space()
 
-                        Icon(
-                            painter = painterResource(R.drawable.send_message),
-                            modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeBottomBar1).clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                if (flagMessageReady) {
-                                    if (message.isNotBlank()) sendMessage(message)
-                                    message = ""
-                                    flagMessageReady = false
-                                }
-                            },
-                            contentDescription = "send_message",
-                            tint = if (flagMessageReady) lightBlue else Color.LightGray
-                        )
+                        Column(modifier = Modifier.padding(end = 15.dp), verticalArrangement = Arrangement.Center) {
+
+                            Row {
+
+                                Text(
+                                    text = chat.profileName.take(15),
+                                    fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle2,
+                                    fontWeight = FontWeight.Normal,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Left,
+                                    maxLines = 1,
+                                    modifier = Modifier.wrapContentWidth()
+                                        .drawWithContent {
+                                            if (chat.profileName.length >= 12) {
+                                                val fadeWidth = size.width * 0.5f
+                                                drawContent()
+                                                drawRect(
+                                                    brush = Brush.horizontalGradient(
+                                                        colors = listOf(Color.Transparent, Color.White),
+                                                        startX = size.width - fadeWidth,
+                                                        endX = size.width,
+                                                        tileMode = TileMode.Clamp
+                                                    ),
+                                                    size = size
+                                                )
+                                            } else {
+                                                drawContent()
+                                            }
+                                        }
+                                )
+
+                                Space(1.dp)
+
+                                Icon(
+                                    Icons.Default.NotificationsActive,
+                                    modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar1),
+                                    contentDescription = "notification",
+                                    tint = Color.LightGray
+                                )
+                            }
+
+                            Text(
+                                text = "в сети",
+                                fontSize = LocalDimensions.Chat.FontSize.fontSizeTitle1,
+                                fontWeight = FontWeight.Normal,
+                                color = saladGreen
+                            )
+
+                        }
+
+                        Spacer(Modifier.weight(1f))
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+
+                            Icon(
+                                painter = painterResource(R.drawable.phone_call),
+                                modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar2).clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    // TODO (сделать звонок)
+                                },
+                                contentDescription = "phone_call",
+                                tint = lightBlue
+                            )
+
+                            Space()
+
+                            Icon(
+                                painter = painterResource(R.drawable.video_call),
+                                modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar3).clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    // TODO (сделать видеозвонок)
+                                },
+                                contentDescription = "video_call",
+                                tint = lightBlue
+                            )
+
+                            Space(5.dp)
+                        }
 
                     }
 
+                    if (chat.postReference.data.name.isNotEmpty()) {
+
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+
+                            Space()
+
+                            Box(
+                                modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeTopBar4).background(greyButton,
+                                    RoundedCornerShape(5.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = chat.postReference.data.name.firstOrNull()?.toString() ?: "",
+                                    fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPost,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+
+                            Space()
+
+                            Column(modifier = Modifier.padding(vertical = 1.dp).align(Alignment.CenterVertically)) {
+
+                                val name = if (chat.postReference.data.name.length > 15) {
+                                    "${chat.postReference.data.name.take(15)}..."
+                                } else {
+                                    chat.postReference.data.name
+                                }
+
+                                Text(
+                                    text = name,
+                                    fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPost,
+                                    fontWeight = FontWeight.Normal,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Left
+                                )
+
+                                Text(
+                                    text = "от ${chat.postReference.timestamp}",
+                                    fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPost,
+                                    fontWeight = FontWeight.Normal,
+                                    color = Color.Gray
+                                )
+
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Text(
+                                text = chat.postReference.data.price + " " + chat.postReference.data.unit,
+                                fontSize = LocalDimensions.Chat.FontSize.fontSizeAttachmentPrice,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+
+                            Space()
+
+                        }
+
+                        Space()
+
+                    }
+                    else
+                        Space(1.dp)
+
                 }
-            )
+
+            }
+
+        },
+        content = { innerPadding ->
+
+            Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()).consumeWindowInsets(innerPadding).fillMaxSize()) {
+
+                Column (modifier = Modifier
+                    .background(blendWhite)
+                    .fillMaxSize()
+                    .padding(horizontal = 5.dp)
+                ) {
+                    MessageItemList("myId", chat.messages, Modifier.padding(top = innerPadding.calculateTopPadding()))
+                }
+
+            }
+
+        },
+        bottomBar = {
+
+            Divider()
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .imePadding().consumeWindowInsets(WindowInsets(0))
+                .padding(vertical = 15.dp, horizontal = 17.dp),
+                verticalAlignment = Alignment.Bottom
+            ) {
+
+                var flagMessageReady by remember { mutableStateOf(false) }
+                var message by remember { mutableStateOf("") }
+                var placeholder by remember { mutableStateOf("") }
+
+                Icon(
+                    painter = painterResource(R.drawable.attach_file),
+                    modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeBottomBar1).clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        // TODO (добавить файл)
+                    },
+                    contentDescription = "attach_file",
+                    tint = Color.LightGray
+                )
+
+                Space()
+
+                Box(modifier = Modifier.weight(1f)) {
+                    MessageTextField(message, "Сообщение...") { it ->
+                        message = it
+                        placeholder = if (it.isEmpty()) placeholder else ""
+                        flagMessageReady = !it.isEmpty()
+                    }
+                }
+
+                Space()
+
+                Icon(
+                    painter = painterResource(R.drawable.send_message),
+                    modifier = Modifier.size(LocalDimensions.Chat.IconSize.iconSizeBottomBar1).clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        if (flagMessageReady) {
+                            if (message.isNotBlank()) sendMessage(message)
+                            message = ""
+                            flagMessageReady = false
+                        }
+                    },
+                    contentDescription = "send_message",
+                    tint = if (flagMessageReady) lightBlue else Color.LightGray
+                )
+
+            }
 
         }
+    )
 
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

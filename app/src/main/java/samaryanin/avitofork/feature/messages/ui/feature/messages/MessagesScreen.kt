@@ -54,7 +54,7 @@ fun MessagesPreview() {
                         "",
                         "anotherId",
                         "Рады вам помочь!",
-                        "15:00",
+                        "1745406402992",
                         MessageState.READ
                     )
                 ),
@@ -67,7 +67,7 @@ fun MessagesPreview() {
                         "",
                         "myId",
                         "Когда можем созвониться?",
-                        "17:37",
+                        "1745406402992",
                         MessageState.READ
                     )
                 ),
@@ -90,7 +90,7 @@ fun MessagesPreview() {
                         "",
                         "myId",
                         "Послезавтра готов забрать",
-                        "10:13",
+                        "1745406402992",
                         MessageState.SENT
                     )
                 ),

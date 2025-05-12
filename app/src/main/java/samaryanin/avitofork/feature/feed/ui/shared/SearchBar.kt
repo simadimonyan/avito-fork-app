@@ -40,9 +40,9 @@ fun SearchBar(search: String, onSearchChange: (String) -> Unit, showShadow: Bool
             modifier = Modifier.padding(horizontal = 17.dp, vertical = 12.dp)
         ) {
 
-            IconButton(R.drawable.search) {
+            IconButton(R.drawable.search, {
                 //click
-            }
+            })
 
             Space()
 
@@ -56,9 +56,9 @@ fun SearchBar(search: String, onSearchChange: (String) -> Unit, showShadow: Bool
 
             Space()
 
-            IconButton(R.drawable.filter) {
+            IconButton(R.drawable.filter, {
                 //click
-            }
+            })
 
         }
 

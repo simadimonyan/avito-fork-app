@@ -19,7 +19,7 @@ object KtorModule {
     fun provideKtorClient(
         @ApplicationContext context: Context, cacheManager: CacheManager
     ): KtorClient {
-        val baseUrl = "https://194.54.159.160/api/v1/"
+        val baseUrl = "https://195.43.142.111/api/v1/"
         return KtorClient(context, baseUrl, cacheManager)
     }
 }

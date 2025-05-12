@@ -36,6 +36,7 @@ import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.ui.components.utils.space.Divider
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
+import samaryanin.avitofork.shared.ui.theme.adaptive.LocaleDimensions
 import samaryanin.avitofork.shared.ui.theme.greyButton
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -161,6 +162,7 @@ fun ChatItem(
     chat: Chat
 ) {
 
+    val LocalDimensions = LocaleDimensions.current
     val post = chat.postReference.data
 
     Box(
@@ -175,14 +177,14 @@ fun ChatItem(
 
             Box(
                 modifier = Modifier
-                    .size(74.dp)
+                    .size(LocalDimensions.Messages.IconSize.iconSizeChatAvatar)
                     .clip(CircleShape)
                     .background(greyButton),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "${chat.profileName.toCharArray()[0]}",
-                    fontSize = 32.sp,
+                    fontSize = (LocalDimensions.Messages.IconSize.iconSizeChatAvatar / 2).value.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
@@ -194,7 +196,7 @@ fun ChatItem(
 
                     Text(
                         text = chat.profileName,
-                        fontSize = 20.sp,
+                        fontSize = LocalDimensions.Messages.FontSize.fontSizeProfileName,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
@@ -208,7 +210,7 @@ fun ChatItem(
                         Text(
                             text = SimpleDateFormat("HH:mm", Locale.getDefault())
                                 .format(Date(lastMessage.timestamp.toLong())),
-                            fontSize = 13.sp,
+                            fontSize = LocalDimensions.Messages.FontSize.fontSizeTimestamp,
                             fontWeight = FontWeight.Normal,
                             color = Color.Gray
                         )
@@ -231,7 +233,7 @@ fun ChatItem(
 
                     Text(
                         text = postName,
-                        fontSize = 18.sp,
+                        fontSize = LocalDimensions.Messages.FontSize.fontSizeAdName,
                         fontWeight = FontWeight.Normal,
                         color = Color.Black
                     )
@@ -255,7 +257,7 @@ fun ChatItem(
                         Text(
                             text = if (userId == lastMessage.user) "Вы: $message"
                                 else message,
-                            fontSize = 18.sp,
+                            fontSize = LocalDimensions.Messages.FontSize.fontSizeLastMessage,
                             fontWeight = FontWeight.Normal,
                             color = Color.Gray
                         )
@@ -320,7 +322,7 @@ fun ChatItem(
 
                     Text(
                         text = "${post.price} ${post.unit}",
-                        fontSize = 18.sp,
+                        fontSize = LocalDimensions.Messages.FontSize.fontSizePrice,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
