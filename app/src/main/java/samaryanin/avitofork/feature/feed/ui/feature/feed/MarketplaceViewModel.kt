@@ -2,8 +2,9 @@ package samaryanin.avitofork.feature.feed.ui.feature.feed
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -15,8 +16,10 @@ import samaryanin.avitofork.feature.favorites.domain.models.Category
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetAllCategoriesUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetFilteredAdsUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetImageBytesByIdUseCase
+import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.ToggleFavoriteAdUseCase
 import samaryanin.avitofork.shared.state.network.NetworkState
+import samaryanin.avitofork.shared.view_model.safeScope
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -24,6 +27,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @HiltViewModel
 class MarketplaceViewModel @Inject constructor(
     private val getFilteredAdsUseCase: GetFilteredAdsUseCase,
+    private val getSearchedAdUseCase: GetSearchedAdUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
     private val downloadImageUseCase: GetImageBytesByIdUseCase,
@@ -41,61 +45,55 @@ class MarketplaceViewModel @Inject constructor(
 
     val isAuthorized = MutableStateFlow<Boolean>(false)
 
-    init {
-        viewModelScope.launch {
-            try {
-                favoriteManager.loadFromServer()
-            } catch (e: Exception) {
+    private var searchJob: Job? = null
 
-            }
-            // всегда актуальные избранные с сервера
-        }
+    init {
+        safeScope.launch { favoriteManager.loadFromServer() }
 
         isAuthorized.value = cacheManager.preferences.getString("authToken", null) != null
 
-        viewModelScope.launch {
+        safeScope.launch {
             selectedCategoryIds
                 .debounce(250.milliseconds)
                 .collectLatest { ids ->
                     adsState.value = NetworkState.Loading
-                    try {
-                        val result = getFilteredAdsUseCase(ids)
-                        adsState.value = NetworkState.Success(result)
-                    } catch (e: Exception) {
-                        adsState.value = NetworkState.Error(e)
-                    }
+                    val result = getFilteredAdsUseCase(ids)
+                    adsState.value = NetworkState.Success(result)
                 }
         }
 
-        viewModelScope.launch {
+        safeScope.launch {
             categoriesState.value = NetworkState.Loading
-            try {
-                val result = getAllCategoriesUseCase()
-                categoriesState.value = NetworkState.Success(result)
-                allCategories.value = result
-            } catch (e: Exception) {
-                categoriesState.value = NetworkState.Error(e)
-            }
+            val result = getAllCategoriesUseCase()
+            categoriesState.value = NetworkState.Success(result)
+            allCategories.value = result
+        }
+    }
+
+    fun search(text: String) {
+        searchJob?.cancel()
+
+        if (text.isBlank()) refresh()
+
+        searchJob = safeScope.launch {
+            delay(500)
+            adsState.value = NetworkState.Loading
+            val result = getSearchedAdUseCase(text)
+            adsState.value = NetworkState.Success(result)
         }
     }
 
     fun refresh() {
-        viewModelScope.launch {
-            try {
-                adsState.value = NetworkState.Loading
-                favoriteManager.loadFromServer()
-                val result = getFilteredAdsUseCase(selectedCategoryIds.value)
-                adsState.value = NetworkState.Success(result)
-            } catch (e: Exception) {
-                adsState.value = NetworkState.Error(e)
-            }
+        safeScope.launch {
+            adsState.value = NetworkState.Loading
+            favoriteManager.loadFromServer()
+            val result = getFilteredAdsUseCase(selectedCategoryIds.value)
+            adsState.value = NetworkState.Success(result)
         }
     }
 
     fun toggleFavoriteAd(id: String) {
-        viewModelScope.launch {
-            favoriteManager.toggleFavorite(id) // автоматически отправляется на сервер
-        }
+        safeScope.launch { favoriteManager.toggleFavorite(id) }
     }
 
     fun isFavorite(id: String): Boolean {

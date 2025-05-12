@@ -2,15 +2,15 @@ package samaryanin.avitofork.feature.auth.ui.state
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.shared.state.AppStateStore
 import samaryanin.avitofork.feature.auth.domain.models.AuthStatus
 import samaryanin.avitofork.feature.auth.domain.usecases.LoginUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.RefreshUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.RegisterUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.VerifyUseCase
+import samaryanin.avitofork.shared.state.AppStateStore
+import samaryanin.avitofork.shared.view_model.safeScope
 import javax.inject.Inject
 
 @Stable
@@ -43,7 +43,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun verifyCredentials(email: String, pass: String) {
-        viewModelScope.launch {
+        safeScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
 
             val response = loginUseCase.login(email, pass)
@@ -56,7 +56,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun registerAccount(email: String, password: String, name: String) {
-        viewModelScope.launch {
+        safeScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
 
             val regResponse = registerUseCase.register(email, password, name)
@@ -69,7 +69,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun refreshSession() {
-        viewModelScope.launch {
+        safeScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
 
             refreshUseCase.refresh()
@@ -82,7 +82,7 @@ class AuthViewModel @Inject constructor(
     private fun sendVerificationCode() {}
 
     private fun emailFieldCodeVerify(email: String, code: String) { // , password: String
-        viewModelScope.launch {
+        safeScope.launch {
             appStateStore.authStateHolder.updateLoading(true)
 
             val response = verifyUseCase.verify(email, code)

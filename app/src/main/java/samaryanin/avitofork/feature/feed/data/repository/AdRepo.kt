@@ -18,6 +18,7 @@ import ru.dimagor555.avito.user.request.ToggleFavouriteRequestDto
 import samaryanin.avitofork.core.network.KtorClient
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.favorites.domain.models.Category
+import samaryanin.avitofork.feature.feed.domain.models.feed.SearchRequest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -73,6 +74,17 @@ class AdRepo @Inject constructor(
 //        }
 
 
+    suspend fun getSearchedAds(
+        searchText: String
+    ): List<Ad> = httpClient
+        .post("ad/search") {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
+            setBody(SearchRequest(query = searchText))
+
+        }
+        .body<List<AdDto>>()
+        .map { it.toDomain() }
+
     suspend fun getFavoriteAds(): List<Ad> = httpClient
         .get("ad/favourite") {
         }
@@ -80,7 +92,7 @@ class AdRepo @Inject constructor(
         .map { it.toDomain() }
 
     suspend fun toggleFavouriteAd(adId: String, isFavorite: Boolean) = httpClient
-        .post("user/toggleFavouriteAd"){
+        .post("user/toggleFavouriteAd") {
             setBody(ToggleFavouriteRequestDto(adId = adId, isFavourite = isFavorite))
         }
 

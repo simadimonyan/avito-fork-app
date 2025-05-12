@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +14,7 @@ import kotlinx.coroutines.withContext
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileEvent
 import samaryanin.avitofork.shared.state.AppStateStore
+import samaryanin.avitofork.shared.view_model.safeScope
 import javax.inject.Inject
 
 @Stable
@@ -27,7 +27,7 @@ class ProfileViewModel @Inject constructor(
     private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
 
     init { // загрузка черновиков из кеша
-        viewModelScope.launch {
+        safeScope.launch {
             if (appStateStore.categoryStateHolder.categoryState.value.drafts.isEmpty()) {
 
                 val gson = Gson()

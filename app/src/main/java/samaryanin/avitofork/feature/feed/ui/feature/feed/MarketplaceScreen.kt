@@ -31,21 +31,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.feature.feed.ui.shared.SearchBar
+import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.ui.feature.card.components.CategoriesWithPhotos
+import samaryanin.avitofork.feature.feed.ui.feature.card.components.SelectableLazyRow
+import samaryanin.avitofork.feature.feed.ui.feature.feed.components.ProductCard
+import samaryanin.avitofork.feature.feed.ui.shared.SearchBar
 import samaryanin.avitofork.shared.state.network.NetworkState
 import samaryanin.avitofork.shared.ui.components.ShimmerAdCard
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.AvitoForkTheme
-import samaryanin.avitofork.feature.favorites.domain.models.Ad
-import samaryanin.avitofork.feature.feed.ui.feature.card.components.SelectableLazyRow
-import samaryanin.avitofork.feature.feed.ui.feature.feed.components.ProductCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
 
-    var search by remember { mutableStateOf("") }
+    var searchText by remember { mutableStateOf("") }
     val viewModel: MarketplaceViewModel = hiltViewModel()
     val categories by viewModel.allCategories.collectAsState()
     val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
@@ -143,8 +143,10 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                     }
 
                     SearchBar(
-                        search = search,
-                        onSearchChange = { search = it },
+                        search = searchText,
+                        onSearchChange = {
+                            searchText = it
+                            viewModel.search(searchText)            },
                         showShadow = showShadow
                     )
                 }
