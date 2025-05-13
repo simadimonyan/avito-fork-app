@@ -1,9 +1,11 @@
 package samaryanin.avitofork.shared.ui.components.appbar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.app.activity.data.AppState
+import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.navigationSelected
 
 @Composable
@@ -96,21 +99,7 @@ fun BottomAppNavigation(
                     selectedContentColor = Color.White
                 )
 
-//            // Навигация в меню объявлений
-//            BottomNavigationItem(
-//                modifier = Modifier.wrapContentSize(),
-//                label = { Text("Объявления", fontSize = 9.sp,
-//                    maxLines = 1,
-//                    color = if (selectedIndex == 2) navigationSelected else Color.Gray) },
-//                onClick = {
-//                    selectedIndex = 2
-//                    //TODO
-//                },
-//                icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Billboard",
-//                    tint = if (selectedIndex == 2) navigationSelected else Color.Gray) },
-//                selected = false,
-//                selectedContentColor = Color.White
-//            )
+                Spacer(Modifier.width(100.dp))
 
                 // Навигация в меню сообщений
                 BottomNavigationItem(

@@ -10,7 +10,7 @@ import samaryanin.avitofork.feature.favorites.data.FavoriteManager
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.data.repository.AdRepo
 import samaryanin.avitofork.shared.state.network.NetworkState
-import samaryanin.avitofork.shared.view_model.safeScope
+import samaryanin.avitofork.shared.exceptions.safeScope
 import javax.inject.Inject
 
 @Stable

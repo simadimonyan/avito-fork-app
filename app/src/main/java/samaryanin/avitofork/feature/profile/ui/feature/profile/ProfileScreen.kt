@@ -57,6 +57,7 @@ import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
 import samaryanin.avitofork.feature.profile.ui.components.ProfileTabLayout
 import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoutes
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 
 /**
  * Функция для предпросмотра макета
@@ -105,15 +106,15 @@ fun ProfileScreen(
                     launchSingleTop = true
                 }
             }
-            2 -> { // 2 - индекс навигации на меню управления объявлениями
-                globalNavController.navigate(PostRoutes.PostCategories.route) {
-                    popUpTo(globalNavController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    restoreState = true
-                    launchSingleTop = true
-                }
-            }
+//            2 -> { // 2 - индекс навигации на меню управления объявлениями
+//                globalNavController.navigate(PostRoutes.PostCategories.route) {
+//                    popUpTo(globalNavController.graph.findStartDestination().id) {
+//                        saveState = true
+//                    }
+//                    restoreState = true
+//                    launchSingleTop = true
+//                }
+//            }
         }
     }
 
@@ -181,7 +182,7 @@ fun ProfileContent(
             contentAlignment = Alignment.Center
         ) {
             if (appState.invoke().isLoggedIn) {
-                ProfileAuthorized(profileState, authState, navigateTo)
+                ProfileAuthorized(profileState, authState) //, navigateTo)
             }
             else {
                 ProfileUnauthorized(authRequest)
@@ -197,7 +198,7 @@ fun ProfileContent(
 fun ProfileAuthorized(
     profileState: () -> ProfileState,
     authState: () -> AuthState,
-    navigateTo: (Int) -> Unit
+    //navigateTo: (Int) -> Unit
 ) {
 
     Column(modifier = Modifier
@@ -265,23 +266,23 @@ fun ProfileAuthorized(
 
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        FloatingActionButton(
-            onClick = {
-                navigateTo(2) // 2 - индекс навигации на меню управления объявлениями
-            },
-            modifier = Modifier
-                .padding(bottom = 70.dp)
-                .align(Alignment.BottomEnd),
-            containerColor = navigationSelected
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Добавить")
-        }
-    }
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(16.dp)
+//    ) {
+//        FloatingActionButton(
+//            onClick = {
+//                navigateTo(2) // 2 - индекс навигации на меню управления объявлениями
+//            },
+//            modifier = Modifier
+//                .padding(bottom = 70.dp)
+//                .align(Alignment.BottomEnd),
+//            containerColor = navigationSelected
+//        ) {
+//            Icon(imageVector = Icons.Default.Add, contentDescription = "Добавить")
+//        }
+//    }
 
 }
 

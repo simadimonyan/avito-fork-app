@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.profile.ui.feature.settings
+package samaryanin.avitofork.feature.profile.ui.state.settings
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel

@@ -5,6 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,18 +25,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import samaryanin.avitofork.app.navigation.NestedScreenGraph
 import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.MainViewModel
-import samaryanin.avitofork.feature.auth.ui.shared.AuthBottomSheet
+import samaryanin.avitofork.app.navigation.NestedScreenGraph
 import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
-import samaryanin.avitofork.shared.ui.components.appbar.BottomAppNavigation
+import samaryanin.avitofork.feature.auth.ui.shared.AuthBottomSheet
 import samaryanin.avitofork.feature.favorites.ui.navigation.FavoriteRoutes
 import samaryanin.avitofork.feature.feed.ui.navigation.FeedRoutes
 import samaryanin.avitofork.feature.messages.ui.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.messages.ui.state.MessagesViewModel
-import samaryanin.avitofork.feature.profile.ui.feature.profile.ProfileViewModel
+import samaryanin.avitofork.feature.poster.ui.navigation.PostRoutes
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
+import samaryanin.avitofork.shared.ui.components.appbar.BottomAppNavigation
+import samaryanin.avitofork.shared.ui.theme.navigationSelected
 
 /**
  * Управляющий Composable
@@ -136,7 +144,30 @@ fun MainScreen(
         }
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets(0)) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets(0),
+        floatingActionButton = {
+
+            FloatingActionButton(
+                onClick = { // управление объявлениями
+                    globalNavHostController.navigate(PostRoutes.PostCategories.route) {
+                        popUpTo(globalNavHostController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        restoreState = true
+                        launchSingleTop = true
+                    }
+                },
+                shape = RoundedCornerShape(50),
+                containerColor = navigationSelected
+            ) {
+                Icon(Icons.Filled.Add, "", tint = Color.White)
+            }
+
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+    ) {
         innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).background(Color.White)) {
 

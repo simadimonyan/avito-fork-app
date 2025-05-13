@@ -10,7 +10,7 @@ import samaryanin.avitofork.feature.messages.ui.navigation.utilMessagesGraph
 import samaryanin.avitofork.feature.messages.ui.state.MessagesViewModel
 import samaryanin.avitofork.feature.poster.ui.navigation.utilPosterGraph
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
-import samaryanin.avitofork.feature.profile.ui.feature.profile.ProfileViewModel
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.feature.profile.ui.navigation.profile.utilProfileGraph
 
 /**

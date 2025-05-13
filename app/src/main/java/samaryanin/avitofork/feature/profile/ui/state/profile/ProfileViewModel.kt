@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.profile.ui.feature.profile
+package samaryanin.avitofork.feature.profile.ui.state.profile
 
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore
@@ -12,9 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileEvent
 import samaryanin.avitofork.shared.state.AppStateStore
-import samaryanin.avitofork.shared.view_model.safeScope
+import samaryanin.avitofork.shared.exceptions.safeScope
 import javax.inject.Inject
 
 @Stable

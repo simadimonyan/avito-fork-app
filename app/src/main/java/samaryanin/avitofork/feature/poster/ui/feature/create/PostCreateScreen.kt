@@ -45,7 +45,7 @@ import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.ui.shared.MetaTag
 import samaryanin.avitofork.feature.poster.ui.state.CategoryEvent
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
-import samaryanin.avitofork.feature.profile.ui.feature.profile.ProfileViewModel
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileEvent
 
 @Preview

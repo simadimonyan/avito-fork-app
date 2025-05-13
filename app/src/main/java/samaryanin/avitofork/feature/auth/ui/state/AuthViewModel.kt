@@ -10,7 +10,7 @@ import samaryanin.avitofork.feature.auth.domain.usecases.RefreshUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.RegisterUseCase
 import samaryanin.avitofork.feature.auth.domain.usecases.VerifyUseCase
 import samaryanin.avitofork.shared.state.AppStateStore
-import samaryanin.avitofork.shared.view_model.safeScope
+import samaryanin.avitofork.shared.exceptions.safeScope
 import javax.inject.Inject
 
 @Stable

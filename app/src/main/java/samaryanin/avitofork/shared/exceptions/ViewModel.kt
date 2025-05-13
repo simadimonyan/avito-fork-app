@@ -1,4 +1,4 @@
-package samaryanin.avitofork.shared.view_model
+package samaryanin.avitofork.shared.exceptions
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

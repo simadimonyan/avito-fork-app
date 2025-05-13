@@ -12,7 +12,7 @@ import samaryanin.avitofork.feature.poster.ui.feature.category.CategoryScreen
 import samaryanin.avitofork.feature.poster.ui.feature.create.PostCreateScreen
 import samaryanin.avitofork.feature.poster.ui.feature.subcategory.SubCategoryScreen
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
-import samaryanin.avitofork.feature.profile.ui.feature.profile.ProfileViewModel
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import kotlin.reflect.typeOf
 
 /**

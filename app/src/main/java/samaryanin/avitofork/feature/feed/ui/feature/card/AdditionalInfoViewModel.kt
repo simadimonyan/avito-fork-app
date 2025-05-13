@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.data.repository.AdRepo
 import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
-import samaryanin.avitofork.shared.view_model.safeScope
+import samaryanin.avitofork.shared.exceptions.safeScope
 import javax.inject.Inject
 
 @HiltViewModel

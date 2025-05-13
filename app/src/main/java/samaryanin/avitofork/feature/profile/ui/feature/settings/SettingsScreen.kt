@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import samaryanin.avitofork.feature.profile.ui.state.settings.SettingsViewModel
 import samaryanin.avitofork.shared.ui.theme.navigationSelected
 
 @Preview

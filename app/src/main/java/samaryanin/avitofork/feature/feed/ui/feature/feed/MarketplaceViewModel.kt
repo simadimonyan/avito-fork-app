@@ -19,7 +19,7 @@ import samaryanin.avitofork.feature.favorites.domain.usecases.GetImageBytesByIdU
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.ToggleFavoriteAdUseCase
 import samaryanin.avitofork.shared.state.network.NetworkState
-import samaryanin.avitofork.shared.view_model.safeScope
+import samaryanin.avitofork.shared.exceptions.safeScope
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 

@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.profile.ui.feature.notifications
+package samaryanin.avitofork.feature.profile.ui.state.notifications
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
