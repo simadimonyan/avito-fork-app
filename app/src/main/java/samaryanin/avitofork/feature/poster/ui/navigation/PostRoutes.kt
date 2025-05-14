@@ -38,4 +38,8 @@ sealed class PostRoutes(val route: String) {
     @Immutable
     data class PostCreate(val subCategory: CategoryField.SubCategory) : PostRoutes("good_create")
 
+    /**
+     * Карта
+     */
+    @Serializable object Map : PosterRoutes("map")
 }

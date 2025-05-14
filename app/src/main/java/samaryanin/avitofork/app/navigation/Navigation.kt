@@ -8,10 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import samaryanin.avitofork.app.activity.ui.MainScreen
 import samaryanin.avitofork.app.activity.data.MainViewModel
-import samaryanin.avitofork.feature.auth.ui.state.AuthViewModel
+import samaryanin.avitofork.app.activity.ui.MainScreen
 import samaryanin.avitofork.feature.auth.ui.navigation.authGraph
+import samaryanin.avitofork.feature.auth.ui.state.AuthViewModel
 import samaryanin.avitofork.feature.favorites.ui.FavoritesScreen
 import samaryanin.avitofork.feature.favorites.ui.navigation.FavoriteRoutes
 import samaryanin.avitofork.feature.feed.ui.feature.feed.MarketplaceScreen
@@ -21,8 +21,8 @@ import samaryanin.avitofork.feature.messages.ui.navigation.MessagesRoutes
 import samaryanin.avitofork.feature.messages.ui.state.MessagesViewModel
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
 import samaryanin.avitofork.feature.profile.ui.feature.profile.ProfileScreen
-import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 
 /**
  * Главный Navigation Host Graph от [MainScreen]
@@ -154,8 +154,20 @@ fun NestedScreenGraph(
             ProfileScreen(profileViewModel, mainViewModel, globalNavController)
         }
 
-        // -----------------------------------------------------------
 
+        // ----------------------- Карта -----------------------
+
+        composable( // Карта
+            route = FeedRoutes.Feed.route,
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
+            }
+        ) {
+            MarketplaceScreen(globalNavController)
+        }
     }
 
 }

@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
+import samaryanin.avitofork.feature.poster.ui.navigation.PostRoutes
 import samaryanin.avitofork.shared.ui.components.RemoteImage
 
 @Composable
@@ -43,15 +44,18 @@ fun AdditionalInfoScreen(
     val onBack = {
         globalNavController.navigateUp()
     }
+    val map = {globalNavController.navigate(PostRoutes.Map.route)}
 
 
-    AdditionalInfoContent(onBack, )
+
+    AdditionalInfoContent(onBack, map)
 }
 
 @Composable
 fun AdditionalInfoContent(
     onBack: () -> Boolean,
-   // ad: Ad?
+    map: () -> Unit,
+    // ad: Ad?
 ) {
     val viewModel: AdditionalInfoViewModel = hiltViewModel()
     SideEffect {
@@ -60,10 +64,14 @@ fun AdditionalInfoContent(
 
     val ad by viewModel.adById.collectAsState()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-        Row(modifier = Modifier.fillMaxWidth().height(32.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .height(32.dp)) {
             Image(
                 painter = painterResource(R.drawable.ic_arrow),
                 contentDescription = null,
@@ -89,19 +97,19 @@ fun AdditionalInfoContent(
                 }
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = ad?.title?: "",
+                        text = ad?.title ?: "",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = ad?.address?: "",
+                        text = ad?.address ?: "",
                         fontSize = 14.sp,
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = ad?.price?:"",
+                        text = ad?.price ?: "",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -112,11 +120,14 @@ fun AdditionalInfoContent(
                     Text(text = "Описание", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = ad?.description?:"",
+                        text = ad?.description ?: "",
                         fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.Normal,
                         color = Color.Black
                     )
+                    Text(text = "Показать на карте", color = Color.Cyan, modifier = Modifier.clickable {
+                        map()
+                    })
                 }
             }
         }

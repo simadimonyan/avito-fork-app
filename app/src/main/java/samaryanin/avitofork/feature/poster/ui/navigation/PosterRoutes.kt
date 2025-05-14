@@ -23,4 +23,6 @@ sealed class PosterRoutes(val route: String) {
      */
     @Serializable object PosterCreate : PosterRoutes("good_create")
 
+
+
 }

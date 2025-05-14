@@ -87,6 +87,8 @@ dependencies {
     // Domain Lib
     implementation(files("libs/domain-jvm-1.1.2.jar"))
 
+    implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
+
     implementation (libs.androidx.datastore.preferences)
 
     // Decompose

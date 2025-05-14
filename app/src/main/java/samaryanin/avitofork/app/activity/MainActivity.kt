@@ -19,10 +19,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yandex.mapkit.MapKitFactory
 import dagger.hilt.android.AndroidEntryPoint
-import samaryanin.avitofork.app.navigation.GlobalGraph
 import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.MainViewModel
+import samaryanin.avitofork.app.navigation.GlobalGraph
 import samaryanin.avitofork.shared.ui.theme.AvitoForkTheme
 import samaryanin.avitofork.shared.ui.theme.adaptive.LocaleDimensions
 import samaryanin.avitofork.shared.ui.theme.adaptive.layout
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("UnusedBoxWithConstraintsScope")
     override fun onCreate(savedInstanceState: Bundle?) {
+        MapKitFactory.setApiKey("a84df13b-02f9-4b1b-8cc6-84744f8f51f5")
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()

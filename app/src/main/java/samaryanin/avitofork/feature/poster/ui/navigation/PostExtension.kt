@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.serialization.json.Json
+import samaryanin.avitofork.feature.map.ui.MapScreen
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.ui.feature.category.CategoryScreen
 import samaryanin.avitofork.feature.poster.ui.feature.create.PostCreateScreen
@@ -85,6 +86,28 @@ fun NavGraphBuilder.utilPosterGraph(
 
 
             SubCategoryScreen(globalNavController, category, categoriesViewModel)
+        }
+
+        composable( // Карта
+            route = PostRoutes.Map.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            MapScreen(globalNavController)
         }
 
         composable<PostRoutes.PostCreate>( // Создать объявление
