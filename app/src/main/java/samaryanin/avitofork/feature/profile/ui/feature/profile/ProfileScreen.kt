@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -19,7 +20,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -28,7 +28,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -42,22 +44,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
-import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.AppState
+import samaryanin.avitofork.app.activity.data.MainViewModel
+import samaryanin.avitofork.feature.auth.ui.state.AuthState
+import samaryanin.avitofork.feature.profile.ui.components.AddProfile
+import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
+import samaryanin.avitofork.feature.profile.ui.components.ProfileTabLayout
+import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
+import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoutes
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState
+import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.alphaLightBlue
 import samaryanin.avitofork.shared.ui.theme.lightBlue
 import samaryanin.avitofork.shared.ui.theme.navigationSelected
-import samaryanin.avitofork.feature.auth.ui.state.AuthState
-import samaryanin.avitofork.feature.poster.ui.navigation.PostRoutes
-import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
-import samaryanin.avitofork.feature.profile.ui.components.AddProfile
-import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
-import samaryanin.avitofork.feature.profile.ui.components.ProfileTabLayout
-import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoutes
-import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState
-import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 
 /**
  * Функция для предпросмотра макета
@@ -135,57 +136,106 @@ fun ProfileContent(
     authState: () -> AuthState,
     profileState: () -> ProfileState
 ) {
+
+    val scrollState = rememberLazyListState()
+
+    val isNextEnabled by remember {
+        derivedStateOf {
+            scrollState.firstVisibleItemIndex > 0 // при прокрутке LazyColumn
+        }
+    }
+
     Scaffold(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0),
         contentColor = Color.White,
         containerColor = Color.White,
         topBar = {
-            TopAppBar(
-                modifier = Modifier.shadow(3.dp),
-                windowInsets = WindowInsets(0),
-                title = {
-                    Text(
-                        text = "Профиль",
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Normal
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
-                actions = {
-                    IconButton(onClick = {
-                        navigateTo(0) // 0 - индекс навигации на экран уведомлений
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Notifications,
-                            contentDescription = "Notifications",
-                            tint = navigationSelected
+            Card(
+                modifier = Modifier.fillMaxWidth().then(
+                    if (isNextEnabled)
+                        Modifier.shadow(2.dp,
+                            RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+                    else Modifier
+                ),
+                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                TopAppBar(
+                    modifier = Modifier,
+                    windowInsets = WindowInsets(0),
+                    title = {
+                        Text(
+                            text = "Профиль",
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Normal
                         )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                    actions = {
+                        IconButton(onClick = {
+                            navigateTo(0) // 0 - индекс навигации на экран уведомлений
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Notifications,
+                                contentDescription = "Notifications",
+                                tint = navigationSelected
+                            )
+                        }
+                        IconButton(onClick = {
+                            navigateTo(1) // 1 - индекс навигации на экран настроек
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Settings,
+                                contentDescription = "Settings",
+                                tint = navigationSelected
+                            )
+                        }
                     }
-                    IconButton(onClick = {
-                        navigateTo(1) // 1 - индекс навигации на экран настроек
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings",
-                            tint = navigationSelected
-                        )
-                    }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-            contentAlignment = Alignment.Center
+
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(innerPadding),
+//        ) {
+//            if (appState().isLoggedIn) {
+//                ProfileAuthorized(profileState, authState)
+//            } else {
+//                ProfileUnauthorized(authRequest)
+//            }
+//        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            state = scrollState,
+
         ) {
-            if (appState.invoke().isLoggedIn) {
-                ProfileAuthorized(profileState, authState) //, navigateTo)
-            }
-            else {
-                ProfileUnauthorized(authRequest)
+            if (appState().isLoggedIn) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ProfileAuthorized(profileState, authState)
+                    }
+                }
+            } else {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ProfileUnauthorized(authRequest)
+                    }
+                }
             }
         }
     }
@@ -200,7 +250,6 @@ fun ProfileAuthorized(
     authState: () -> AuthState,
     //navigateTo: (Int) -> Unit
 ) {
-
     Column(modifier = Modifier
         .fillMaxSize(),
         verticalArrangement = Arrangement.Top
@@ -215,7 +264,7 @@ fun ProfileAuthorized(
 
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, top = 20.dp)) {
+                .padding(start = 20.dp, top = 10.dp)) {
                 DefaultAvatar(name = name)
                 Space()
                 AddProfile()

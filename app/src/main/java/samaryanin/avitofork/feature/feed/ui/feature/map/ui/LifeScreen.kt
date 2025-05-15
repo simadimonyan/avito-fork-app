@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.map.ui
+package samaryanin.avitofork.feature.feed.ui.feature.map.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

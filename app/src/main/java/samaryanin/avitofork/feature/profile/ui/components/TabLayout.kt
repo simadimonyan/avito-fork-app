@@ -1,10 +1,15 @@
 package samaryanin.avitofork.feature.profile.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +42,7 @@ import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.ui.components.placeholders.ProfileEmptyPublication
 import samaryanin.avitofork.shared.ui.components.placeholders.ProfilePublication
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
+import java.nio.file.WatchEvent
 
 sealed class TabItem(val index: Int, val title: String) {
 
@@ -55,10 +62,10 @@ sealed class TabItem(val index: Int, val title: String) {
 @Composable
 fun ProfileTabLayoutPreview() {
     ProfileTabLayout(mutableMapOf(
-        "0" to mutableListOf(
-            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
-            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
-        ),
+//        "0" to mutableListOf(
+//            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
+//            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
+//        ),
     ))
 }
 
@@ -83,7 +90,7 @@ fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
                 )
             },
             divider = {
-                HorizontalDivider(color = Color.Transparent, modifier = Modifier.shadow(3.dp))
+                HorizontalDivider(color = Color.Transparent, modifier = Modifier.shadow(1.dp))
             },
             selectedTabIndex = pagerState.currentPage
         ) {
@@ -110,31 +117,24 @@ fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
 
         HorizontalPager(
             state = pagerState,
-            userScrollEnabled = true
+            userScrollEnabled = true,
         ) { page ->
 
             if (posts.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column {
+                Box(modifier = Modifier.background(Color.White).fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                         ProfileEmptyPublication()
                         Space()
                         ProfileEmptyPublication()
                         Space()
-                        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                            Text(
-                                modifier = Modifier.padding(bottom = 70.dp),
-                                text = "У вас нет объявлений",
-                                fontSize = 16.sp,
-                                color = Color.Gray,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                        Text(
+                            modifier = Modifier.padding(bottom = 70.dp),
+                            text = "У вас нет объявлений",
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             } else {
@@ -164,4 +164,3 @@ fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
         }
     }
 }
-

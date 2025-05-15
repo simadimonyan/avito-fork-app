@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.map.ui
+package samaryanin.avitofork.feature.feed.ui.feature.map.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +14,7 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.runtime.image.ImageProvider
 import samaryanin.avitofork.R
-import samaryanin.avitofork.feature.map.domain.model.MapsView
+import samaryanin.avitofork.feature.feed.ui.feature.map.domain.model.MapsView
 
 @Composable
 fun MapScreen(globalNavController: NavHostController) {

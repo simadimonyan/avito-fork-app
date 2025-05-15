@@ -21,7 +21,7 @@ class CreatePostUseCase @Inject constructor(
             state.data.photos.values.toList(),
             MoneyDto(state.data.price.toLong(), CurrencyDto.RUB),
             "test",
-            "7060f4eb-3147-451f-9e88-bbe37c880fe6"
+            "14e61896-d5fe-4555-9134-032ec26e101e"
         )
     }
 

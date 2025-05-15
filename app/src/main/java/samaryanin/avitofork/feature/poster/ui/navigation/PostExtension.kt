@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.serialization.json.Json
-import samaryanin.avitofork.feature.map.ui.MapScreen
+import samaryanin.avitofork.feature.feed.ui.feature.map.ui.MapScreen
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.ui.feature.category.CategoryScreen
 import samaryanin.avitofork.feature.poster.ui.feature.create.PostCreateScreen
