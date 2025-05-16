@@ -4,7 +4,9 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import kotlinx.serialization.json.Json
 import samaryanin.avitofork.feature.feed.ui.feature.map.ui.MapScreen
@@ -88,26 +90,30 @@ fun NavGraphBuilder.utilPosterGraph(
             SubCategoryScreen(globalNavController, category, categoriesViewModel)
         }
 
-        composable( // Карта
+
+        composable( // карта
             route = PostRoutes.Map.route,
+            arguments = listOf(
+                navArgument("lat") { type = NavType.StringType },
+                navArgument("lon") { type = NavType.StringType }
+            ),
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
+                    animationSpec = tween(durationMillis = 250)
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(
-                        durationMillis = 250
-                    )
+                    animationSpec = tween(durationMillis = 250)
                 )
             }
-        ) {
-            MapScreen(globalNavController)
+        ) { backStackEntry ->
+            val lat = backStackEntry.arguments?.getString("lat")?.toDoubleOrNull() ?: 0.0
+            val lon = backStackEntry.arguments?.getString("lon")?.toDoubleOrNull() ?: 0.0
+
+            MapScreen(lat = lat, lon = lon)
         }
 
         composable<PostRoutes.PostCreate>( // Создать объявление

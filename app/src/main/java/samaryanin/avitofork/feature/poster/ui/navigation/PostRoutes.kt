@@ -41,5 +41,8 @@ sealed class PostRoutes(val route: String) {
     /**
      * Карта
      */
-    @Serializable object Map : PosterRoutes("map")
+        object Map {
+            const val route = "map/{lat}/{lon}"
+            fun withArgs(lat: Double, lon: Double): String = "map/$lat/$lon"
+        }
 }
