@@ -1,16 +1,25 @@
 package samaryanin.avitofork.feature.profile.ui.feature.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
@@ -23,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -48,17 +58,24 @@ import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.AppState
 import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
+import samaryanin.avitofork.feature.poster.domain.models.PostData
+import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.profile.ui.components.AddProfile
 import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
 import samaryanin.avitofork.feature.profile.ui.components.ProfileTabLayout
+import samaryanin.avitofork.feature.profile.ui.components.TabItem
 import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
 import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoutes
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
+import samaryanin.avitofork.shared.ui.components.placeholders.ProfileEmptyPublication
+import samaryanin.avitofork.shared.ui.components.placeholders.ProfilePublication
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
+import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.shared.ui.theme.alphaLightBlue
 import samaryanin.avitofork.shared.ui.theme.lightBlue
 import samaryanin.avitofork.shared.ui.theme.navigationSelected
+import samaryanin.avitofork.shared.ui.theme.veryLightGray
 
 /**
  * Функция для предпросмотра макета
@@ -107,15 +124,6 @@ fun ProfileScreen(
                     launchSingleTop = true
                 }
             }
-//            2 -> { // 2 - индекс навигации на меню управления объявлениями
-//                globalNavController.navigate(PostRoutes.PostCategories.route) {
-//                    popUpTo(globalNavController.graph.findStartDestination().id) {
-//                        saveState = true
-//                    }
-//                    restoreState = true
-//                    launchSingleTop = true
-//                }
-//            }
         }
     }
 
@@ -137,7 +145,7 @@ fun ProfileContent(
     profileState: () -> ProfileState
 ) {
 
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyGridState()
 
     val isNextEnabled by remember {
         derivedStateOf {
@@ -150,7 +158,19 @@ fun ProfileContent(
         contentWindowInsets = WindowInsets(0),
         contentColor = Color.White,
         containerColor = Color.White,
-        topBar = {
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
+
+            if (appState().isLoggedIn) {
+                ProfileAuthorized(scrollState, profileState, authState)
+            } else {
+                ProfileUnauthorized(authRequest)
+            }
+
             Card(
                 modifier = Modifier.fillMaxWidth().then(
                     if (isNextEnabled)
@@ -165,12 +185,7 @@ fun ProfileContent(
                     modifier = Modifier,
                     windowInsets = WindowInsets(0),
                     title = {
-                        Text(
-                            text = "Профиль",
-                            fontSize = 20.sp,
-                            color = Color.Black,
-                            fontWeight = FontWeight.Normal
-                        )
+                        AppTextTitle("Профиль")
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                     actions = {
@@ -178,6 +193,7 @@ fun ProfileContent(
                             navigateTo(0) // 0 - индекс навигации на экран уведомлений
                         }) {
                             Icon(
+                                modifier = Modifier.size(26.dp),
                                 imageVector = Icons.Filled.Notifications,
                                 contentDescription = "Notifications",
                                 tint = navigationSelected
@@ -187,6 +203,7 @@ fun ProfileContent(
                             navigateTo(1) // 1 - индекс навигации на экран настроек
                         }) {
                             Icon(
+                                modifier = Modifier.size(26.dp),
                                 imageVector = Icons.Filled.Settings,
                                 contentDescription = "Settings",
                                 tint = navigationSelected
@@ -194,48 +211,6 @@ fun ProfileContent(
                         }
                     }
                 )
-            }
-        }
-    ) { innerPadding ->
-
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(innerPadding),
-//        ) {
-//            if (appState().isLoggedIn) {
-//                ProfileAuthorized(profileState, authState)
-//            } else {
-//                ProfileUnauthorized(authRequest)
-//            }
-//        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            state = scrollState,
-
-        ) {
-            if (appState().isLoggedIn) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillParentMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        ProfileAuthorized(profileState, authState)
-                    }
-                }
-            } else {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillParentMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        ProfileUnauthorized(authRequest)
-                    }
-                }
             }
         }
     }
@@ -246,72 +221,170 @@ fun ProfileContent(
  */
 @Composable
 fun ProfileAuthorized(
+    scrollState: LazyGridState,
     profileState: () -> ProfileState,
     authState: () -> AuthState,
     //navigateTo: (Int) -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+
+    val tabTitles = listOf(TabItem.Publications, TabItem.Archive)
+    val pagerState = rememberPagerState(pageCount = { tabTitles.size })
+    val posts = profileState().posts
+
+    var cards = if (posts.isEmpty()) mutableListOf<PostState>() else posts["0"]!!
+
+    cards = mutableListOf(
+        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+    )
+
+    LazyVerticalGrid(
+        state = scrollState,
+        columns = GridCells.Adaptive(minSize = 150.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 50.dp),
+        contentPadding = PaddingValues(bottom = 50.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            shape = RoundedCornerShape(0),
-        ) {
-            var name = authState.invoke().profile
-            name = if (name != "") name else "Тестовое имя"
+        // first element for scroll & padding
+        item(span = { GridItemSpan(maxLineSpan) }) { Space(2.dp) }
+        item(span = { GridItemSpan(maxLineSpan) }) { Space(28.dp) }
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, top = 10.dp)) {
-                DefaultAvatar(name = name)
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(0),
+            ) {
+                var name = authState.invoke().profile
+                name = if (name != "") name else "Тестовое имя"
+
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DefaultAvatar(name = name)
+                    Space()
+                    AddProfile()
+                }
+
+                Space(10.dp)
+
+                Text(
+                    modifier = Modifier.padding(start = 20.dp),
+                    text = name,
+                    fontSize = 22.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
                 Space()
-                AddProfile()
+
+                Text(
+                    modifier = Modifier.padding(start = 20.dp),
+                    text = "На Avito Fork с 2010 года",
+                    fontSize = 15.sp,
+                    color = Color.Black,
+                )
+
+                Space(2.dp)
+
+                Text(
+                    modifier = Modifier.padding(start = 20.dp),
+                    text = "Частное лицо",
+                    fontSize = 15.sp,
+                    color = Color.Black,
+                )
+
+                Space(2.dp)
+
+                Text(
+                    modifier = Modifier.padding(start = 20.dp),
+                    text = "ID: 123456789",
+                    fontSize = 15.sp,
+                    color = Color.Black,
+                )
+
+                Space()
             }
-
-            Space(10.dp)
-
-            Text(
-                modifier = Modifier.padding(start = 20.dp),
-                text = name,
-                fontSize = 22.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-
-            Space()
-
-            Text(
-                modifier = Modifier.padding(start = 20.dp),
-                text = "На Avito Fork с 2010 года",
-                fontSize = 15.sp,
-                color = Color.Black,
-            )
-
-            Space(2.dp)
-
-            Text(
-                modifier = Modifier.padding(start = 20.dp),
-                text = "Частное лицо",
-                fontSize = 15.sp,
-                color = Color.Black,
-            )
-
-            Space(2.dp)
-
-            Text(
-                modifier = Modifier.padding(start = 20.dp),
-                text = "ID: 123456789",
-                fontSize = 15.sp,
-                color = Color.Black,
-            )
-
-            Space()
         }
 
-        ProfileTabLayout(profileState().posts)
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            ProfileTabLayout(pagerState, tabTitles, profileState().posts)
+        }
+
+        // TODO (костыль - изменить после подключения api)
+
+        if (cards.isEmpty()) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                HorizontalPager(
+                    modifier = Modifier.background(veryLightGray),
+                    state = pagerState,
+                    userScrollEnabled = true,
+                    beyondViewportPageCount = 2
+                ) { page ->
+                    Box(modifier = Modifier, contentAlignment = Alignment.Center) {
+                        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                            ProfileEmptyPublication()
+                            Space()
+                            ProfileEmptyPublication()
+                            Space()
+                            Text(
+                                modifier = Modifier.padding(bottom = 70.dp),
+                                text = "У вас нет объявлений",
+                                fontSize = 16.sp,
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!cards.isEmpty()) {
+            items(cards) { field ->
+
+                HorizontalPager(
+                    modifier = Modifier.background(veryLightGray).fillMaxSize(),
+                    state = pagerState,
+                    userScrollEnabled = true,
+                    beyondViewportPageCount = 2
+                ) { page ->
+
+                    if (page == 0) {
+
+                        Column {
+                            Surface(
+                                modifier = Modifier.padding(10.dp),
+                                color = Color.White,
+                                shape = RoundedCornerShape(10.dp),
+                                shadowElevation = 2.dp
+                            ) {
+                                ProfilePublication(
+                                    title = field.data.name,
+                                    location = field.data.location,
+                                    price = field.data.price + " " + field.data.unit,
+                                )
+                            }
+                        }
+
+                    }
+
+                    Space()
+
+                }
+            }
+        }
+
+        // ------------
 
     }
 

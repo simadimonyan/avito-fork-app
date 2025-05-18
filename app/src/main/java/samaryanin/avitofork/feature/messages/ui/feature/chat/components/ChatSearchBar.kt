@@ -25,9 +25,10 @@ fun ChatTopBar(search: String, onSearchChange: (String) -> Unit) {
 
     val LocalDimensions = LocaleDimensions.current
 
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(horizontal = 17.dp, vertical = 12.dp)
+        modifier = Modifier.padding(horizontal = 17.dp, vertical = 0.dp)
     ) {
 
         IconButton(

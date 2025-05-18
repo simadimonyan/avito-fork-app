@@ -34,6 +34,6 @@ data class PostData(
     // ключи характеристик карточки товара
     val options: Map<String, String> = mutableMapOf(),
 
-    val location: String = ""
+    val location: String = "test"
 
 )

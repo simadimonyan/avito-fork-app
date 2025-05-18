@@ -4,17 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -31,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,7 +39,8 @@ import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.ui.components.placeholders.ProfileEmptyPublication
 import samaryanin.avitofork.shared.ui.components.placeholders.ProfilePublication
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
-import java.nio.file.WatchEvent
+import samaryanin.avitofork.shared.ui.theme.navigationSelected
+import samaryanin.avitofork.shared.ui.theme.veryLightGray
 
 sealed class TabItem(val index: Int, val title: String) {
 
@@ -61,22 +59,20 @@ sealed class TabItem(val index: Int, val title: String) {
 @Preview
 @Composable
 fun ProfileTabLayoutPreview() {
-    ProfileTabLayout(mutableMapOf(
-//        "0" to mutableListOf(
-//            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
-//            PostState("", "Легковая машина", PostData(description = "Очень нереально круто", price = "100 000", unit = "руб.")),
-//        ),
+    ProfileTabLayout(rememberPagerState(pageCount = {2}), mutableListOf(), mutableMapOf(
+        "0" to mutableListOf(
+            PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+            PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+        ),
     ))
 }
 
 @Composable
-fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
+fun ProfileTabLayout(pagerState: PagerState, tabTitles: List<TabItem>, posts: Map<String, List<PostState>>) {
 
-    val tabTitles = listOf(TabItem.Publications, TabItem.Archive)
-    val pagerState = rememberPagerState(pageCount = { tabTitles.size })
     val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.windowInsetsPadding(WindowInsets(0))) {
+    Column(modifier = Modifier.fillMaxSize()) {
         // Tabs
         TabRow(
             containerColor = Color.White,
@@ -85,7 +81,7 @@ fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                    color = Color.Black,
+                    color = navigationSelected,
                     width = 150.dp
                 )
             },
@@ -115,52 +111,5 @@ fun ProfileTabLayout(posts: Map<String, List<PostState>>) {
             }
         }
 
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = true,
-        ) { page ->
-
-            if (posts.isEmpty()) {
-                Box(modifier = Modifier.background(Color.White).fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                        ProfileEmptyPublication()
-                        Space()
-                        ProfileEmptyPublication()
-                        Space()
-                        Text(
-                            modifier = Modifier.padding(bottom = 70.dp),
-                            text = "У вас нет объявлений",
-                            fontSize = 16.sp,
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            } else {
-
-                LazyColumn(modifier = Modifier.background(Color.White)) {
-
-                    item { Space(5.dp) }
-
-                    if (page == 0) {
-
-                        items(posts["0"]!!) { field ->
-                            Surface(modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp), color = Color.White, shape = RoundedCornerShape(10.dp), shadowElevation = 2.dp) {
-                                ProfilePublication(
-                                    title = field.subcategory,
-                                    description = field.data.description,
-                                    price = field.data.price + " " + field.data.unit
-                                )
-                            }
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
     }
 }

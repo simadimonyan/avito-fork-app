@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
             val bytes = getImageBytesByIdUseCase.invoke(id)
             _imageCache[id] = bytes
             bytes
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

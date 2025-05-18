@@ -2,14 +2,20 @@ package samaryanin.avitofork.feature.messages.ui.feature.messages
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -37,6 +43,7 @@ import samaryanin.avitofork.feature.messages.ui.state.MessagesViewModel
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
+import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 
 /**
  * Функция для предпросмотра макета
@@ -157,6 +164,7 @@ fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesView
  * -------------------------------------
  * @param message callback функция навигации в личные сообщения
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MessagesContent(message: (Chat) -> Unit, chats: MessagesState) {
@@ -181,14 +189,21 @@ fun MessagesContent(message: (Chat) -> Unit, chats: MessagesState) {
                 modifier = Modifier.fillMaxWidth()
                     .then(
                         if (isNextEnabled)
-                            Modifier.shadow(2.dp,
+                            Modifier.shadow(3.dp,
                                 RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                         else Modifier
                     ),
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                    title = {
+                        AppTextTitle("Сообщения")
+                    }
+                )
                 ChatTopBar(search) { search = it }
+                Space()
                 FilterItemList()
                 Space(5.dp)
             }

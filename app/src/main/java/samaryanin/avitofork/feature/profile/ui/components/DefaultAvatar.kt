@@ -13,7 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import samaryanin.avitofork.shared.ui.theme.lightGrayColor
+import samaryanin.avitofork.shared.ui.theme.alphaLightBlue
+import samaryanin.avitofork.shared.ui.theme.navigationSelected
+import samaryanin.avitofork.shared.ui.theme.veryLightBlueColor
 
 @Composable
 fun DefaultAvatar(name: String, modifier: Modifier = Modifier) {
@@ -48,16 +50,16 @@ fun DefaultAvatar(name: String, modifier: Modifier = Modifier) {
 fun AddProfile(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(70.dp)
+            .size(40.dp)
             .clip(CircleShape)
-            .background(lightGrayColor),
+            .background(veryLightBlueColor),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "+",
-            fontSize = 32.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Normal,
-            color = Color.Black
+            color = navigationSelected
         )
     }
 }
