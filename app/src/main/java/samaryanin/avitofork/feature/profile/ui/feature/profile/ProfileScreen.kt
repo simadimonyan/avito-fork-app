@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.profile.ui.feature.profile
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,17 +11,29 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -37,6 +50,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -145,11 +159,11 @@ fun ProfileContent(
     profileState: () -> ProfileState
 ) {
 
-    val scrollState = rememberLazyGridState()
+    val scrollState = rememberScrollState()
 
     val isNextEnabled by remember {
         derivedStateOf {
-            scrollState.firstVisibleItemIndex > 0 // при прокрутке LazyColumn
+            scrollState.value > 0 // при прокрутке LazyColumn
         }
     }
 
@@ -221,7 +235,7 @@ fun ProfileContent(
  */
 @Composable
 fun ProfileAuthorized(
-    scrollState: LazyGridState,
+    scrollState: ScrollState,
     profileState: () -> ProfileState,
     authState: () -> AuthState,
     //navigateTo: (Int) -> Unit
@@ -242,101 +256,94 @@ fun ProfileAuthorized(
         PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
     )
 
-    LazyVerticalGrid(
-        state = scrollState,
-        columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 50.dp),
-        contentPadding = PaddingValues(bottom = 50.dp)
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
     ) {
+
         // first element for scroll & padding
-        item(span = { GridItemSpan(maxLineSpan) }) { Space(2.dp) }
-        item(span = { GridItemSpan(maxLineSpan) }) { Space(28.dp) }
+        Space(2.dp)
+        Space(28.dp)
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(0),
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(0),
+        ) {
+            var name = authState.invoke().profile
+            name = if (name != "") name else "Тестовое имя"
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                var name = authState.invoke().profile
-                name = if (name != "") name else "Тестовое имя"
-
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, top = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    DefaultAvatar(name = name)
-                    Space()
-                    AddProfile()
-                }
-
-                Space(10.dp)
-
-                Text(
-                    modifier = Modifier.padding(start = 20.dp),
-                    text = name,
-                    fontSize = 22.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
+                DefaultAvatar(name = name)
                 Space()
-
-                Text(
-                    modifier = Modifier.padding(start = 20.dp),
-                    text = "На Avito Fork с 2010 года",
-                    fontSize = 15.sp,
-                    color = Color.Black,
-                )
-
-                Space(2.dp)
-
-                Text(
-                    modifier = Modifier.padding(start = 20.dp),
-                    text = "Частное лицо",
-                    fontSize = 15.sp,
-                    color = Color.Black,
-                )
-
-                Space(2.dp)
-
-                Text(
-                    modifier = Modifier.padding(start = 20.dp),
-                    text = "ID: 123456789",
-                    fontSize = 15.sp,
-                    color = Color.Black,
-                )
-
-                Space()
+                AddProfile()
             }
+
+            Space(10.dp)
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = name,
+                fontSize = 22.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Space()
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = "На Avito Fork с 2010 года",
+                fontSize = 15.sp,
+                color = Color.Black,
+            )
+
+            Space(2.dp)
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = "Частное лицо",
+                fontSize = 15.sp,
+                color = Color.Black,
+            )
+
+            Space(2.dp)
+
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = "ID: 123456789",
+                fontSize = 15.sp,
+                color = Color.Black,
+            )
+
+            Space()
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            ProfileTabLayout(pagerState, tabTitles, profileState().posts)
-        }
+        ProfileTabLayout(pagerState, tabTitles, profileState().posts)
 
-        // TODO (костыль - изменить после подключения api)
+        HorizontalPager(
+            modifier = Modifier.background(veryLightGray),
+            state = pagerState,
+            userScrollEnabled = true,
+            beyondViewportPageCount = 0,
+            verticalAlignment = Alignment.Top
+        ) { page ->
 
-        if (cards.isEmpty()) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                HorizontalPager(
-                    modifier = Modifier.background(veryLightGray),
-                    state = pagerState,
-                    userScrollEnabled = true,
-                    beyondViewportPageCount = 2
-                ) { page ->
-                    Box(modifier = Modifier, contentAlignment = Alignment.Center) {
-                        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            if (page == 0) { // таб объявлений
+
+                if (cards.isEmpty()) {
+
+                    Row(modifier = Modifier.fillMaxWidth().height(500.dp), horizontalArrangement = Arrangement.Center) {
+                        Column(Modifier.padding(vertical = 120.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                             ProfileEmptyPublication()
                             Space()
                             ProfileEmptyPublication()
                             Space()
                             Text(
-                                modifier = Modifier.padding(bottom = 70.dp),
                                 text = "У вас нет объявлений",
                                 fontSize = 16.sp,
                                 color = Color.Gray,
@@ -346,42 +353,63 @@ fun ProfileAuthorized(
                         }
                     }
                 }
-            }
-        }
+                else {
 
-        if (!cards.isEmpty()) {
-            items(cards) { field ->
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .heightIn(max = 10000.dp) // костыль для вложенности скролов
+                            .padding(bottom = 50.dp),
+                        columns = GridCells.Adaptive(minSize = 150.dp),
+                        contentPadding = PaddingValues(bottom = 50.dp),
+                        userScrollEnabled = false
+                    ) {
 
-                HorizontalPager(
-                    modifier = Modifier.background(veryLightGray).fillMaxSize(),
-                    state = pagerState,
-                    userScrollEnabled = true,
-                    beyondViewportPageCount = 2
-                ) { page ->
+                        items(cards) { field ->
 
-                    if (page == 0) {
-
-                        Column {
-                            Surface(
-                                modifier = Modifier.padding(10.dp),
-                                color = Color.White,
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 2.dp
-                            ) {
-                                ProfilePublication(
-                                    title = field.data.name,
-                                    location = field.data.location,
-                                    price = field.data.price + " " + field.data.unit,
-                                )
+                            Column {
+                                Surface(
+                                    modifier = Modifier.padding(10.dp),
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(10.dp),
+                                    shadowElevation = 2.dp
+                                ) {
+                                    ProfilePublication(
+                                        title = field.data.name,
+                                        location = field.data.location,
+                                        price = field.data.price + " " + field.data.unit,
+                                    )
+                                }
                             }
+
+                            Space()
+
                         }
 
                     }
 
-                    Space()
-
                 }
+
             }
+            else { // таб архив
+
+                Row(modifier = Modifier.fillMaxWidth().height(500.dp), horizontalArrangement = Arrangement.Center) {
+                    Column(Modifier.padding(vertical = 120.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                        ProfileEmptyPublication()
+                        Space()
+                        ProfileEmptyPublication()
+                        Space()
+                        Text(
+                            text = "Ваш архив пуст",
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+            }
+
         }
 
         // ------------
