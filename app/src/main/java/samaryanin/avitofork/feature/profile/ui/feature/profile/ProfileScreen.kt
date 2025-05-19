@@ -247,14 +247,14 @@ fun ProfileAuthorized(
 
     var cards = if (posts.isEmpty()) mutableListOf<PostState>() else posts["0"]!!
 
-    cards = mutableListOf(
-        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-    )
+//    cards = mutableListOf(
+//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+//    )
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
