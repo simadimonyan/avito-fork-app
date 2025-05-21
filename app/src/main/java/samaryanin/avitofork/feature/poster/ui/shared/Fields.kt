@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.domain.models.PostData
+import samaryanin.avitofork.feature.poster.ui.shared.text.PriceVisualTransformation
 import samaryanin.avitofork.shared.ui.components.utils.space.Divider
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.greyButton
@@ -182,7 +184,7 @@ fun TitleField(updateDraft: (PostData) -> Unit, data: PostData, key: String) {
 
 @Composable
 fun PriceField(updateDraft: (PostData) -> Unit, data: PostData, key: String, unitMeasure: String) {
-    NumberField(key = key, value = data.price, unitMeasure = unitMeasure, placeholder = "") {
+    NumberField(key = key, value = data.price, unitMeasure = unitMeasure, visualTransformation = PriceVisualTransformation(), placeholder = "") {
         updateDraft(data.copy(price = it, unit = unitMeasure))
     }
 }
@@ -349,7 +351,14 @@ fun DropdownField(draftOptionsObserver: (PostData) -> Unit, key: String, value: 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NumberField(key: String, value: String, unitMeasure: String, placeholder: String, onValueChanged: (String) -> Unit = {}) {
+fun NumberField(
+    key: String,
+    value: String,
+    unitMeasure: String,
+    placeholder: String,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    onValueChanged: (String) -> Unit = {}
+) {
 
     val interactionSource = remember { MutableInteractionSource() }
     var mutableValue by remember { mutableStateOf(value) }
@@ -364,20 +373,39 @@ fun NumberField(key: String, value: String, unitMeasure: String, placeholder: St
 
         Row(modifier = Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
 
-            Text(modifier = Modifier
-                .padding(end = 16.dp)
-                .width(200.dp), text = key, fontSize = 15.sp, color = Color.Black)
+            Text(modifier = Modifier.wrapContentSize(), text = key, fontSize = 15.sp, color = Color.Black)
 
             Spacer(modifier = Modifier.weight(1f))
 
             BasicTextField(
                 value = mutableValue,
                 onValueChange = {
-                    mutableValue = it
+                    val builder = StringBuilder()
+                    var decimalAdded = false
+                    var digitsAfterDecimal = 0
+                    for (char in it) {
+                        if (char.isDigit()) {
+                            if (unitMeasure == "год" && builder.length >= 4) continue
+                            if (decimalAdded) {
+                                if (digitsAfterDecimal < 2) {
+                                    builder.append(char)
+                                    digitsAfterDecimal++
+                                }
+                            } else {
+                                builder.append(char)
+                            }
+                        } else if (char == '.' && decimalAdded.not() && unitMeasure != "шт" && unitMeasure != "год") {
+                            builder.append(char)
+                            decimalAdded = true
+                        }
+                    }
+                    val cleaned = builder.toString()
+                    mutableValue = cleaned
                     mutablePlaceholder = ""
-                    onValueChanged(it)
+                    onValueChanged(cleaned)
                 },
                 Modifier,
+                visualTransformation = visualTransformation,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 decorationBox = @Composable { innerTextField ->
                     TextFieldDefaults.DecorationBox(
@@ -393,7 +421,7 @@ fun NumberField(key: String, value: String, unitMeasure: String, placeholder: St
                         contentPadding = PaddingValues(0.dp),
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = Color.White,
-                            unfocusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.LightGray,
                             focusedContainerColor = Color.White,
                             focusedIndicatorColor = Color.Transparent,
                         )
@@ -401,8 +429,12 @@ fun NumberField(key: String, value: String, unitMeasure: String, placeholder: St
                 }
             )
 
-            Text(modifier = Modifier
-                .wrapContentWidth(), text = unitMeasure, fontSize = 15.sp, color = Color.Black)
+            Text(
+                modifier = Modifier.padding(start = 10.dp).wrapContentSize(),
+                text = unitMeasure,
+                fontSize = 15.sp,
+                color = Color.Black
+            )
 
         }
 
