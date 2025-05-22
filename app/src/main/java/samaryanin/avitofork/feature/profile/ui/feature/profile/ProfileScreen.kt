@@ -358,9 +358,9 @@ fun ProfileAuthorized(
                     LazyVerticalGrid(
                         modifier = Modifier
                             .heightIn(max = 10000.dp) // костыль для вложенности скролов
-                            .padding(bottom = 50.dp),
-                        columns = GridCells.Adaptive(minSize = 150.dp),
-                        contentPadding = PaddingValues(bottom = 50.dp),
+                            .padding(bottom = 100.dp),
+                        columns = GridCells.Adaptive(minSize = 200.dp),
+                        contentPadding = PaddingValues(bottom = 80.dp),
                         userScrollEnabled = false
                     ) {
 
@@ -380,8 +380,6 @@ fun ProfileAuthorized(
                                     )
                                 }
                             }
-
-                            Space()
 
                         }
 

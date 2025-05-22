@@ -137,6 +137,11 @@ fun ChatItemList(
     onItemClicked: (Chat) -> Unit,
 ) {
     LazyColumn(state = state) {
+
+        item { Space(1.dp) }
+
+        item { Space(84.dp) }
+
         items(chatsState.chats.size) { index ->
             Box(
                 modifier = Modifier

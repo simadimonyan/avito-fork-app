@@ -1,6 +1,7 @@
 package samaryanin.avitofork.feature.messages.ui.feature.messages
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -183,13 +184,15 @@ fun MessagesContent(message: (Chat) -> Unit, chats: MessagesState) {
         containerColor = Color.White,
     ) { innerPadding ->
 
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(innerPadding)) {
+
+            ChatItemList(scrollState, "myId", chats, message)
 
             Card(
                 modifier = Modifier.fillMaxWidth()
                     .then(
                         if (isNextEnabled)
-                            Modifier.shadow(3.dp,
+                            Modifier.shadow(2.dp,
                                 RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                         else Modifier
                     ),
@@ -207,8 +210,6 @@ fun MessagesContent(message: (Chat) -> Unit, chats: MessagesState) {
                 FilterItemList()
                 Space(5.dp)
             }
-
-            ChatItemList(scrollState, "myId", chats, message)
 
         }
 

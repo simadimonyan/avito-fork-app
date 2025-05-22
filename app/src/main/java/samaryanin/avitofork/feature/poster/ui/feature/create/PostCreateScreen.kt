@@ -42,7 +42,7 @@ import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.feature.poster.ui.shared.MetaTag
+import samaryanin.avitofork.feature.poster.ui.shared.fields.MetaTag
 import samaryanin.avitofork.feature.poster.ui.state.CategoryEvent
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
@@ -208,7 +208,13 @@ private fun PostCreateContent(
                 subcategory.fields.forEach { field ->
                     item {
                         if (field is CategoryField.MetaTag) {
-                            MetaTag(key = field.key, fields = field.fields, updateDraft, data, uploadPhoto)
+                            MetaTag(
+                                key = field.key,
+                                fields = field.fields,
+                                data = data,
+                                observer = updateDraft,
+                                uploadPhoto = uploadPhoto
+                            )
                         }
                     }
                 }
