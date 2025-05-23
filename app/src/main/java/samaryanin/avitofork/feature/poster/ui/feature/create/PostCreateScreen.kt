@@ -19,13 +19,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -81,7 +85,18 @@ private fun PostCreatePreview() {
 
     val gap: (Int, Uri) -> Unit = { i, a -> }
 
-    PostCreateContent({ true }, sample, {}, {}, PostData(), gap)
+    PostCreateContent(
+        onExit = { true },
+        subcategory = sample,
+        updateDraft = {},
+        onPublish = {},
+        data = PostData(),
+        uploadPhoto = gap,
+        isRequiredCheckSubmitted = false,
+        showErrorMessage = {},
+        lastErrorField = "",
+        showErrorDialog = false
+    ) {}
 }
 
 @Composable
@@ -91,7 +106,6 @@ fun PostCreateScreen(
     categoriesViewModel: CategoryViewModel,
     profileViewModel: ProfileViewModel,
 ) {
-
     val context = LocalContext.current
     val draftPost by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
 
@@ -108,6 +122,10 @@ fun PostCreateScreen(
 
         globalNavController.navigateUp()
     }
+
+    val isRequiredCheckSubmitted = remember { mutableStateOf(false) }
+    val lastErrorField = remember { mutableStateOf("") }
+    val showErrorDialog = remember { mutableStateOf(false) }
 
     val onPublish: () -> Unit = {
         Log.d("TEST", draftPost.tempDraft.data.toString())
@@ -134,7 +152,31 @@ fun PostCreateScreen(
         categoriesViewModel.handleEvent(CategoryEvent.UploadPhoto(place, uri))
     }
 
-    PostCreateContent(onExit, subcategory, updateDraft, onPublish, draftPost.tempDraft.data, uploadPhoto)
+    val data = draftPost.tempDraft.data
+
+    PostCreateContent(
+        onExit = onExit,
+        subcategory = subcategory,
+        updateDraft = updateDraft,
+        onPublish = {
+            isRequiredCheckSubmitted.value = true
+            if (lastErrorField.value.isEmpty()) {
+                onPublish()
+            } else {
+                showErrorDialog.value = true
+            }
+        },
+        data = data,
+        uploadPhoto = uploadPhoto,
+        isRequiredCheckSubmitted = isRequiredCheckSubmitted.value,
+        showErrorMessage = {
+            Log.d("Validation", "Field with error: $it")
+            lastErrorField.value = it
+        },
+        lastErrorField = lastErrorField.value,
+        showErrorDialog = showErrorDialog.value,
+        dismissErrorDialog = { showErrorDialog.value = false }
+    )
 }
 
 @Composable
@@ -144,7 +186,12 @@ private fun PostCreateContent(
     updateDraft: (PostData) -> Unit,
     onPublish: () -> Unit,
     data: PostData,
-    uploadPhoto: (Int, Uri) -> Unit
+    uploadPhoto: (Int, Uri) -> Unit,
+    isRequiredCheckSubmitted: Boolean,
+    showErrorMessage: (String) -> Unit,
+    lastErrorField: String,
+    showErrorDialog: Boolean,
+    dismissErrorDialog: () -> Unit
 ) {
 
     Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,
@@ -213,12 +260,31 @@ private fun PostCreateContent(
                                 fields = field.fields,
                                 data = data,
                                 observer = updateDraft,
-                                uploadPhoto = uploadPhoto
+                                uploadPhoto = uploadPhoto,
+                                isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                                showErrorMessage = showErrorMessage
                             )
                         }
                     }
                 }
 
+            }
+
+            if (showErrorDialog) {
+                AlertDialog(
+                    onDismissRequest = dismissErrorDialog,
+                    confirmButton = {
+                        Button(onClick = dismissErrorDialog) {
+                            Text("Ок")
+                        }
+                    },
+                    title = {
+                        Text("Не заполнено обязательное поле")
+                    },
+                    text = {
+                        Text("Пожалуйста, заполните поле: ${lastErrorField}")
+                    }
+                )
             }
         }
 

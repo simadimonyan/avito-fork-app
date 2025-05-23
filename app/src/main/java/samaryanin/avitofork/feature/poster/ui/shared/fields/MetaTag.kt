@@ -1,12 +1,14 @@
 package samaryanin.avitofork.feature.poster.ui.shared.fields
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.input.VisualTransformation
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.shared.ui.components.utils.space.Divider
@@ -94,7 +97,14 @@ fun MetaTag(
     // колбек функции для работы с данными
     observer: (PostData) -> Unit,
     uploadPhoto: (Int, Uri) -> Unit,
+    isRequiredCheckSubmitted: Boolean = false,
+    showErrorMessage: (String) -> Unit = {}
 ) {
+
+    LaunchedEffect(isRequiredCheckSubmitted) {
+        Log.d("MetaTag", "validateFields triggered, isRequiredCheckSubmitted = $isRequiredCheckSubmitted")
+    }
+
     Box(modifier = Modifier.background(veryLightGray)) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -110,7 +120,11 @@ fun MetaTag(
                 when (field) {
 
                     // data передается и для обновления колбеком и для получения данных из черновиков в value
-                    is CategoryField.PriceField -> PriceField(observer, data, field.key, field.unitMeasure)
+                    is CategoryField.PriceField -> PriceField(
+                        observer, data, field.key, field.unitMeasure, field.isRequired,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        showErrorMessage = showErrorMessage
+                    )
                     is CategoryField.DescriptionField -> DescriptionField(observer, data, field.key)
                     is CategoryField.TitleField -> TitleField(observer, data, field.key)
 
@@ -127,7 +141,16 @@ fun MetaTag(
 
                     is CategoryField.NumberField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
-                        NumberField(field.key, data.options[field.key] ?: field.value, field.unitMeasure, field.value) {
+                        NumberField(
+                            field.key,
+                            data.options[field.key] ?: field.value,
+                            field.unitMeasure,
+                            field.value,
+                            visualTransformation = VisualTransformation.None,
+                            isRequired = field.isRequired,
+                            isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                            showErrorMessage = showErrorMessage,
+                        ) {
                             params[field.key] = it
                             observer(data.copy(options = params))
                         }
@@ -143,7 +166,9 @@ fun MetaTag(
                         params,
                         data,
                         observer,
-                        uploadPhoto
+                        uploadPhoto,
+                        isRequiredCheckSubmitted,
+                        showErrorMessage
                     )
                     else -> {}
 
