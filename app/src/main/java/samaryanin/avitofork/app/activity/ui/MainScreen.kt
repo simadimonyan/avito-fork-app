@@ -151,13 +151,21 @@ fun MainScreen(
 
             FloatingActionButton(
                 onClick = { // управление объявлениями
-                    globalNavHostController.navigate(PostRoutes.PostCategories.route) {
-                        popUpTo(globalNavHostController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        restoreState = true
-                        launchSingleTop = true
+
+                    // если пользователь неавторизован
+                    if (!uiAppState.isLoggedIn) {
+                        onToggleAuthRequest()
                     }
+                    else {
+                        globalNavHostController.navigate(PostRoutes.PostCategories.route) {
+                            popUpTo(globalNavHostController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    }
+
                 },
                 shape = RoundedCornerShape(50),
                 containerColor = navigationSelected

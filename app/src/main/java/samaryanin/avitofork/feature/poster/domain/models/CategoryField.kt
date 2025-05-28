@@ -63,7 +63,7 @@ sealed class CategoryField {
     @Serializable
     @SerialName("title-field")
     @Immutable
-    data class TitleField(val key: String, val value: String, val isRequired: Boolean = false) : CategoryField()
+    data class TitleField(val key: String, val value: String, val isRequired: Boolean = true) : CategoryField()
 
     /**
      * Поле для ввода данных описания
@@ -73,7 +73,7 @@ sealed class CategoryField {
     @Serializable
     @SerialName("description-field")
     @Immutable
-    data class DescriptionField(val key: String,  val value: String, val isRequired: Boolean = false) : CategoryField()
+    data class DescriptionField(val key: String,  val value: String, val isRequired: Boolean = true) : CategoryField()
 
     /**
      * Поле для ввода данных стоимости
@@ -84,7 +84,7 @@ sealed class CategoryField {
     @Serializable
     @SerialName("price-field")
     @Immutable
-    data class PriceField(val key: String, val value: String, val unitMeasure: String, val isRequired: Boolean = false) : CategoryField()
+    data class PriceField(val key: String, val value: String, val unitMeasure: String, val isRequired: Boolean = true) : CategoryField()
 
     /**
      * Поле для ввода числовых данных категории: площадь, стоимость, размеры, время
@@ -117,7 +117,7 @@ sealed class CategoryField {
     @Serializable
     @SerialName("photo-picker-field")
     @Immutable
-    data class PhotoPickerField(val key: String, val count: Int, val isRequired: Boolean = false) : CategoryField()
+    data class PhotoPickerField(val key: String, val count: Int, val isRequired: Boolean = true) : CategoryField()
 
     /**
      * Поле для загрузки фотографий по категориям: фотографии гостинной, спальни

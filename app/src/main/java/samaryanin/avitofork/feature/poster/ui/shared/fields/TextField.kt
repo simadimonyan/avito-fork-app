@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.poster.ui.shared.fields
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,11 +30,29 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextField(key: String, value: String, placeholder: String, onValueChanged: (String) -> Unit = {}) {
+fun TextField(
+    key: String,
+    value: String,
+    placeholder: String,
+    isRequired: Boolean,
+    isRequiredCheckSubmitted: Boolean,
+    showErrorMessage: (String) -> Unit = {},
+    onValueChanged: (String) -> Unit = {}
+) {
 
     val interactionSource = remember { MutableInteractionSource() }
     var mutableValue by remember { mutableStateOf(value) }
     var mutablePlaceholder by remember { mutableStateOf(placeholder) }
+
+    var isError by remember { mutableStateOf(false) }
+
+    // если проверка поля инициирована – отправить ошибку
+    LaunchedEffect(isRequiredCheckSubmitted) {
+        if (isRequired && isRequiredCheckSubmitted == true) {
+            isError = mutableValue.isEmpty()
+            if (isError) showErrorMessage(key)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -45,13 +65,17 @@ fun TextField(key: String, value: String, placeholder: String, onValueChanged: (
 
             Text(modifier = Modifier
                 .padding(end = 16.dp)
-                .width(90.dp), text = key, fontSize = 15.sp, color = Color.Black)
+                .width(90.dp), text = key,
+                fontSize = 15.sp,
+                color = if (isError) Color.Red else Color.Black
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
             BasicTextField(
                 value = mutableValue,
                 onValueChange = {
+                    isError = false
                     mutableValue = it
                     mutablePlaceholder = ""
                     onValueChanged(it)

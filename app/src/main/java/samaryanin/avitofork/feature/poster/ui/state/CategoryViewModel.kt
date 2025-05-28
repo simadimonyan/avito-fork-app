@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.poster.ui.state
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -41,9 +42,9 @@ class CategoryViewModel @Inject constructor(
             is CategoryEvent.UpdateCategoryListConfiguration -> updateConfiguration()
             is CategoryEvent.SaveDraft -> saveDraft(event.subCategory)
             is CategoryEvent.UpdateDraftParams -> updateDraftParams(event.draft)
-            is CategoryEvent.PublishPost -> publish()
+            //is CategoryEvent.PublishPost -> publish()
             is CategoryEvent.ClearDraft -> clearDraft(event.subCategory)
-            is CategoryEvent.UploadPhoto -> uploadImage(event.place, event.uri)
+            // CategoryEvent.UploadPhoto should use uploadPhoto now, but usage may depend on call site
         }
     }
 
@@ -51,19 +52,29 @@ class CategoryViewModel @Inject constructor(
         appStateStore.categoryStateHolder.updateTempDraftPost(draft)
     }
 
-    private fun uploadImage(place: Int, uri: Uri) {
-        safeScope.launch {
+    suspend fun uploadPhoto(index: Int, uri: Uri): Boolean {
+        return try {
             val id = uploadAdImageUseCase.upload(context, uri)
-            val state = appStateStore.categoryStateHolder.categoryState.value.tempDraft
-            state.data.photos.put(place, id)
-            appStateStore.categoryStateHolder.updateTempDraftPost(state)
+            if (id.isNotBlank()) {
+                val state = appStateStore.categoryStateHolder.categoryState.value.tempDraft
+                state.data.photos[index] = id
+                appStateStore.categoryStateHolder.updateTempDraftPost(state)
+                true
+            } else {
+                false
+            }
+        } catch (_: Exception) {
+            false
         }
     }
 
-    private fun publish() {
-        viewModelScope.launch {
+    suspend fun publish(): Boolean {
+        return try {
             val state = appStateStore.categoryStateHolder.categoryState.value.tempDraft
             createPostUseCase.create(state)
+        }
+        catch (_: Exception) {
+            false
         }
     }
 

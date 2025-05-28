@@ -32,7 +32,7 @@ class PosterRepository @Inject constructor(
         price: MoneyDto,
         address: String,
         categoryId: String
-    ): PostState = httpClient.post("$strictUrl/ad/create") {
+    ): Boolean = httpClient.post("$strictUrl/ad/create") {
         header(HttpHeaders.ContentType, ContentType.Application.Json)
         setBody(CreateAdRequestDto(UUID.randomUUID().toString(), title, description, images, price, address, categoryId))
     }.let { response ->
@@ -40,27 +40,28 @@ class PosterRepository @Inject constructor(
 
             val responseDto = response.body<CreateAdRequestDto>()
 
-            val ids = mutableMapOf<Int, String>()
-
-            responseDto.imageIds.forEach { id ->
-                ids.put(responseDto.imageIds.indexOf(id), id)
-            }
-
-            PostState(
-                category = responseDto.categoryId,
-                data = PostData(
-                    name = responseDto.title,
-                    description = responseDto.description.toString(),
-                    photos = ids,
-                    price = responseDto.price!!.amountMinor.toString(),
-                    unit = responseDto.price!!.currency.name,
-                    location = responseDto.address.toString()
-                )
-            )
-
+//            val ids = mutableMapOf<Int, String>()
+//
+//            responseDto.imageIds.forEach { id ->
+//                ids.put(responseDto.imageIds.indexOf(id), id)
+//            }
+//
+//            PostState(
+//                category = responseDto.categoryId,
+//                data = PostData(
+//                    name = responseDto.title,
+//                    description = responseDto.description.toString(),
+//                    photos = ids,
+//                    price = responseDto.price!!.amountMinor.toString(),
+//                    unit = responseDto.price!!.currency.name,
+//                    location = responseDto.address.toString()
+//                )
+//            )
+            true
         }
         else
-            PostState()
+//            PostState()
+            false
     }
 
 }

@@ -23,10 +23,10 @@ sealed class CategoryEvent {
     @Immutable
     data class ClearDraft(val subCategory: String) : CategoryEvent()
 
-    /**
-     * Опубликовать объявление
-     */
-    object PublishPost : CategoryEvent()
+//    /**
+//     * Опубликовать объявление
+//     */
+//    object PublishPost : CategoryEvent()
 
     /**
      * Обновить данные черновика
@@ -34,10 +34,10 @@ sealed class CategoryEvent {
     @Immutable
     data class UpdateDraftParams(val draft: PostState) : CategoryEvent()
 
-    /**
-     * Загрузить фото на сервер
-     */
-    @Immutable
-    data class UploadPhoto(val place: Int, val uri: Uri) : CategoryEvent()
+//    /**
+//     * Загрузить фото на сервер
+//     */
+//    @Immutable
+//    data class UploadPhoto(val place: Int, val uri: Uri) : CategoryEvent()
 
 }

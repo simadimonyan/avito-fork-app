@@ -31,7 +31,7 @@ import kotlin.collections.set
 @Composable
 fun FieldsPreview() {
 
-    val gap: (Int, Uri) -> Unit = { i, a -> }
+    val gap: (Int, Uri, (Boolean) -> Unit) -> Unit = { index, uri, callback ->}
 
     Column {
         MetaTag(
@@ -43,7 +43,8 @@ fun FieldsPreview() {
             ),
             data = PostData(),
             observer = {},
-            uploadPhoto = gap
+            uploadPhoto = gap,
+            isRequiredCheckSubmitted = false,
         )
         MetaTag(
             key = "Характеристики 2",
@@ -53,7 +54,8 @@ fun FieldsPreview() {
             ),
             data = PostData(),
             observer = {},
-            uploadPhoto = gap
+            uploadPhoto = gap,
+            isRequiredCheckSubmitted = false,
         )
         MetaTag(
             key = "Характеристики 3",
@@ -68,7 +70,8 @@ fun FieldsPreview() {
             ),
             data = PostData(),
             observer = {},
-            uploadPhoto = gap
+            uploadPhoto = gap,
+            isRequiredCheckSubmitted = false,
         )
     }
 }
@@ -96,8 +99,8 @@ fun MetaTag(
 
     // колбек функции для работы с данными
     observer: (PostData) -> Unit,
-    uploadPhoto: (Int, Uri) -> Unit,
-    isRequiredCheckSubmitted: Boolean = false,
+    uploadPhoto: (Int, Uri, (Boolean) -> Unit) -> Unit,
+    isRequiredCheckSubmitted: Boolean,
     showErrorMessage: (String) -> Unit = {}
 ) {
 
@@ -125,12 +128,26 @@ fun MetaTag(
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
-                    is CategoryField.DescriptionField -> DescriptionField(observer, data, field.key)
-                    is CategoryField.TitleField -> TitleField(observer, data, field.key)
+                    is CategoryField.DescriptionField -> DescriptionField(
+                        observer, data, field.key,
+                        isRequired = field.isRequired,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        showErrorMessage = showErrorMessage
+                    )
+                    is CategoryField.TitleField -> TitleField(observer, data, field.key,
+                        isRequired = field.isRequired,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        showErrorMessage = showErrorMessage
+                    )
 
                     is CategoryField.TextField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
-                        TextField(field.key, data.options[field.key] ?: field.value, "до 3000 символов") {
+                        TextField(
+                            field.key, data.options[field.key] ?: field.value, "до 3000 символов",
+                            isRequired = field.isRequired,
+                            isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                            showErrorMessage = showErrorMessage
+                        ) {
                             params[field.key] = it
                             observer(data.copy(options = params))
                         }
@@ -157,7 +174,12 @@ fun MetaTag(
                     }
 
                     is CategoryField.PhotoPickerByCategoryField -> TODO()
-                    is CategoryField.PhotoPickerField -> PhotoPickerField(observer, field.key, field.count, uploadPhoto)
+
+                    is CategoryField.PhotoPickerField -> PhotoPickerField(
+                        observer, field.key, data.photos, field.count, uploadPhoto,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        showErrorMessage = showErrorMessage
+                    )
 
                     // вложенный разделитель внутри корневого
                     is CategoryField.MetaTag -> MetaTag(

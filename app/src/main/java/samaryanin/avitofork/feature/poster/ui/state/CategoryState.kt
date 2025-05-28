@@ -33,7 +33,12 @@ data class CategoryState(
     /**
      * Состояние подгрузки категорий
      */
-    @Serializable val isLoading: Boolean = false
+    @Serializable val isLoading: Boolean = false,
+
+    /**
+     * Состояние для диалогового окна вывода ошибки обязательного поля
+     */
+    @Serializable val lastErrorField: String = ""
 
 )
 
@@ -58,6 +63,10 @@ class CategoryStateHolder @Inject constructor() {
 
     fun updateTempDraftPost(temp: PostState) {
         _categoryState.update { it.copy(tempDraft = temp) }
+    }
+
+    fun updateLastErrorField(error: String) {
+        _categoryState.update { it.copy(lastErrorField = error) }
     }
 
 }

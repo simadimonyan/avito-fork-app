@@ -14,15 +14,20 @@ class CreatePostUseCase @Inject constructor(
     private val posterRepository: PosterRepository
 ) {
 
-    suspend fun create(state: PostState) {
-        posterRepository.create(
-            state.data.name,
-            state.data.description,
-            state.data.photos.values.toList(),
-            MoneyDto(state.data.price.replace(".", "").toLong(), CurrencyDto.RUB),
-            "test",
-            "14e61896-d5fe-4555-9134-032ec26e101e"
-        )
+    suspend fun create(state: PostState): Boolean {
+        return try {
+            posterRepository.create(
+                state.data.name,
+                state.data.description,
+                state.data.photos.values.toList(),
+                MoneyDto(state.data.price.replace(".", "").toLong(), CurrencyDto.RUB),
+                "test",
+                "14e61896-d5fe-4555-9134-032ec26e101e"
+            )
+        }
+        catch (_: Exception) {
+            false
+        }
     }
 
 }
