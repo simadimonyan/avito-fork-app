@@ -20,7 +20,17 @@ class CreatePostUseCase @Inject constructor(
                 state.data.name,
                 state.data.description,
                 state.data.photos.values.toList(),
-                MoneyDto(state.data.price.replace(".", "").toLong(), CurrencyDto.RUB),
+                MoneyDto(
+                    if (state.data.price.contains('.')) {
+                        val parts = state.data.price.split('.')
+                        val major = parts[0]
+                        val minor = (parts.getOrNull(1) ?: "00").padEnd(2, '0').take(2)
+                        (major + minor).toLong()
+                    } else {
+                        (state.data.price + "00").toLong()
+                    },
+                    CurrencyDto.RUB
+                ),
                 "test",
                 "c66b583c-0d9c-472b-89cc-2dcf4dfde895"
             )
