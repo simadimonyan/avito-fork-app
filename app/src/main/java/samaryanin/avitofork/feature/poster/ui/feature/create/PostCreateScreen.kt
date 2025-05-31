@@ -423,7 +423,7 @@ private fun PostCreateContent(
                         }
                     },
                     title = {
-                        Text("Уведомление не создано", fontSize = 17.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Объявление не создано", fontSize = 17.sp, color = Color.Black, fontWeight = FontWeight.Bold)
                     },
                     text = {
                         Text("Неизвестная ошибка", fontSize = 14.sp, color = Color.Black)

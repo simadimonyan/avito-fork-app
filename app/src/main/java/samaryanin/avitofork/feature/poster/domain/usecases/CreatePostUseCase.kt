@@ -32,7 +32,7 @@ class CreatePostUseCase @Inject constructor(
                     CurrencyDto.RUB
                 ),
                 "test",
-                "c66b583c-0d9c-472b-89cc-2dcf4dfde895"
+                "48c9bfbd-22b7-4d40-b1fd-7ede1294953e"
             )
         }
         catch (_: Exception) {
