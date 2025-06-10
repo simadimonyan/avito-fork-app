@@ -89,8 +89,9 @@ fun NumberField(
                     var decimalAdded = false
                     var digitsAfterDecimal = 0
                     for (char in it) {
+                        Log.d("Input", it)
                         if (char.isDigit()) {
-                            if (unitMeasure == "год" && builder.length >= 4) continue
+                            if ((unitMeasure == "год" || unitMeasure == "шт") && builder.length >= 4) continue
                             if (decimalAdded) {
                                 if (digitsAfterDecimal < 2) {
                                     builder.append(char)
@@ -105,6 +106,7 @@ fun NumberField(
                         }
                     }
                     val cleaned = builder.toString()
+                    Log.d("Cleaned", cleaned)
                     mutableValue = cleaned
                     mutablePlaceholder = ""
                     isError = false
@@ -112,17 +114,17 @@ fun NumberField(
                 },
                 Modifier,
                 visualTransformation = visualTransformation,
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
                 decorationBox = @Composable { innerTextField ->
                     TextFieldDefaults.DecorationBox(
-                        value = value,
+                        value = mutableValue,
                         innerTextField = innerTextField,
                         enabled = true,
                         placeholder = @Composable {
                             Text(text = mutablePlaceholder, fontSize = 15.sp, color = Color.Gray)
                         },
                         singleLine = false,
-                        visualTransformation = VisualTransformation.None,
+                        visualTransformation = visualTransformation,
                         interactionSource = interactionSource,
                         contentPadding = PaddingValues(0.dp),
                         colors = TextFieldDefaults.colors(

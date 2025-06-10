@@ -5,28 +5,25 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import java.text.DecimalFormat
-import java.text.NumberFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class PriceVisualTransformation : VisualTransformation {
 
     override fun filter(text: AnnotatedString): TransformedText {
 
-        val symbols = DecimalFormat().decimalFormatSymbols
-        val decimalSeparator = symbols.decimalSeparator
-
+        val separator = '.'
         var outputText = ""
-        var integerPart = 0L
-        var decimalPart = ""
 
         var cleanInput = text.text
-        // Remove all non-digit characters except the first decimal separator
+        // Удаляем все нецифровые символы, кроме первого десятичного разделителя
         val builder = StringBuilder()
         var decimalAdded = false
         for (char in cleanInput) {
             if (char.isDigit()) {
                 builder.append(char)
-            } else if (char == decimalSeparator && !decimalAdded) {
-                builder.append(char)
+            } else if (char == separator && !decimalAdded) {
+                builder.append(separator)
                 decimalAdded = true
             }
         }
@@ -34,18 +31,16 @@ class PriceVisualTransformation : VisualTransformation {
 
         val numberOffsetTranslator = object : OffsetMapping {
             override fun originalToTransformed(offset: Int): Int {
-                var transformedOffset = 0
                 var originalIndex = 0
                 var formattedIndex = 0
 
                 while (originalIndex < offset && formattedIndex < outputText.length) {
-                    if (outputText[formattedIndex].isDigit() || outputText[formattedIndex] == decimalSeparator) {
+                    if (outputText[formattedIndex].isDigit() || outputText[formattedIndex] == separator) {
                         originalIndex++
                     }
                     formattedIndex++
-                    transformedOffset = formattedIndex
                 }
-                return transformedOffset
+                return formattedIndex
             }
 
             override fun transformedToOriginal(offset: Int): Int {
@@ -53,7 +48,7 @@ class PriceVisualTransformation : VisualTransformation {
                 var formattedIndex = 0
 
                 while (formattedIndex < offset && formattedIndex < outputText.length) {
-                    if (outputText[formattedIndex].isDigit() || outputText[formattedIndex] == decimalSeparator) {
+                    if (outputText[formattedIndex].isDigit() || outputText[formattedIndex] == separator) {
                         originalOffset++
                     }
                     formattedIndex++
@@ -63,14 +58,35 @@ class PriceVisualTransformation : VisualTransformation {
         }
 
         if (cleanInput.isNotEmpty()) {
-            val number = cleanInput.toDoubleOrNull() ?: 0.0
-            integerPart = number.toLong()
-            outputText += NumberFormat.getIntegerInstance().format(integerPart)
-            if (cleanInput.contains(decimalSeparator)) {
-                decimalPart = cleanInput.substring(cleanInput.indexOf(decimalSeparator))
-                if (decimalPart.isNotEmpty()) {
-                    outputText += decimalPart
+            val symbols = DecimalFormatSymbols.getInstance(Locale.US).apply {
+                groupingSeparator = ' ' // разделитель тысяч
+                decimalSeparator = separator // десятичный разделитель
+            }
+
+            val formatter = DecimalFormat("#,##0.##", symbols).apply {
+                decimalFormatSymbols = symbols
+            }
+
+            if (cleanInput == "." || cleanInput.endsWith(".")) {
+                val intPart = cleanInput.dropLast(1).toLongOrNull() ?: 0L
+                outputText = formatter.format(intPart) + separator
+
+            } else if (cleanInput.contains(separator)) {
+
+                val index = cleanInput.indexOfFirst { it == separator }
+                if (index >= 0 && index < cleanInput.length - 1) {
+                    val whole = cleanInput.substring(0, index)
+                    val frac = cleanInput.substring(index)
+                    val intPart = whole.toLongOrNull() ?: 0L
+                    outputText = formatter.format(intPart.toDouble()) + frac
+                } else {
+                    val number = cleanInput.toDoubleOrNull() ?: 0.0
+                    outputText = formatter.format(number)
                 }
+
+            } else {
+                val number = cleanInput.toDoubleOrNull() ?: 0.0
+                outputText = formatter.format(number)
             }
         }
 
@@ -78,7 +94,5 @@ class PriceVisualTransformation : VisualTransformation {
             text = AnnotatedString(outputText),
             offsetMapping = numberOffsetTranslator
         )
-
     }
-
 }
