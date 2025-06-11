@@ -2,8 +2,6 @@ package samaryanin.avitofork.core.network
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -22,22 +20,22 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.dimagor555.avito.auth.request.RefreshRequestDto
+import samaryanin.avitofork.app.activity.data.AppStateHolder
 import samaryanin.avitofork.core.cache.CacheManager
-import samaryanin.avitofork.core.network.DeviceIdProvider
 import samaryanin.avitofork.feature.auth.data.dto.AuthToken
 import javax.inject.Inject
 
 class KtorClient @Inject constructor(
     private val context: Context,
     private val baseUrl: String,
-    private var cacheManager: CacheManager
+    private val cacheManager: CacheManager,
+    private val appStateHolder: AppStateHolder
 ) {
-
-    private val gson = Gson()
 
     val httpClient = HttpClient(CIO) {
 
@@ -53,19 +51,7 @@ class KtorClient @Inject constructor(
             header("device-id", deviceId)
             header(HttpHeaders.ContentType, ContentType.Application.Json)
 
-            //val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
-            val json = cacheManager.preferences.getString("authToken", null)
-
-            val type = object : TypeToken<AuthToken>() {}.type
-            var token = AuthToken()
-
-            if (json != null) {
-                val state: AuthToken = try {
-                    gson.fromJson(json, type)
-                } catch (_: Exception) { AuthToken() }
-                token = state
-            }
-
+            val token = cacheManager.getAuthToken()
             if (token.accessToken.isNotBlank()) {
                 header(HttpHeaders.Authorization, "Bearer ${token.accessToken}")
             }
@@ -83,39 +69,29 @@ class KtorClient @Inject constructor(
             bearer {
 
                 loadTokens {
-
-                    //val prefs = context.getSharedPreferences("encrypted_prefs", Context.MODE_PRIVATE)
-                    val json = cacheManager.preferences.getString("authToken", null)
-
-                    val type = object : TypeToken<AuthToken>() {}.type
-                    var token = AuthToken()
-
-                    if (json != null) {
-                        val state: AuthToken = try {
-                            gson.fromJson(json, type)
-                        } catch (_: Exception) { AuthToken() }
-                        token = state
-                    }
-
-                    BearerTokens(token.accessToken, token.refreshToken)
-
+                    val token = cacheManager.getAuthToken()
+                    if (token.accessToken.isBlank() || token.refreshToken.isBlank()) {
+                        logout()
+                        null
+                    } else
+                        BearerTokens(token.accessToken, token.refreshToken)
                 }
 
                 refreshTokens {
-
-                    var token = this.client.post("auth/refresh") {
-                        header(HttpHeaders.ContentType, ContentType.Application.Json)
-                        setBody(
-                            RefreshRequestDto(
-                                oldTokens!!.accessToken,
-                                oldTokens!!.refreshToken!!
-                            )
-                        )
-                    }.let { response -> if (response.status.value != 200) null
-                        else response.body<AuthToken>() }
-
-                    BearerTokens(token!!.accessToken, token!!.refreshToken)
-
+                    val old = cacheManager.getAuthToken()
+                    try {
+                        val new = client.post("auth/refresh") {
+                            markAsRefreshTokenRequest()
+                            contentType(ContentType.Application.Json)
+                            setBody(RefreshRequestDto(old.accessToken, old.refreshToken))
+                        }.body<AuthToken>()
+                        cacheManager.saveAuthToken(new)
+                        BearerTokens(new.accessToken, new.refreshToken)
+                    } catch (e: Exception) {
+                        Log.d("RefreshTokens", e.toString())
+                        logout()
+                        null
+                    }
                 }
 
             }
@@ -142,4 +118,11 @@ class KtorClient @Inject constructor(
 
         }
     }
+
+    private fun logout() {
+        appStateHolder.logout()
+        cacheManager.saveAppState(appStateHolder.appState.value)
+        cacheManager.clearAuthToken()
+    }
+
 }

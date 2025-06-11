@@ -45,6 +45,10 @@ class AppStateHolder @Inject constructor() {
         _appState.update { it.copy(isLoggedIn = true) }
     }
 
+    fun logout() {
+        _appState.update { it.copy(isLoggedIn = false) }
+    }
+
     fun toggleAuthRequest() {
         _appState.update { it.copy(authRequested = !it.authRequested) }
     }
