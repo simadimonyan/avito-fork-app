@@ -3,9 +3,13 @@ package samaryanin.avitofork.feature.poster.ui.feature.create
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.BackEventCompat
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +54,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import samaryanin.avitofork.R
 import samaryanin.avitofork.app.navigation.MainRoutes
@@ -62,6 +68,7 @@ import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileEvent
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
+import kotlin.coroutines.cancellation.CancellationException
 
 @Preview
 @Composable
@@ -281,7 +288,9 @@ private fun PostCreateContent(
     dismissPublishErrorDialog: () -> Unit
 ) {
 
-    Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,
+    Scaffold(
+        contentWindowInsets = WindowInsets(0),
+        containerColor = Color.White,
         topBar = {
 
             Row(
@@ -320,12 +329,22 @@ private fun PostCreateContent(
         }
     ) { innerPadding ->
 
+        PredictiveBackHandler(true) { progress: Flow<BackEventCompat> ->
+            try {
+                progress.collect { backEvent -> }
+                onExit()
+            } catch (e: CancellationException) {
+                Log.w("PostCreateSwipe", e)
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .navigationBarsPadding()
                 .consumeWindowInsets(innerPadding)
+                .background(Color.Transparent)
         ) {
 
             Space(10.dp)
