@@ -1,8 +1,8 @@
 package samaryanin.avitofork.feature.poster.domain.usecases
 
 import androidx.compose.runtime.Immutable
-import ru.dimagor555.avito.ad.dto.CurrencyDto
-import ru.dimagor555.avito.ad.dto.MoneyDto
+import ru.dimagor555.avito.ad.domain.Currency
+import ru.dimagor555.avito.ad.domain.Money
 import samaryanin.avitofork.feature.poster.data.repository.PosterRepository
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class CreatePostUseCase @Inject constructor(
                 state.data.name,
                 state.data.description,
                 state.data.photos.values.toList(),
-                MoneyDto(
+                Money(
                     if (state.data.price.contains('.')) {
                         val parts = state.data.price.split('.')
                         val major = parts[0]
@@ -29,7 +29,7 @@ class CreatePostUseCase @Inject constructor(
                     } else {
                         (state.data.price + "00").toLong()
                     },
-                    CurrencyDto.RUB
+                    Currency.RUB
                 ),
                 "test",
                 "05220041-bc45-418e-9a0a-fdfd9d599fbd"

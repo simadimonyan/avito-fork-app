@@ -60,11 +60,11 @@ android {
         metricsDestination = layout.buildDirectory.dir("compose_compiler")
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -85,7 +85,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.1.2.jar"))
+    implementation(files("libs/domain-jvm-1.3.0.jar"))
 
     implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
 

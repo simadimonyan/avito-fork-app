@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import ru.dimagor555.avito.category.domain.field.FieldData
 import samaryanin.avitofork.R
 import samaryanin.avitofork.feature.feed.ui.feature.map.ui.MiniMapView
 import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder

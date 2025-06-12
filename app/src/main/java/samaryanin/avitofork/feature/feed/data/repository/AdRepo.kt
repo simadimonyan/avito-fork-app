@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.feed.data.repository
 
+import android.util.Log
 import androidx.compose.runtime.Stable
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -11,9 +12,10 @@ import io.ktor.http.HttpHeaders
 import io.ktor.network.sockets.SocketTimeoutException
 import kotlinx.coroutines.delay
 import ru.dimagor555.avito.ad.dto.AdDto
-import ru.dimagor555.avito.ad.dto.CategoryDto
 import ru.dimagor555.avito.ad.request.GetAdsByIdsRequestDto
 import ru.dimagor555.avito.ad.request.GetFilteredAdsRequestDto
+import ru.dimagor555.avito.category.domain.field.FieldData
+import ru.dimagor555.avito.category.dto.CategoryDto
 import ru.dimagor555.avito.user.request.ToggleFavouriteRequestDto
 import samaryanin.avitofork.core.network.KtorClient
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
@@ -97,7 +99,7 @@ class AdRepo @Inject constructor(
         }
 
     suspend fun getAllCategories(): List<Category> = httpClient
-        .get("ad/categories")
+        .get("category/all")
         .body<List<CategoryDto>>()
         .map { it.toDomain() }
 
@@ -107,14 +109,42 @@ class AdRepo @Inject constructor(
 
     private fun AdDto.toDomain(): Ad {
 
-        return Ad(
+        var title = ""
+        var price = ""
+        var description = ""
+        var address = ""
+        var imageIds = mutableListOf<String>()
+
+        for (field in fieldValues) {
+            Log.d("AdRepo", "FieldId=${field.fieldId}, Data=${field.fieldData}")
+            when (field.fieldId) {
+                "base_title" -> title = (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
+                "base_price" -> price = (field.fieldData as? FieldData.MoneyValue)?.amountMinor?.toString().orEmpty()
+                "base_description" -> description = (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
+                "base_address" -> address = (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
+                "base_image_ids" -> {
+                    val list = (field.fieldData as? FieldData.ListValue)?.items.orEmpty()
+                    imageIds = list
+                        .filterIsInstance<FieldData.StringValue>()
+                        .map { it.value }
+                        .toMutableList()
+                }
+            }
+        }
+
+        val ad = Ad(
             id = id,
+            ownerId = ownerId,
+            categoryId = categoryId,
             title = title,
-            price = "${(price!!.amountMinor / 100)} RUB",
-            address = address.orEmpty(),
-            imageIds = imageIds.orEmpty(),
-            description = description.orEmpty()
+            price = price,
+            description = description,
+            address = address,
+            imageIds = imageIds
         )
+        Log.d("AdRepo", "Ad=${ad}")
+
+        return ad
 
     }
 

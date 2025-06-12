@@ -2,13 +2,16 @@ package samaryanin.avitofork.feature.poster.domain.usecases
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.json.Json
+import samaryanin.avitofork.feature.poster.data.repository.CategoryRepository
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 @Immutable
-class ConfigurationUseCase @Inject constructor() {
+class ConfigurationUseCase @Inject constructor(
+    private val categoryRepository: CategoryRepository
+) {
 
     private val prompt = """
         [
@@ -178,12 +181,16 @@ class ConfigurationUseCase @Inject constructor() {
         ]  
     """
 
-    fun getCategories(): List<CategoryField> {
+    suspend fun getCategories(): List<CategoryField> {
 
         val json = Json {
             classDiscriminator = "type"
             ignoreUnknownKeys = true // например, "type"
         }
+
+        //val temp: List<CategoryDto> = categoryRepository.getAllCategories()
+
+        //Log.d("Categories", temp.toString())
 
         val categoryFields = json.decodeFromString<List<CategoryField.Category>>(prompt)
 

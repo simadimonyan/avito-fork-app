@@ -102,13 +102,11 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun updateConfiguration() {
-
         safeScope.launch {
             appStateStore.categoryStateHolder.updateLoading(true)
             appStateStore.categoryStateHolder.updateCategories(configurationUseCase.getCategories())
             appStateStore.categoryStateHolder.updateLoading(false)
         }
-
     }
 
     // ---

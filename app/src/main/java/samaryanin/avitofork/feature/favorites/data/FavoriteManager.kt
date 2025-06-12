@@ -26,9 +26,7 @@ class FavoriteManager @Inject constructor(
         scope.launch {
             try {
                 loadFromServer()
-
             } catch (e: Exception) {
-
 
             }
         }
