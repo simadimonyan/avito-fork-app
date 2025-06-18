@@ -58,11 +58,14 @@ import samaryanin.avitofork.app.navigation.MainRoutes
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
+import samaryanin.avitofork.feature.poster.ui.feature.subcategory.DraftDialog
+import samaryanin.avitofork.feature.poster.ui.navigation.PostRoutes
 import samaryanin.avitofork.feature.poster.ui.shared.fields.MetaTag
 import samaryanin.avitofork.feature.poster.ui.state.CategoryEvent
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileEvent
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
+import samaryanin.avitofork.shared.ui.components.utils.space.Divider
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 import kotlin.coroutines.cancellation.CancellationException
@@ -71,7 +74,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 private fun PostCreatePreview() {
 
-    val sample = CategoryField.SubCategory("", "Тестовая подкатегория",
+    val sample = CategoryField.SubCategory("", "Тестовая подкатегория", "",
         mutableListOf(
             CategoryField.MetaTag(
                 key = "",
@@ -144,7 +147,7 @@ fun PostCreateScreen(
     val lastErrorField = draftPost.lastErrorField
     val showRenderBlocksErrorDialog = remember { mutableStateOf(false) }
     val showPublishErrorDialog = remember { mutableStateOf(false) }
-    var showPublishProgressDialog = remember { mutableStateOf(false) }
+    val showPublishProgressDialog = remember { mutableStateOf(false) }
 
     // --- LaunchedEffect validation state ---
     var isPublishTriggered by remember { mutableStateOf(false) }
@@ -168,25 +171,87 @@ fun PostCreateScreen(
 
     val data = draftPost.tempDraft.data
 
-    PostCreateContent(
-        onExit = onExit,
-        subcategory = subcategory,
-        updateDraft = updateDraft,
-        onPublish = onPublish,
-        data = data,
-        uploadPhoto = uploadPhoto,
-        isRequiredCheckSubmitted = isPublishTriggered,
-        showErrorMessage = {
-            Log.d("Validation", "Field with error: $it")
-            categoriesViewModel.appStateStore.categoryStateHolder.updateLastErrorField(it)
-        },
-        lastErrorField = lastErrorField,
-        showRenderBlocksErrorDialog = showRenderBlocksErrorDialog.value,
-        dismissPublishErrorDialog = { showPublishErrorDialog.value = false },
-        showPublishErrorDialog = showPublishErrorDialog.value,
-        dismissRenderBlocksErrorDialog = { showRenderBlocksErrorDialog.value = false },
-        showPublishProgressDialog = showPublishProgressDialog.value
-    )
+    if (subcategory.children.isEmpty()) { // если нет вложенных подкатегорий у подкатегории
+        PostCreateContent(
+            onExit = onExit,
+            subcategory = subcategory,
+            updateDraft = updateDraft,
+            onPublish = onPublish,
+            data = data,
+            uploadPhoto = uploadPhoto,
+            isRequiredCheckSubmitted = isPublishTriggered,
+            showErrorMessage = {
+                Log.d("Validation", "Field with error: $it")
+                categoriesViewModel.appStateStore.categoryStateHolder.updateLastErrorField(it)
+            },
+            lastErrorField = lastErrorField,
+            showRenderBlocksErrorDialog = showRenderBlocksErrorDialog.value,
+            dismissPublishErrorDialog = { showPublishErrorDialog.value = false },
+            showPublishErrorDialog = showPublishErrorDialog.value,
+            dismissRenderBlocksErrorDialog = { showRenderBlocksErrorDialog.value = false },
+            showPublishProgressDialog = showPublishProgressDialog.value
+        )
+    }
+    else { // рекурсивная обработка окна для выбора подкатегории
+
+        val categoryState by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+
+        var renderDraftAlert by remember { mutableStateOf(false) } // условие рендера окна черновика
+        var tempSubCategory by remember { mutableStateOf<CategoryField.SubCategory?>(null) } // передача состояния категории между кнопками
+
+        val onExit2 = {
+            globalNavController.navigateUp()
+        }
+
+        // навигация на кнопку "Продолжить заполнение"
+        val continuePostButton: () -> Unit = {
+            if (tempSubCategory != null) {
+                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(categoryState.drafts[tempSubCategory!!.name]!!))
+                categoriesViewModel.handleEvent(CategoryEvent.ClearDraft(tempSubCategory!!.name))
+                globalNavController.navigate(PostRoutes.PostCreate(tempSubCategory!!)) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                renderDraftAlert = false
+            }
+        }
+
+        // навигация на кнопку "Создать новое"
+        val createNewPostButton: () -> Unit = {
+            if (tempSubCategory != null) {
+                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, tempSubCategory!!.name)))
+                categoriesViewModel.handleEvent(CategoryEvent.ClearDraft(tempSubCategory!!.name))
+                globalNavController.navigate(PostRoutes.PostCreate(tempSubCategory!!)) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                renderDraftAlert = false
+            }
+        }
+
+        // навигация с проверкой наличия черновика
+        val onSubCategoryClick: (CategoryField.SubCategory) -> Unit = { subsubcategory ->
+
+            if (categoryState.drafts.containsKey(subsubcategory.name)) {
+                tempSubCategory = subsubcategory
+                renderDraftAlert = true
+            }
+            else {
+                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, subsubcategory.name)))
+                globalNavController.navigate(PostRoutes.PostCreate(subsubcategory)) {
+                    launchSingleTop = false // false - создаёт новый экземпляр экрана в бекстеке
+                    restoreState = true
+                }
+            }
+        }
+
+        // условие рендера диалогового окна
+        if (renderDraftAlert) {
+            DraftDialog(tempSubCategory!!.name, createNewPostButton, continuePostButton) { renderDraftAlert = false }
+        }
+
+        SubCategoryChildrenContent(onExit2, subcategory, onSubCategoryClick)
+    }
 
     // --- New LaunchedEffect for field content validation and publish ---
     LaunchedEffect(isPublishTriggered) {
@@ -447,6 +512,75 @@ private fun PostCreateContent(
                     containerColor = Color.White
                 )
             }
+        }
+
+    }
+
+}
+
+@Composable
+fun SubCategoryChildrenContent(
+    onExit: () -> Boolean,
+    subcategory: CategoryField.SubCategory,
+    onCategoryClick: (CategoryField.SubCategory) -> Unit
+) {
+
+    Scaffold(contentWindowInsets = WindowInsets(0), containerColor = Color.White,
+        topBar = {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_arrow),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clickable {
+                            onExit()
+                        }
+                )
+                Space()
+            }
+
+        }
+    ) { innerPadding ->
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+
+            item { AppTextTitle(text = subcategory.name) }
+
+            item { Space(20.dp) }
+
+            subcategory.children.forEachIndexed{ index, categoryField ->
+
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                            .clickable { onCategoryClick(categoryField) }
+                    ) {
+                        Text(
+                            text = categoryField.name,
+                            color = Color.Black,
+                            fontSize = 20.sp
+                        )
+                    }
+
+                    if (index != subcategory.children.size - 1) Divider()
+                }
+
+            }
+
         }
 
     }

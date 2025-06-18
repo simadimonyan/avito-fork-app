@@ -84,7 +84,7 @@ fun NavGraphBuilder.utilPosterGraph(
 
             val category = backStackEntry.arguments?.getString("category")?.let {
                 json.decodeFromString<CategoryField.Category>(it)
-            } ?: CategoryField.Category("", "", emptyList())
+            } ?: CategoryField.Category("", "", "", mutableListOf())
 
 
             SubCategoryScreen(globalNavController, category, categoriesViewModel)
@@ -145,7 +145,7 @@ fun NavGraphBuilder.utilPosterGraph(
 
             val subcategory = backStackEntry.arguments?.getString("subCategory")?.let {
                 json.decodeFromString<CategoryField.SubCategory>(it)
-            } ?: CategoryField.SubCategory("", "", emptyList())
+            } ?: CategoryField.SubCategory("", "", "", emptyList())
 
 
             PostCreateScreen(globalNavController, subcategory, categoriesViewModel, profileViewModel)

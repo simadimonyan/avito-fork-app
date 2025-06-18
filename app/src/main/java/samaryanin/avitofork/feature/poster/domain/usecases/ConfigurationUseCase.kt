@@ -1,7 +1,11 @@
 package samaryanin.avitofork.feature.poster.domain.usecases
 
+import android.util.Log
 import androidx.compose.runtime.Immutable
-import kotlinx.serialization.json.Json
+import ru.dimagor555.avito.category.domain.Category
+import ru.dimagor555.avito.category.domain.field.DataType
+import ru.dimagor555.avito.category.domain.field.FieldDefinition
+import ru.dimagor555.avito.category.domain.tree.CategoryTreeMapper
 import samaryanin.avitofork.feature.poster.data.repository.CategoryRepository
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import javax.inject.Inject
@@ -13,188 +17,110 @@ class ConfigurationUseCase @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) {
 
-    private val prompt = """
-        [
-          {
-            "type": "category",
-            "id": "1",
-            "name": "Автомобили",
-            "subs": [
-              {
-                "type": "subcategory",
-                "id": "1-1",
-                "name": "Легковые автомобили",
-                "fields": [
-                  {
-                    "type": "meta-tag",
-                    "key": "",
-                    "fields": [
-                      {
-                        "type": "photo-picker-field",
-                        "key": "photos",
-                        "count": 5
-                      },
-                      {
-                        "type": "title-field",
-                        "key": "Название",
-                        "value": ""
-                      },
-                      {
-                        "type": "price-field",
-                        "key": "Стоимость",
-                        "value": "",
-                        "unitMeasure": "руб"
-                      },
-                      {
-                        "type": "description-field",
-                        "key": "Описание",
-                        "value": ""
-                      },
-                      {
-                        "type": "dropdown-field",
-                        "key": "Эксплуатация",
-                        "value": "С пробегом",
-                        "options": ["С пробегом", "Без пробега"],
-                        "isOnlyOneToChoose": true
-                      },
-                      {
-                        "type": "meta-tag",
-                        "key": "Основные параметры",
-                        "fields": [
-                          {
-                            "type": "dropdown-field",
-                            "key": "Марка",
-                            "value": "Не указано",
-                            "options": ["Porsche", "Chevrolet"],
-                            "isOnlyOneToChoose": true
-                          },
-                          {
-                            "type": "dropdown-field",
-                            "key": "Модель",
-                            "value": "Не указано",
-                            "options": ["", ""],
-                            "isOnlyOneToChoose": true
-                          },
-                          {
-                            "type": "number-field",
-                            "key": "Год выпуска",
-                            "value": "",
-                            "unitMeasure": "год"
-                          },
-                          {
-                            "type": "dropdown-field",
-                            "key": "Руль",
-                            "value": "Не указано",
-                            "options": ["", ""],
-                            "isOnlyOneToChoose": true
-                          },
-                          {
-                            "type": "dropdown-field",
-                            "key": "Кузов",
-                            "value": "Не указано",
-                            "options": ["", ""],
-                            "isOnlyOneToChoose": true
-                          },
-                          {
-                            "type": "number-field",
-                            "key": "Количество дверей",
-                            "value": "",
-                            "unitMeasure": "шт"
-                          },
-                          {
-                            "type": "dropdown-field",
-                            "key": "Цвет",
-                            "value": "Не указано",
-                            "options": ["", ""],
-                            "isOnlyOneToChoose": true
-                          }
-                        ]
-                      },
-                      {
-                        "type": "location-field",
-                        "key": "location"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "category",
-            "id": "2",
-            "name": "Недвижимость",
-            "subs": [
-              {
-                "type": "subcategory",
-                "id": "2-1",
-                "name": "Квартира",
-                "fields": [
-                  {
-                    "type": "meta-tag",
-                    "key": "",
-                    "fields": [
-                      {
-                        "type": "photo-picker-field",
-                        "key": "photos",
-                        "count": 5
-                      },
-                      {
-                        "type": "text-field",
-                        "key": "Стоимость",
-                        "value": ""
-                      },
-                      {
-                        "type": "meta-tag",
-                        "key": "Характеристики",
-                        "fields": [
-                          {
-                            "type": "text-field",
-                            "key": "make",
-                            "value": ""
-                          },
-                          {
-                            "type": "number-field",
-                            "key": "year",
-                            "value": "",
-                            "unitMeasure": "год"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "dropdown-field",
-                        "key": "fuel",
-                        "value": "",
-                        "options": ["Бензин", "Дизель", "Электро"],
-                        "isOnlyOneToChoose": true
-                      },
-                      {
-                        "type": "location-field",
-                        "key": "location"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]  
-    """
-
     suspend fun getCategories(): List<CategoryField> {
+        val serverCategories = categoryRepository.getAllCategories()
+        val treeMap = CategoryTreeMapper(serverCategories).map()
 
-        val json = Json {
-            classDiscriminator = "type"
-            ignoreUnknownKeys = true // например, "type"
+        val categoryFields = mutableListOf<CategoryField.Category>()
+
+        // проход по всем узлам: сначала — корневые
+        treeMap.all().forEach { node ->
+            if (node.isFirstLevelCategory) {
+                categoryFields += CategoryField.Category(
+                    id = node.id,
+                    name = node.name,
+                    imageId = node.imageId.orEmpty(),
+                    subs = mutableListOf()
+                )
+            }
         }
 
-        //val temp: List<CategoryDto> = categoryRepository.getAllCategories()
+        // проход по всем узлам: затем — субкатегории
+        treeMap.all().filter { it.isSubcategory }.forEach { node ->
+            val parentNode = categoryFields.firstOrNull { it.id == node.parent?.id }
+                ?: run {
+                    Log.e("ConfigurationUseCase", "Parent not found for ${node.name}")
+                    return@forEach
+                }
 
-        //Log.d("Categories", temp.toString())
+            val sub = if (node.hasChildren) {
+                // Подкатегория с дочерними SubCategory
+                val childrenSubs = node.children.map { child ->
+                    formFields(child)
+                }
+                CategoryField.SubCategory(
+                    id = node.id,
+                    name = node.name,
+                    imageId = node.imageId.orEmpty(),
+                    children = childrenSubs,
+                    fields = emptyList()
+                )
+            } else {
+                // если конечная подкатегория — сразу поля
+                formFields(node)
+            }
 
-        val categoryFields = json.decodeFromString<List<CategoryField.Category>>(prompt)
+            parentNode.subs.add(sub)
+        }
 
         return categoryFields
+    }
+
+    // маппинг полей в рендерные блоки
+    private fun formFields(child: Category): CategoryField.SubCategory {
+        val fields = mutableListOf<CategoryField>(
+            CategoryField.MetaTag(
+                "",
+                mutableListOf(
+                    CategoryField.PhotoPickerField("", 8),
+                    CategoryField.TextField("Название", "", true),
+                    CategoryField.PriceField("Стоимость", "", "руб"),
+                    CategoryField.DescriptionField("Описание:", "")
+                )
+            )
+        )
+
+        val allFieldDefinitions = collectAllFields(child)
+
+        val categoryParams = allFieldDefinitions.mapNotNull { field ->
+            when (field.semantic.dataType) {
+                is DataType.Text -> CategoryField.TextField(field.name, "", field.isRequired)
+                is DataType.DoubleNumber, is DataType.IntNumber -> CategoryField.NumberField(field.name, "", "", field.isRequired)
+                is DataType.SingleOption -> CategoryField.DropdownField(field.name, "", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
+                else -> null
+            }
+        }
+
+        if (categoryParams.isNotEmpty())
+            fields.add(CategoryField.MetaTag("Характеристики категории", categoryParams.toMutableList()))
+
+        return CategoryField.SubCategory(
+            id = child.id,
+            name = child.name,
+            imageId = child.imageId.orEmpty(),
+            fields = fields
+        )
+    }
+
+    // сборка всех полей у родительских категорий
+    private fun collectAllFields(category: Category): List<FieldDefinition> {
+        val allFields = mutableListOf<FieldDefinition>()
+        val seen = mutableSetOf<String>()
+        var current: Category? = category
+
+        while (current != null) {
+            if (current.id != "root") {
+                current.ownFieldDefinitions.reversed().forEach { field ->
+                    if (field.semantic.id !in seen) {
+                        allFields.add(0, field)
+                        seen.add(field.semantic.id)
+                    }
+                }
+            }
+            current = current.parent
+        }
+
+        return allFields
     }
 
 }

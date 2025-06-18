@@ -1,6 +1,7 @@
 package samaryanin.avitofork.feature.profile.ui.feature.settings
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -77,6 +79,7 @@ fun SettingsContent(
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = Modifier.background(Color.White),
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets(0),
@@ -173,11 +176,11 @@ fun SettingsList(
 ) {
     val sections = SettingsSection.values()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp).background(Color.White),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             for (section in sections) {
@@ -205,6 +208,7 @@ fun SettingsList(
                                 )
                             },
                             modifier = Modifier
+                                .background(Color.Transparent)
                                 .fillMaxWidth()
                                 .clickable {
                                     when (item) {
@@ -213,6 +217,7 @@ fun SettingsList(
                                         else -> onNavigate(item.name)
                                     }
                                 },
+                            colors = ListItemDefaults.colors(containerColor = Color.White),
                             trailingContent = {
                                 if (item.showDisclosure) {
                                     Icon(
@@ -223,6 +228,7 @@ fun SettingsList(
                                     )
                                 }
                             }
+
                         )
                     }
                 }

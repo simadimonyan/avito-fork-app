@@ -22,18 +22,19 @@ sealed class CategoryField {
     @Serializable
     @SerialName("category")
     @Immutable
-    data class Category(val id: String = "", val name: String = "", val subs: List<SubCategory> = emptyList()) : CategoryField()
+    data class Category(val id: String = "", val name: String = "", val imageId: String = "", var subs: MutableList<SubCategory> = mutableListOf()) : CategoryField()
 
     /**
      * Модель подкатегорий
      * @param id уникальный идентификатор подкатегории
      * @param name название категории
+     * @param children список подподкатегорий
      * @param fields список характеристик объявления
      */
     @Serializable
     @SerialName("subcategory")
     @Immutable
-    data class SubCategory(val id: String, val name: String, val fields: List<CategoryField>) : CategoryField()
+    data class SubCategory(val id: String, val name: String, val imageId: String = "", val fields: List<CategoryField>, var children: List<SubCategory> = emptyList()) : CategoryField()
 
     /**
      * Мета-тег для разделения полей на категории

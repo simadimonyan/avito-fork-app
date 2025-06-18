@@ -41,8 +41,8 @@ sealed class PostRoutes(val route: String) {
     /**
      * Карта
      */
-        object Map {
-            const val route = "map/{lat}/{lon}"
-            fun withArgs(lat: Double, lon: Double): String = "map/$lat/$lon"
-        }
+     object Map {
+         const val route = "map/{lat}/{lon}"
+         fun withArgs(lat: Double, lon: Double): String = "map/$lat/$lon"
+     }
 }
