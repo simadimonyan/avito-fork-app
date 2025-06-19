@@ -33,7 +33,7 @@ class PosterRepository @Inject constructor(
         categoryId: String
     ): Boolean = httpClient.post("$strictUrl/ad/create") {
         header(HttpHeaders.ContentType, ContentType.Application.Json)
-        setBody(CreateAdRequestDto(UUID.randomUUID().toString(), categoryId,mutableListOf<FieldValue>(
+        setBody(CreateAdRequestDto(UUID.randomUUID().toString(), categoryId, mutableListOf(
             FieldValue(
                 fieldId = "base_title",
                 fieldData = FieldData.StringValue(

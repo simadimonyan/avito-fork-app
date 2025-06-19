@@ -20,6 +20,7 @@ import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCa
 import samaryanin.avitofork.feature.favorites.domain.usecases.ToggleFavoriteAdUseCase
 import samaryanin.avitofork.shared.state.network.NetworkState
 import samaryanin.avitofork.shared.exceptions.safeScope
+import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -32,7 +33,8 @@ class MarketplaceViewModel @Inject constructor(
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
     private val downloadImageUseCase: GetImageBytesByIdUseCase,
     private val favoriteManager: FavoriteManager,
-    private var cacheManager: CacheManager
+    private var cacheManager: CacheManager,
+    val appStateStore: AppStateStore
 ) : ViewModel() {
 
     val allAds = MutableStateFlow<List<Ad>?>(null)
@@ -43,14 +45,14 @@ class MarketplaceViewModel @Inject constructor(
     val adsState = MutableStateFlow<NetworkState<List<Ad>>>(NetworkState.Loading)
     val categoriesState = MutableStateFlow<NetworkState<List<Category>>>(NetworkState.Loading)
 
-    val isAuthorized = MutableStateFlow<Boolean>(false)
+    //val isAuthorized = MutableStateFlow<Boolean>(false)
 
     private var searchJob: Job? = null
 
     init {
         safeScope.launch { favoriteManager.loadFromServer() }
 
-        isAuthorized.value = cacheManager.preferences.getString("authToken", null) != null
+        //isAuthorized.value = cacheManager.preferences.getString("authToken", null) != null
 
         safeScope.launch {
             selectedCategoryIds

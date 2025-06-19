@@ -14,31 +14,37 @@ import javax.inject.Singleton
  */
 @Singleton
 @Immutable
-class AppStateStore @Inject constructor() {
+class AppStateStore @Inject constructor(
+    private val appStateHolder: AppStateHolder,
+    private val authStateHolder: AuthStateHolder,
+    private val messageStateHolder: MessageStateHolder,
+    private val profileStateHolder: ProfileStateHolder,
+    private val categoryStateHolder: CategoryStateHolder
+) {
 
     /**
      * Общее состояние приложения
      */
-    val appStateHolder: AppStateHolder = AppStateHolder()
+    val appState: AppStateHolder = appStateHolder
 
     /**
      * Состояние авторизации
      */
-    val authStateHolder: AuthStateHolder = AuthStateHolder()
+    val authState: AuthStateHolder = authStateHolder
 
     /**
      * Состояние чатов сообщений
      */
-    val messageStateHolder: MessageStateHolder = MessageStateHolder()
+    val messageState: MessageStateHolder = messageStateHolder
 
     /**
      * Состояние данных профиля
      */
-    val profileStateHolder: ProfileStateHolder = ProfileStateHolder()
+    val profileState: ProfileStateHolder = profileStateHolder
 
     /**
      * Состояние категорий для управления объявлениями
      */
-    val categoryStateHolder: CategoryStateHolder = CategoryStateHolder()
+    val categoryState: CategoryStateHolder = categoryStateHolder
 
 }

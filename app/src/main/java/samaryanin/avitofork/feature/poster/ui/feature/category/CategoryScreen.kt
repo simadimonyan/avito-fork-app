@@ -59,7 +59,7 @@ fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewMo
 
     viewModel.handleEvent(CategoryEvent.UpdateCategoryListConfiguration)
 
-    val categories by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+    val categories by viewModel.appStateStore.categoryState.categoryState.collectAsState()
 
     Log.d("LOADED", "CategoryScreen: Categories loaded: ${categories.categories}")
 

@@ -48,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.datastore.dataStore
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import kotlinx.coroutines.delay
@@ -108,7 +109,7 @@ private fun PostCreatePreview() {
         subcategory = sample,
         updateDraft = {},
         onPublish = {},
-        data = PostData(),
+        draft = PostData(),
         uploadPhoto = gap,
         isRequiredCheckSubmitted = false,
         showErrorMessage = {},
@@ -128,7 +129,7 @@ fun PostCreateScreen(
     profileViewModel: ProfileViewModel,
 ) {
     val context = LocalContext.current
-    val draftPost by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+    val draftPost by categoriesViewModel.appStateStore.categoryState.categoryState.collectAsState()
 
     val onExit = {
 
@@ -157,7 +158,7 @@ fun PostCreateScreen(
     }
 
     val updateDraft: (PostData) -> Unit = { data ->
-        categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(draftPost.tempDraft.category, draftPost.tempDraft.subcategory, data)))
+        categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(draftPost.tempDraft.categoryName, subcategory.id, data)))
     }
 
     val scope = rememberCoroutineScope()
@@ -177,12 +178,12 @@ fun PostCreateScreen(
             subcategory = subcategory,
             updateDraft = updateDraft,
             onPublish = onPublish,
-            data = data,
+            draft = data,
             uploadPhoto = uploadPhoto,
             isRequiredCheckSubmitted = isPublishTriggered,
             showErrorMessage = {
                 Log.d("Validation", "Field with error: $it")
-                categoriesViewModel.appStateStore.categoryStateHolder.updateLastErrorField(it)
+                categoriesViewModel.appStateStore.categoryState.updateLastErrorField(it)
             },
             lastErrorField = lastErrorField,
             showRenderBlocksErrorDialog = showRenderBlocksErrorDialog.value,
@@ -194,7 +195,7 @@ fun PostCreateScreen(
     }
     else { // рекурсивная обработка окна для выбора подкатегории
 
-        val categoryState by categoriesViewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+        val categoryState by categoriesViewModel.appStateStore.categoryState.categoryState.collectAsState()
 
         var renderDraftAlert by remember { mutableStateOf(false) } // условие рендера окна черновика
         var tempSubCategory by remember { mutableStateOf<CategoryField.SubCategory?>(null) } // передача состояния категории между кнопками
@@ -219,7 +220,7 @@ fun PostCreateScreen(
         // навигация на кнопку "Создать новое"
         val createNewPostButton: () -> Unit = {
             if (tempSubCategory != null) {
-                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, tempSubCategory!!.name)))
+                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.categoryName, tempSubCategory!!.name)))
                 categoriesViewModel.handleEvent(CategoryEvent.ClearDraft(tempSubCategory!!.name))
                 globalNavController.navigate(PostRoutes.PostCreate(tempSubCategory!!)) {
                     launchSingleTop = true
@@ -237,7 +238,7 @@ fun PostCreateScreen(
                 renderDraftAlert = true
             }
             else {
-                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, subsubcategory.name)))
+                categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(subsubcategory.name, subsubcategory.id)))
                 globalNavController.navigate(PostRoutes.PostCreate(subsubcategory)) {
                     launchSingleTop = false // false - создаёт новый экземпляр экрана в бекстеке
                     restoreState = true
@@ -304,7 +305,7 @@ fun PostCreateScreen(
                         else -> ""
                     }
                 } ?: ""
-                categoriesViewModel.appStateStore.categoryStateHolder.updateLastErrorField(firstMissingFieldKey)
+                categoriesViewModel.appStateStore.categoryState.updateLastErrorField(firstMissingFieldKey)
             } else {
                 Log.d("TEST", draftPost.tempDraft.data.toString())
                 profileViewModel.handleEvent(ProfileEvent.AddPublication(draftPost.tempDraft))
@@ -338,7 +339,7 @@ private fun PostCreateContent(
     subcategory: CategoryField.SubCategory,
     updateDraft: (PostData) -> Unit,
     onPublish: () -> Unit,
-    data: PostData,
+    draft: PostData,
     uploadPhoto: (Int, Uri, (Boolean) -> Unit) -> Unit,
     isRequiredCheckSubmitted: Boolean,
     showErrorMessage: (String) -> Unit,
@@ -426,7 +427,7 @@ private fun PostCreateContent(
                             MetaTag(
                                 key = field.key,
                                 fields = field.fields,
-                                data = data,
+                                draft = draft,
                                 observer = updateDraft,
                                 uploadPhoto = uploadPhoto,
                                 isRequiredCheckSubmitted = isRequiredCheckSubmitted,

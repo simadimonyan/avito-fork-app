@@ -21,7 +21,7 @@ class SettingsViewModel @Inject constructor(
         favoriteManager.clearFavorites()
         cacheManager.clearAuthToken()
 
-        appStateStore.appStateHolder.updateState(
+        appStateStore.appState.updateState(
             AppState(
                 isFirstStartUp = false,
                 isLoggedIn = false,
@@ -29,13 +29,13 @@ class SettingsViewModel @Inject constructor(
             )
         )
 
-        appStateStore.authStateHolder.updateEmail("")
-        appStateStore.authStateHolder.updateProfile("")
-        appStateStore.authStateHolder.setCredentialsValid(false)
-        appStateStore.authStateHolder.setEmailFieldValid(false)
-        appStateStore.authStateHolder.setEmailCodeValid(false)
-        appStateStore.authStateHolder.setPasswordValid(false)
-        appStateStore.authStateHolder.setPostRegLoginError(false)
+        appStateStore.authState.updateEmail("")
+        appStateStore.authState.updateProfile("")
+        appStateStore.authState.setCredentialsValid(false)
+        appStateStore.authState.setEmailFieldValid(false)
+        appStateStore.authState.setEmailCodeValid(false)
+        appStateStore.authState.setPasswordValid(false)
+        appStateStore.authState.setPostRegLoginError(false)
     }
 
 }

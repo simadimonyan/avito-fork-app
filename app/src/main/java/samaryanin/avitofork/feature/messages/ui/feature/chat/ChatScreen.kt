@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -33,7 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +66,6 @@ import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.ui.components.utils.space.Divider
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.adaptive.LocaleDimensions
-import samaryanin.avitofork.shared.ui.theme.adaptive.layout
 import samaryanin.avitofork.shared.ui.theme.blendWhite
 import samaryanin.avitofork.shared.ui.theme.greyButton
 import samaryanin.avitofork.shared.ui.theme.lightBlue
@@ -117,7 +114,7 @@ fun ChatPreview() {
 @Composable
 fun ChatScreen(globalNavController: NavHostController, viewModel: MessagesViewModel, directId: String) {
 
-    val state by viewModel.appStateStore.messageStateHolder.messagesState.collectAsState()
+    val state by viewModel.appStateStore.messageState.messagesState.collectAsState()
     val chat = state.chats.find { it.chatId == directId } ?: return
 
     val keyboardController = LocalSoftwareKeyboardController.current

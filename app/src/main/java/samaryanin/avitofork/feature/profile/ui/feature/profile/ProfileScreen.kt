@@ -14,22 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -72,7 +59,6 @@ import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.AppState
 import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
-import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.profile.ui.components.AddProfile
 import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
@@ -114,9 +100,9 @@ fun ProfileScreen(
     globalNavController: NavController
 ) {
 
-    val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
-    val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
-    val profileState by profileViewModel.appStateStore.profileStateHolder.profileState.collectAsState()
+    val appState by mainViewModel.appStateStore.appState.appState.collectAsState()
+    val authState by mainViewModel.appStateStore.authState.authState.collectAsState()
+    val profileState by profileViewModel.appStateStore.profileState.profileState.collectAsState()
 
     val navigateTo = { index: Int ->
         when (index) {

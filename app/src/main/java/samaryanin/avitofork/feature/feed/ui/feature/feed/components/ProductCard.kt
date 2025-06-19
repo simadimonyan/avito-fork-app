@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.feed.ui.feature.feed.components
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -47,7 +48,7 @@ fun ProductCard(
     isFav: Boolean?,
     globalNavController: NavHostController,
     onFavoriteClick: () -> Unit,
-    isAuthorized: MutableStateFlow<Boolean>
+    isAuthorized: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isFavoriteState by remember { mutableStateOf(isFav ?: false) } // Добавляем состояние для избранного
@@ -119,7 +120,8 @@ fun ProductCard(
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
-                                if (isAuthorized.value){
+                                Log.d("auth", isAuthorized.toString())
+                                if (isAuthorized){
                                     isFavoriteState = !isFavoriteState // Меняем состояние
                                     onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных
                                 }

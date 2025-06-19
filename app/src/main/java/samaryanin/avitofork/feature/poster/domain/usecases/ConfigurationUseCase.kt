@@ -73,7 +73,7 @@ class ConfigurationUseCase @Inject constructor(
                 "",
                 mutableListOf(
                     CategoryField.PhotoPickerField("", 8),
-                    CategoryField.TextField("Название", "", true),
+                    CategoryField.TitleField("Название", "", true),
                     CategoryField.PriceField("Стоимость", "", "руб"),
                     CategoryField.DescriptionField("Описание:", "")
                 )

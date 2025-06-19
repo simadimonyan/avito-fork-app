@@ -32,7 +32,7 @@ class CreatePostUseCase @Inject constructor(
                     Currency.RUB
                 ),
                 "test",
-                "root"
+                state.categoryId
             )
         }
         catch (_: Exception) {

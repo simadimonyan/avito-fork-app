@@ -78,7 +78,7 @@ fun VerificationScreen(
    // profileCreating: Boolean = false
 ) {
 
-    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
+    val state by authViewModel.appStateStore.authState.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик навигации выхода

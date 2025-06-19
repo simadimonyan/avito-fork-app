@@ -25,23 +25,23 @@ class MainViewModel @Inject constructor(
             is AppEvent.SaveAppState -> saveAppState()
             is AppEvent.RestoreCache -> restoreCache()
             is AppEvent.FirstStartUp -> firstStartUp(event.isFirstStartUp)
-            is AppEvent.ToggleAuthRequest -> appStateStore.appStateHolder.toggleAuthRequest()
-            is AppEvent.ProfileHasLoggedIn -> appStateStore.appStateHolder.authorizeProfile()
+            is AppEvent.ToggleAuthRequest -> appStateStore.appState.toggleAuthRequest()
+            is AppEvent.ProfileHasLoggedIn -> appStateStore.appState.authorizeProfile()
         }
         saveAppState()
     }
 
     private fun firstStartUp(bool: Boolean) {
-        appStateStore.appStateHolder.setFirstStartUpSettings(bool)
+        appStateStore.appState.setFirstStartUpSettings(bool)
     }
 
     private fun saveAppState() {
-        cacheManager.saveAppState(appStateStore.appStateHolder.appState.value)
+        cacheManager.saveAppState(appStateStore.appState.appState.value)
     }
 
     private fun restoreCache() {
         val cachedState = cacheManager.getAppState()
-        appStateStore.appStateHolder.updateState(cachedState)
+        appStateStore.appState.updateState(cachedState)
     }
 
     suspend fun loadImage(id: String): ByteArray? {

@@ -51,6 +51,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
     val favoriteIds by viewModel.favoriteIds.collectAsState()
     val adsState by viewModel.adsState.collectAsState()
+    val appState by viewModel.appStateStore.appState.appState.collectAsState()
 
     val lazyGridState = rememberLazyGridState()
     val showShadow by remember { derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 } }
@@ -118,6 +119,9 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                                 )
                             }
                         } else {
+
+
+
                             items(ads) { ad ->
                                 ProductCard(
                                     ad = ad,
@@ -126,7 +130,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                                     onFavoriteClick = {
                                         viewModel.toggleFavoriteAd(ad.id)
                                     },
-                                    isAuthorized = viewModel.isAuthorized
+                                    isAuthorized = appState.isLoggedIn
                                 )
                             }
                         }

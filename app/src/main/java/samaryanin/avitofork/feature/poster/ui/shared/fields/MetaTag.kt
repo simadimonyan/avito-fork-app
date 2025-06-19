@@ -41,7 +41,7 @@ fun FieldsPreview() {
                 CategoryField.TextField("Описание:", ""),
                 CategoryField.TextField("Описание 1:", ""),
             ),
-            data = PostData(),
+            draft = PostData(),
             observer = {},
             uploadPhoto = gap,
             isRequiredCheckSubmitted = false,
@@ -52,7 +52,7 @@ fun FieldsPreview() {
                 CategoryField.NumberField("Год выпуска:", "", "г"),
                 CategoryField.NumberField("Объем двигателя:", "", "л")
             ),
-            data = PostData(),
+            draft = PostData(),
             observer = {},
             uploadPhoto = gap,
             isRequiredCheckSubmitted = false,
@@ -68,7 +68,7 @@ fun FieldsPreview() {
                 ),
                 CategoryField.LocationField("Местоположение строения")
             ),
-            data = PostData(),
+            draft = PostData(),
             observer = {},
             uploadPhoto = gap,
             isRequiredCheckSubmitted = false,
@@ -82,7 +82,7 @@ fun FieldsPreview() {
  * @param key имя разделителя характеристик
  *
  * @param fields поля для карточки товара
- * @param data состояние данных по карточке товара
+ * @param draft состояние данных по карточке товара
  *
  * @param observer колбек функция для обновления данных с блоков полей
  * @param uploadPhoto колбек функция для загрузки фотографий
@@ -95,7 +95,7 @@ fun MetaTag(
     // данные по карточке товара
     fields: List<CategoryField>,
     params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() },
-    data: PostData,
+    draft: PostData,
 
     // колбек функции для работы с данными
     observer: (PostData) -> Unit,
@@ -124,17 +124,18 @@ fun MetaTag(
 
                     // data передается и для обновления колбеком и для получения данных из черновиков в value
                     is CategoryField.PriceField -> PriceField(
-                        observer, data, field.key, field.unitMeasure, field.isRequired,
+                        observer, draft, field.key, field.unitMeasure, field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
                     is CategoryField.DescriptionField -> DescriptionField(
-                        observer, data, field.key,
+                        observer, draft, field.key,
                         isRequired = field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
-                    is CategoryField.TitleField -> TitleField(observer, data, field.key,
+                    is CategoryField.TitleField -> TitleField(
+                        observer, draft, field.key,
                         isRequired = field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
@@ -143,13 +144,13 @@ fun MetaTag(
                     is CategoryField.TextField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
                         TextField(
-                            field.key, data.options[field.key] ?: field.value, "до 3000 символов",
+                            field.key, draft.options[field.key] ?: field.value, "до 3000 символов",
                             isRequired = field.isRequired,
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage
                         ) {
                             params[field.key] = it
-                            observer(data.copy(options = params))
+                            observer(draft.copy(options = params))
                         }
                     }
 
@@ -160,7 +161,7 @@ fun MetaTag(
                         // data.options[field.key] - поиск значения поля по ключу поля
                         NumberField(
                             field.key,
-                            data.options[field.key] ?: field.value,
+                            draft.options[field.key] ?: field.value,
                             field.unitMeasure,
                             field.value,
                             visualTransformation = VisualTransformation.None,
@@ -169,14 +170,14 @@ fun MetaTag(
                             showErrorMessage = showErrorMessage,
                         ) {
                             params[field.key] = it
-                            observer(data.copy(options = params))
+                            observer(draft.copy(options = params))
                         }
                     }
 
                     is CategoryField.PhotoPickerByCategoryField -> TODO()
 
                     is CategoryField.PhotoPickerField -> PhotoPickerField(
-                        observer, field.key, data.photos, field.count, uploadPhoto,
+                        observer, field.key, draft.photos, field.count, uploadPhoto,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
@@ -186,7 +187,7 @@ fun MetaTag(
                         field.key,
                         field.fields,
                         params,
-                        data,
+                        draft,
                         observer,
                         uploadPhoto,
                         isRequiredCheckSubmitted,

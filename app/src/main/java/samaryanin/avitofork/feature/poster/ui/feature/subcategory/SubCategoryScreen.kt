@@ -67,7 +67,7 @@ fun SubCategoryScreen(
     viewModel: CategoryViewModel
 ) {
 
-    val categoryState by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+    val categoryState by viewModel.appStateStore.categoryState.categoryState.collectAsState()
 
     var renderDraftAlert by remember { mutableStateOf(false) } // условие рендера окна черновика
     var tempSubCategory by remember { mutableStateOf<CategoryField.SubCategory?>(null) } // передача состояния категории между кнопками
@@ -92,7 +92,7 @@ fun SubCategoryScreen(
     // навигация на кнопку "Создать новое"
     val createNewPostButton: () -> Unit = {
         if (tempSubCategory != null) {
-            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, tempSubCategory!!.name)))
+            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.categoryName, tempSubCategory!!.name)))
             viewModel.handleEvent(CategoryEvent.ClearDraft(tempSubCategory!!.name))
             globalNavController.navigate(PostRoutes.PostCreate(tempSubCategory!!)) {
                 launchSingleTop = true
@@ -110,7 +110,7 @@ fun SubCategoryScreen(
             renderDraftAlert = true
         }
         else {
-            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, subcategory.name)))
+            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.categoryName, subcategory.name)))
             globalNavController.navigate(PostRoutes.PostCreate(subcategory)) {
                 launchSingleTop = true
                 restoreState = true

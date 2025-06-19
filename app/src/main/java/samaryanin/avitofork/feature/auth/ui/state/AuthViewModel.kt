@@ -26,8 +26,8 @@ class AuthViewModel @Inject constructor(
     fun handleEvent(event: AuthEvent) {
         when (event) {
             is AuthEvent.CheckEmailFormValidation -> emailFieldFormVerify(event.email)
-            is AuthEvent.UpdateEmailState -> appStateStore.authStateHolder.updateEmail(event.email)
-            is AuthEvent.UpdateProfileState -> appStateStore.authStateHolder.updateProfile(event.profile)
+            is AuthEvent.UpdateEmailState -> appStateStore.authState.updateEmail(event.email)
+            is AuthEvent.UpdateProfileState -> appStateStore.authState.updateProfile(event.profile)
             is AuthEvent.CheckEmailCodeValidation -> emailFieldCodeVerify(event.email, event.code) //, event.password
             is AuthEvent.SendVerificationCode -> sendVerificationCode()
             is AuthEvent.VerifyAccountCredentials -> verifyCredentials(event.email, event.pass)
@@ -39,42 +39,42 @@ class AuthViewModel @Inject constructor(
 
     private fun isPasswordValid(password: String) {
         val bool = password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!~%_*?&:,№\\\"\\[\\]{}\\-;^<>\\\\|.#()+=])[A-Za-zА-Яа-я\\d@\$~\\\"!%'’_*?&:№,\\[\\]{}\\-;^<>\\\\|.#()+=]{8,}\$".toRegex())
-        appStateStore.authStateHolder.setPasswordValid(bool)
+        appStateStore.authState.setPasswordValid(bool)
     }
 
     private fun verifyCredentials(email: String, pass: String) {
         safeScope.launch {
-            appStateStore.authStateHolder.updateLoading(true)
+            appStateStore.authState.updateLoading(true)
 
             val response = loginUseCase.login(email, pass)
             val result = response is AuthStatus.LOGIN_SUCCEED
-            appStateStore.authStateHolder.setCredentialsValid(result)
-            if (result) appStateStore.appStateHolder.authorizeProfile()
+            appStateStore.authState.setCredentialsValid(result)
 
-            appStateStore.authStateHolder.updateLoading(false)
+            if (result) { appStateStore.appState.authorizeProfile() }
+
+            appStateStore.authState.updateLoading(false)
         }
     }
 
     private fun registerAccount(email: String, password: String, name: String) {
         safeScope.launch {
-            appStateStore.authStateHolder.updateLoading(true)
+            appStateStore.authState.updateLoading(true)
 
             val regResponse = registerUseCase.register(email, password, name)
             val regResult = regResponse is AuthStatus.SIGNUP_SUCCEED
-            //if (regResult) appStateStore.authStateHolder.setPassword(password)
-            appStateStore.authStateHolder.setCredentialsValid(regResult)
+            appStateStore.authState.setCredentialsValid(regResult)
 
-            appStateStore.authStateHolder.updateLoading(false)
+            appStateStore.authState.updateLoading(false)
         }
     }
 
     private fun refreshSession() {
         safeScope.launch {
-            appStateStore.authStateHolder.updateLoading(true)
+            appStateStore.authState.updateLoading(true)
 
             refreshUseCase.refresh()
 
-            appStateStore.authStateHolder.updateLoading(false)
+            appStateStore.authState.updateLoading(false)
         }
     }
 
@@ -83,13 +83,13 @@ class AuthViewModel @Inject constructor(
 
     private fun emailFieldCodeVerify(email: String, code: String) { // , password: String
         safeScope.launch {
-            appStateStore.authStateHolder.updateLoading(true)
+            appStateStore.authState.updateLoading(true)
 
             val response = verifyUseCase.verify(email, code)
             val result = response is AuthStatus.EMAIL_VERIFIED
-            if (result) appStateStore.appStateHolder.authorizeProfile()
+            if (result) appStateStore.appState.authorizeProfile()
 
-            appStateStore.authStateHolder.setEmailCodeValid(result)
+            appStateStore.authState.setEmailCodeValid(result)
 
 //            if (result) {
 //                val logResponse = authUseCase.loginUseCase.login(email, password)
@@ -101,13 +101,13 @@ class AuthViewModel @Inject constructor(
 //                else appStateStore.authStateHolder.setPostRegLoginError(true)
 //            }
 
-            appStateStore.authStateHolder.updateLoading(false)
+            appStateStore.authState.updateLoading(false)
         }
     }
 
     private fun emailFieldFormVerify(email: String) {
         val bool = email.matches("^[a-zA-Zа-яА-ЯёЁ0-9._%+-]+@[a-zA-Zа-яА-ЯёЁ0-9.-]+\\.[a-zA-Zа-яА-ЯёЁ]{2,}\$".toRegex())
-        appStateStore.authStateHolder.setEmailFieldValid(bool)
+        appStateStore.authState.setEmailFieldValid(bool)
     }
 
 }

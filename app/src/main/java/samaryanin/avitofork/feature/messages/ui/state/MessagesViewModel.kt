@@ -23,7 +23,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     private fun sendMessage(chatId: String, message: Message) {
-        val currentState = appStateStore.messageStateHolder.messagesState.value
+        val currentState = appStateStore.messageState.messagesState.value
 
         val newMessage = message.copy(
             user = "myId",
@@ -37,11 +37,11 @@ class MessagesViewModel @Inject constructor(
             } else chat
         }.toMutableList()
 
-        appStateStore.messageStateHolder.updateChatList(updatedChats)
+        appStateStore.messageState.updateChatList(updatedChats)
     }
 
     private fun refresh() {
-        appStateStore.messageStateHolder.updateChatList(loadChatsUseCase.loadChats())
+        appStateStore.messageState.updateChatList(loadChatsUseCase.loadChats())
     }
 
 }

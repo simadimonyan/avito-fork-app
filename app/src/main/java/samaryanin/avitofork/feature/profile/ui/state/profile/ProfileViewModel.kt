@@ -27,7 +27,7 @@ class ProfileViewModel @Inject constructor(
 
     init { // загрузка черновиков из кеша
         safeScope.launch {
-            if (appStateStore.categoryStateHolder.categoryState.value.drafts.isEmpty()) {
+            if (appStateStore.categoryState.categoryState.value.drafts.isEmpty()) {
 
                 val gson = Gson()
 
@@ -44,7 +44,7 @@ class ProfileViewModel @Inject constructor(
                                 mutableMapOf()
                             }
 
-                            appStateStore.categoryStateHolder.updateDrafts(state)
+                            appStateStore.categoryState.updateDrafts(state)
                         }
                     }
                 }
@@ -60,14 +60,14 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun addPublication(post: PostState) {
-        val currentPosts = appStateStore.profileStateHolder.profileState.value.posts
+        val currentPosts = appStateStore.profileState.profileState.value.posts
         val map = HashMap(currentPosts)
         val list = ArrayList(map["0"] ?: emptyList())
 
         list.add(post)
         map["0"] = list
 
-        appStateStore.profileStateHolder.updatePostsList(map)
+        appStateStore.profileState.updatePostsList(map)
 
     }
 

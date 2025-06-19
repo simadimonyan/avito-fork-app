@@ -68,7 +68,7 @@ fun CreateProfileScreen(
     navHostController: NavHostController
 ) {
 
-    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
+    val state by authViewModel.appStateStore.authState.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
