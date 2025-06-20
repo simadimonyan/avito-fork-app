@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import samaryanin.avitofork.R
-import samaryanin.avitofork.shared.ui.components.utils.space.Space
-import samaryanin.avitofork.shared.ui.components.utils.field.AppTextFieldPlaceholder
 import samaryanin.avitofork.feature.feed.ui.shared.IconButton
+import samaryanin.avitofork.shared.ui.components.utils.field.AppTextFieldPlaceholder
+import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.adaptive.LocaleDimensions
 
 @Preview
@@ -33,6 +33,7 @@ fun ChatTopBar(search: String, onSearchChange: (String) -> Unit) {
 
         IconButton(
             R.drawable.search,
+            modifier = Modifier,
             onClick = {},
             size = LocalDimensions.Messages.IconSize.iconSizeSearch
         )

@@ -6,6 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
@@ -15,11 +17,9 @@ import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.favorites.domain.models.Category
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetAllCategoriesUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetFilteredAdsUseCase
-import samaryanin.avitofork.feature.favorites.domain.usecases.GetImageBytesByIdUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCase
-import samaryanin.avitofork.feature.favorites.domain.usecases.ToggleFavoriteAdUseCase
-import samaryanin.avitofork.shared.state.network.NetworkState
-import samaryanin.avitofork.shared.exceptions.safeScope
+import samaryanin.avitofork.shared.extensions.emitIfChanged
+import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -29,74 +29,70 @@ class MarketplaceViewModel @Inject constructor(
     private val getFilteredAdsUseCase: GetFilteredAdsUseCase,
     private val getSearchedAdUseCase: GetSearchedAdUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
-    private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
-    private val downloadImageUseCase: GetImageBytesByIdUseCase,
     private val favoriteManager: FavoriteManager,
-    private var cacheManager: CacheManager
+    cacheManager: CacheManager
 ) : ViewModel() {
 
-    val allAds = MutableStateFlow<List<Ad>?>(null)
-    val allCategories = MutableStateFlow<List<Category>?>(null)
+    private val _ads = MutableStateFlow<List<Ad>>(emptyList())
+    val ads: StateFlow<List<Ad>> = _ads.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _categories = MutableStateFlow<List<Category>>(emptyList())
+    val categories: StateFlow<List<Category>> = _categories.asStateFlow()
+
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
-    val favoriteIds = favoriteManager.favorites
 
-    val adsState = MutableStateFlow<NetworkState<List<Ad>>>(NetworkState.Loading)
-    val categoriesState = MutableStateFlow<NetworkState<List<Category>>>(NetworkState.Loading)
-
-    val isAuthorized = MutableStateFlow<Boolean>(false)
+    val favoriteIds: StateFlow<Set<String>> = favoriteManager.favorites
+    val isAuthorized: StateFlow<Boolean> =
+        MutableStateFlow(cacheManager.preferences.getString("authToken", null) != null)
 
     private var searchJob: Job? = null
 
     init {
-        safeScope.launch { favoriteManager.loadFromServer() }
-
-        isAuthorized.value = cacheManager.preferences.getString("authToken", null) != null
-
         safeScope.launch {
             selectedCategoryIds
                 .debounce(250.milliseconds)
                 .collectLatest { ids ->
-                    adsState.value = NetworkState.Loading
-                    val result = getFilteredAdsUseCase(ids)
-                    adsState.value = NetworkState.Success(result)
+                    loadAds { getFilteredAdsUseCase(ids) }
                 }
         }
 
         safeScope.launch {
-            categoriesState.value = NetworkState.Loading
-            val result = getAllCategoriesUseCase()
-            categoriesState.value = NetworkState.Success(result)
-            allCategories.value = result
+            val data = getAllCategoriesUseCase()
+            _categories.emitIfChanged(data)
         }
+
+        refresh()
+    }
+
+
+    fun refresh() = safeScope.launch {
+        loadAds { getFilteredAdsUseCase(selectedCategoryIds.value) }
     }
 
     fun search(text: String) {
         searchJob?.cancel()
 
-        if (text.isBlank()) refresh()
+        if (text.isBlank()) {
+            refresh(); return
+        }
 
         searchJob = safeScope.launch {
-            delay(500)
-            adsState.value = NetworkState.Loading
-            val result = getSearchedAdUseCase(text)
-            adsState.value = NetworkState.Success(result)
+            loadAds {
+                delay(500)
+                getSearchedAdUseCase(text)
+            }
         }
     }
 
-    fun refresh() {
-        safeScope.launch {
-            adsState.value = NetworkState.Loading
-            favoriteManager.loadFromServer()
-            val result = getFilteredAdsUseCase(selectedCategoryIds.value)
-            adsState.value = NetworkState.Success(result)
-        }
-    }
+    fun toggleFavoriteAd(id: String) = favoriteManager.toggleFavorite(id)
 
-    fun toggleFavoriteAd(id: String) {
-        safeScope.launch { favoriteManager.toggleFavorite(id) }
-    }
-
-    fun isFavorite(id: String): Boolean {
-        return favoriteManager.isFavorite(id)
+    private suspend fun loadAds(block: suspend () -> List<Ad>) {
+        _isLoading.value = true
+        val newAds = runCatching { block() }.getOrDefault(emptyList())
+        _ads.emitIfChanged(newAds)
+        _isLoading.value = false
     }
 }

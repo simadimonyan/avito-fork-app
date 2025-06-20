@@ -34,12 +34,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.flow.MutableStateFlow
 import samaryanin.avitofork.R
-import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
-import samaryanin.avitofork.feature.feed.ui.navigation.FeedRoutes
-import samaryanin.avitofork.shared.ui.components.RemoteImage
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
+import samaryanin.avitofork.feature.feed.ui.navigation.FeedRoutes
+import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
+import samaryanin.avitofork.shared.ui.components.RemoteImage
 
 @Composable
 fun ProductCard(
@@ -47,7 +46,7 @@ fun ProductCard(
     isFav: Boolean?,
     globalNavController: NavHostController,
     onFavoriteClick: () -> Unit,
-    isAuthorized: MutableStateFlow<Boolean>
+    isAuthorized: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isFavoriteState by remember { mutableStateOf(isFav ?: false) } // Добавляем состояние для избранного
@@ -119,7 +118,7 @@ fun ProductCard(
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
-                                if (isAuthorized.value){
+                                if (isAuthorized){
                                     isFavoriteState = !isFavoriteState // Меняем состояние
                                     onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных
                                 }
