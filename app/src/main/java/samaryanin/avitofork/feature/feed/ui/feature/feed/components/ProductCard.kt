@@ -1,6 +1,5 @@
 package samaryanin.avitofork.feature.feed.ui.feature.feed.components
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -35,12 +34,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.flow.MutableStateFlow
 import samaryanin.avitofork.R
-import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
-import samaryanin.avitofork.feature.feed.ui.navigation.FeedRoutes
-import samaryanin.avitofork.shared.ui.components.RemoteImage
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
+import samaryanin.avitofork.feature.feed.ui.navigation.FeedRoutes
+import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
+import samaryanin.avitofork.shared.ui.components.RemoteImage
 
 @Composable
 fun ProductCard(
@@ -120,7 +118,6 @@ fun ProductCard(
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
-                                Log.d("auth", isAuthorized.toString())
                                 if (isAuthorized){
                                     isFavoriteState = !isFavoriteState // Меняем состояние
                                     onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных

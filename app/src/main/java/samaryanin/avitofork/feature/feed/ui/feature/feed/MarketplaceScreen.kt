@@ -3,21 +3,17 @@ package samaryanin.avitofork.feature.feed.ui.feature.feed
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -31,116 +27,82 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.ui.feature.card.components.CategoriesWithPhotos
 import samaryanin.avitofork.feature.feed.ui.feature.card.components.SelectableLazyRow
 import samaryanin.avitofork.feature.feed.ui.feature.feed.components.ProductCard
 import samaryanin.avitofork.feature.feed.ui.shared.SearchBar
-import samaryanin.avitofork.shared.state.network.NetworkState
 import samaryanin.avitofork.shared.ui.components.ShimmerAdCard
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.theme.AvitoForkTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
 
+    val vm: MarketplaceViewModel = hiltViewModel()
+
+    val ads by vm.ads.collectAsState()
+    val isLoading by vm.isLoading.collectAsState()
+    val categories by vm.categories.collectAsState()
+    val selectedIds by vm.selectedCategoryIds.collectAsState()
+    val favoriteIds by vm.favoriteIds.collectAsState()
+    val isAuth by vm.isAuthorized.collectAsState()
+
     var searchText by remember { mutableStateOf("") }
-    val viewModel: MarketplaceViewModel = hiltViewModel()
-    val categories by viewModel.allCategories.collectAsState()
-    val selectedCategoryIds by viewModel.selectedCategoryIds.collectAsState()
-    val favoriteIds by viewModel.favoriteIds.collectAsState()
-    val adsState by viewModel.adsState.collectAsState()
-    val appState by viewModel.appStateStore.appState.appState.collectAsState()
 
-    val lazyGridState = rememberLazyGridState()
-    val showShadow by remember { derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 } }
+    val pullState = rememberPullToRefreshState()
+    val scope = rememberCoroutineScope()
 
-    val refreshingState = rememberPullToRefreshState()
-    val coroutineScope = rememberCoroutineScope()
-    val isRefreshing = adsState is NetworkState.Loading
-
-    val ads = when (adsState) {
-        is NetworkState.Success -> (adsState as NetworkState.Success<List<Ad>>).data
-        is NetworkState.Loading -> (adsState as? NetworkState.Success<List<Ad>>)?.data ?: emptyList()
-        else -> emptyList()
-    }
-    val showShimmer = adsState is NetworkState.Loading && ads.isEmpty()
-    val showError = adsState is NetworkState.Error && ads.isEmpty()
-
-    LaunchedEffect(Unit) {
-        viewModel.refresh()
-    }
+    val gridState = rememberLazyGridState()
+    val showShadow by remember { derivedStateOf { gridState.firstVisibleItemIndex > 0 } }
 
     AvitoForkTheme {
         PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            state = refreshingState,
-            onRefresh = {
-                coroutineScope.launch { viewModel.refresh() }
-            }
+            isRefreshing = isLoading,
+            state = pullState,
+            onRefresh = { scope.launch { vm.refresh() } }
         ) {
-            Scaffold(
-                containerColor = Color.White
-            ) { paddingValues ->
+            Scaffold(containerColor = Color.White) { paddings ->
                 Box(
-                    modifier = Modifier
+                    Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(paddings)
                 ) {
                     LazyVerticalGrid(
-                        state = lazyGridState,
+                        state = gridState,
                         columns = GridCells.Adaptive(minSize = 150.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 50.dp),
                         contentPadding = PaddingValues(bottom = 50.dp)
                     ) {
                         item { Space(40.dp) }
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             CategoriesWithPhotos(
-                                categories = categories.orEmpty(),
-                                selectedCategoryIds = selectedCategoryIds,
+                                categories = categories,
+                                selectedCategoryIds = selectedIds,
                                 onSelectedCategoriesIdsChange = {
-                                    viewModel.selectedCategoryIds.value = it
+                                    vm.selectedCategoryIds.value = it
                                 }
                             )
                         }
 
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            SelectableLazyRow()
-                        }
+                        item(span = { GridItemSpan(maxLineSpan) }) { SelectableLazyRow() }
 
-                        if (showShimmer) {
-                            items(8) {
-                                ShimmerAdCard(
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
+                        if (isLoading && ads.isEmpty()) {
+                            items(8) { ShimmerAdCard(Modifier.padding(8.dp)) }
                         } else {
-
-
-
-                            items(ads) { ad ->
+                            items(
+                                items = ads,
+                                key = { it.id }
+                            ) { ad ->
+                                val isFav by remember(favoriteIds, ad.id) {
+                                    derivedStateOf { ad.id in favoriteIds }
+                                }
                                 ProductCard(
                                     ad = ad,
-                                    isFav = viewModel.isFavorite(ad.id),
+                                    isFav = isFav,
                                     globalNavController = globalNavController,
-                                    onFavoriteClick = {
-                                        viewModel.toggleFavoriteAd(ad.id)
-                                    },
-                                    isAuthorized = appState.isLoggedIn
-                                )
-                            }
-                        }
-
-                        if (showError) {
-                            item(span = { GridItemSpan(maxLineSpan) }) {
-                                Text(
-                                    text = "Ошибка загрузки: ${(adsState as NetworkState.Error).exception.message}",
-                                    modifier = Modifier.padding(16.dp),
-                                    color = Color.Red
+                                    onFavoriteClick = { vm.toggleFavoriteAd(ad.id) },
+                                    isAuthorized = isAuth
                                 )
                             }
                         }
@@ -150,7 +112,8 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                         search = searchText,
                         onSearchChange = {
                             searchText = it
-                            viewModel.search(searchText)            },
+                            vm.search(searchText)
+                        },
                         showShadow = showShadow
                     )
                 }

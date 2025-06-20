@@ -19,7 +19,7 @@ import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.CreatePostUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.UploadAdImageUseCase
 import samaryanin.avitofork.shared.state.AppStateStore
-import samaryanin.avitofork.shared.exceptions.safeScope
+import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject
 
 @Stable

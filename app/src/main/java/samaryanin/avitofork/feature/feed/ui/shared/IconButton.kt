@@ -11,11 +11,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun IconButton(iconRes: Int, onClick: () -> Unit, size: Dp = 24.dp) {
+fun IconButton(iconRes: Int, onClick: () -> Unit, size: Dp = 24.dp, alpha: Float = 1.0f, modifier: Modifier) {
     Image(
         painter = painterResource(iconRes),
         contentDescription = null,
-        modifier = Modifier
+        alpha = alpha,
+        modifier = modifier
             .clickable(onClick = onClick)
             .size(size)
             .padding(2.dp)

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.state.AppStateStore
-import samaryanin.avitofork.shared.exceptions.safeScope
+import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject
 
 @Stable
