@@ -20,6 +20,7 @@ import samaryanin.avitofork.feature.favorites.domain.usecases.GetFilteredAdsUseC
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCase
 import samaryanin.avitofork.shared.extensions.emitIfChanged
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
+import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -30,7 +31,8 @@ class MarketplaceViewModel @Inject constructor(
     private val getSearchedAdUseCase: GetSearchedAdUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val favoriteManager: FavoriteManager,
-    cacheManager: CacheManager
+    cacheManager: CacheManager,
+    val appStateStore: AppStateStore
 ) : ViewModel() {
 
     private val _ads = MutableStateFlow<List<Ad>>(emptyList())
@@ -45,8 +47,8 @@ class MarketplaceViewModel @Inject constructor(
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
 
     val favoriteIds: StateFlow<Set<String>> = favoriteManager.favorites
-    val isAuthorized: StateFlow<Boolean> =
-        MutableStateFlow(cacheManager.preferences.getString("authToken", null) != null)
+//    val isAuthorized: StateFlow<Boolean> =
+//        MutableStateFlow(cacheManager.preferences.getString("authToken", null) != null)
 
     private var searchJob: Job? = null
 
