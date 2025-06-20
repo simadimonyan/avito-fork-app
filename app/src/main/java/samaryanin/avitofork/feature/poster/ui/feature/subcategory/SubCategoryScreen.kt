@@ -50,11 +50,11 @@ import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 @Composable
 private fun SubCategoryPreview() {
 
-    val sample = CategoryField.Category("", "Тестовая категория", "",
+    val sample = CategoryField.Category("", "", "Тестовая категория", "", "",
         mutableListOf(
-            CategoryField.SubCategory("", "Тестовая подкатегория 1", "", mutableListOf()),
-            CategoryField.SubCategory("", "Тестовая подкатегория 2", "", mutableListOf()),
-            CategoryField.SubCategory("", "Тестовая подкатегория 3", "", mutableListOf())
+            CategoryField.SubCategory("",  "", "", "Тестовая подкатегория 1", "", mutableListOf()),
+            CategoryField.SubCategory("", "", "", "Тестовая подкатегория 2", "", mutableListOf()),
+            CategoryField.SubCategory("", "", "", "Тестовая подкатегория 3", "", mutableListOf())
         ))
 
     SubCategoryContent({ true }, sample, {})

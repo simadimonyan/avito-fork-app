@@ -34,7 +34,7 @@ data class PostData(
     val description: String = "",
 
     // ключи характеристик карточки товара
-    val options: Map<String, String> = mutableMapOf(),
+    val options: Map<String, CategoryField> = mutableMapOf(),
 
     val location: String = "test"
 

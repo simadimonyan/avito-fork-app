@@ -37,9 +37,9 @@ fun FieldsPreview() {
         MetaTag(
             key = "",
             fields = mutableListOf(
-                CategoryField.PhotoPickerField("", 8),
-                CategoryField.TextField("Описание:", ""),
-                CategoryField.TextField("Описание 1:", ""),
+                CategoryField.PhotoPickerField("", "", "", 8),
+                CategoryField.TextField("", "", "Описание:", ""),
+                CategoryField.TextField("", "", "Описание 1:", ""),
             ),
             draft = PostData(),
             observer = {},
@@ -49,8 +49,8 @@ fun FieldsPreview() {
         MetaTag(
             key = "Характеристики 2",
             fields = mutableListOf(
-                CategoryField.NumberField("Год выпуска:", "", "г"),
-                CategoryField.NumberField("Объем двигателя:", "", "л")
+                CategoryField.NumberField("", "", "Год выпуска:", "", "г"),
+                CategoryField.NumberField("", "", "Объем двигателя:", "", "л")
             ),
             draft = PostData(),
             observer = {},
@@ -61,12 +61,14 @@ fun FieldsPreview() {
             key = "Характеристики 3",
             fields = mutableListOf(
                 CategoryField.DropdownField(
+                    "",
+                    "",
                     "Тип недвижимости:",
                     "Не выбран",
                     mutableListOf(),
                     true
                 ),
-                CategoryField.LocationField("Местоположение строения")
+                CategoryField.LocationField("", "", "Местоположение строения")
             ),
             draft = PostData(),
             observer = {},
@@ -94,7 +96,7 @@ fun MetaTag(
 
     // данные по карточке товара
     fields: List<CategoryField>,
-    params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() },
+    params: SnapshotStateMap<String, CategoryField> = remember { mutableStateMapOf() },
     draft: PostData,
 
     // колбек функции для работы с данными
@@ -144,12 +146,12 @@ fun MetaTag(
                     is CategoryField.TextField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
                         TextField(
-                            field.key, draft.options[field.key] ?: field.value, "до 3000 символов",
+                            field.key, (draft.options[field.key] as? CategoryField.TextField)?.value ?: field.value, "до 3000 символов",
                             isRequired = field.isRequired,
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage
                         ) {
-                            params[field.key] = it
+                            params[field.key] = field
                             observer(draft.copy(options = params))
                         }
                     }
@@ -161,7 +163,7 @@ fun MetaTag(
                         // data.options[field.key] - поиск значения поля по ключу поля
                         NumberField(
                             field.key,
-                            draft.options[field.key] ?: field.value,
+                            (draft.options[field.key] as? CategoryField.TextField)?.value ?: field.value,
                             field.unitMeasure,
                             field.value,
                             visualTransformation = VisualTransformation.None,
@@ -169,7 +171,7 @@ fun MetaTag(
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage,
                         ) {
-                            params[field.key] = it
+                            params[field.key] = field
                             observer(draft.copy(options = params))
                         }
                     }

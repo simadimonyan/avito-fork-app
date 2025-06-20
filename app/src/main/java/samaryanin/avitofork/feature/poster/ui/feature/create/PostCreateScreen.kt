@@ -48,7 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.datastore.dataStore
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import kotlinx.coroutines.delay
@@ -75,28 +74,36 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 private fun PostCreatePreview() {
 
-    val sample = CategoryField.SubCategory("", "Тестовая подкатегория", "",
+    val sample = CategoryField.SubCategory(
+        "", "Тестовая подкатегория", "", "", "",
         mutableListOf(
             CategoryField.MetaTag(
                 key = "",
                 fields = mutableListOf(
-                    CategoryField.PhotoPickerField("", 8),
-                    CategoryField.TextField("Описание:", ""),
-                    CategoryField.TextField("Описание 1:", ""),
+                    CategoryField.PhotoPickerField("", "", "", 8),
+                    CategoryField.TextField("", "", "Описание:", ""),
+                    CategoryField.TextField("", "","Описание 1:", ""),
                 )
             ),
             CategoryField.MetaTag(
                 key = "Характеристики 2",
                 fields = mutableListOf(
-                    CategoryField.NumberField("Год выпуска:", "", "г"),
-                    CategoryField.NumberField("Объем двигателя:", "", "л")
+                    CategoryField.NumberField("", "", "Год выпуска:", "", "г"),
+                    CategoryField.NumberField("", "", "Объем двигателя:", "", "л")
                 )
             ),
             CategoryField.MetaTag(
                 key = "Характеристики 3",
                 fields = mutableListOf(
-                    CategoryField.DropdownField("Тип недвижимости:", "Не выбран", mutableListOf(), true),
-                    CategoryField.LocationField("Местоположение строения")
+                    CategoryField.DropdownField(
+                        "",
+                        "",
+                        "Тип недвижимости:",
+                        "Не выбран",
+                        mutableListOf(),
+                        true
+                    ),
+                    CategoryField.LocationField("", "", "Местоположение строения")
                 )
             )
         )
@@ -170,7 +177,7 @@ fun PostCreateScreen(
         }
     }
 
-    val data = draftPost.tempDraft.data
+    val draft = draftPost.tempDraft.data
 
     if (subcategory.children.isEmpty()) { // если нет вложенных подкатегорий у подкатегории
         PostCreateContent(
@@ -178,7 +185,7 @@ fun PostCreateScreen(
             subcategory = subcategory,
             updateDraft = updateDraft,
             onPublish = onPublish,
-            draft = data,
+            draft = draft,
             uploadPhoto = uploadPhoto,
             isRequiredCheckSubmitted = isPublishTriggered,
             showErrorMessage = {
@@ -275,17 +282,17 @@ fun PostCreateScreen(
                     }
                     if (!required) return@filter false
                     when (field) {
-                        is CategoryField.TitleField -> data.name.isBlank()
+                        is CategoryField.TitleField -> draft.name.isBlank()
                         is CategoryField.PriceField -> {
-                            val price = data.price.toDoubleOrNull()
+                            val price = draft.price.toDoubleOrNull()
                             price == null || price < 1 // минимальная цена для объявления
                         }
-                        is CategoryField.DescriptionField -> data.description.isBlank()
-                        is CategoryField.TextField -> data.options[field.key].isNullOrBlank()
-                        is CategoryField.DropdownField -> data.options[field.key].isNullOrBlank() || data.options[field.key] == "Не выбран"
-                        is CategoryField.NumberField -> data.options[field.key].isNullOrBlank()
-                        is CategoryField.LocationField -> data.options[field.key].isNullOrBlank()
-                        is CategoryField.PhotoPickerField -> data.photos.all { it == null }
+                        is CategoryField.DescriptionField -> draft.description.isBlank()
+                        is CategoryField.TextField -> draft.options[field.key] == null
+                        is CategoryField.DropdownField -> draft.options[field.key] == null
+                        is CategoryField.NumberField -> draft.options[field.key] == null
+                        is CategoryField.LocationField -> draft.options[field.key] == null
+                        is CategoryField.PhotoPickerField -> draft.photos.all { it == null }
                         else -> false
                     }
                 }

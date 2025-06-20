@@ -70,13 +70,15 @@ class ConfigurationUseCase @Inject constructor(
     private fun formFields(child: Category): CategoryField.SubCategory {
         val fields = mutableListOf<CategoryField>(
             CategoryField.MetaTag(
+                "null",
+                "",
                 "",
                 mutableListOf(
-                    CategoryField.PhotoPickerField("", 8),
-                    CategoryField.TitleField("Название", "", true),
-                    CategoryField.PriceField("Стоимость", "", "руб"),
-                    CategoryField.DescriptionField("Описание:", "")
-                )
+                    CategoryField.PhotoPickerField("base_image_ids", "list_value",  "", 8),
+                    CategoryField.TitleField("base_title", "string_value", "Название", "", true),
+                    CategoryField.PriceField("base_price", "money_value", "Стоимость", "", "руб"),
+                    CategoryField.DescriptionField("base_description", "string_value", "Описание:", "")
+                ),
             )
         )
 
@@ -84,15 +86,15 @@ class ConfigurationUseCase @Inject constructor(
 
         val categoryParams = allFieldDefinitions.mapNotNull { field ->
             when (field.semantic.dataType) {
-                is DataType.Text -> CategoryField.TextField(field.name, "", field.isRequired)
-                is DataType.DoubleNumber, is DataType.IntNumber -> CategoryField.NumberField(field.name, "", "", field.isRequired)
-                is DataType.SingleOption -> CategoryField.DropdownField(field.name, "", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
+                is DataType.Text -> CategoryField.TextField(field.id, "string_value", field.name, "", field.isRequired)
+                is DataType.DoubleNumber, is DataType.IntNumber -> CategoryField.NumberField(field.id, "int_value", field.name, "", "", field.isRequired)
+                is DataType.SingleOption -> CategoryField.DropdownField(field.id, "list_value", field.name,"", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
                 else -> null
             }
         }
 
         if (categoryParams.isNotEmpty())
-            fields.add(CategoryField.MetaTag("Характеристики категории", categoryParams.toMutableList()))
+            fields.add(CategoryField.MetaTag("null", "", "Характеристики категории", categoryParams.toMutableList()))
 
         return CategoryField.SubCategory(
             id = child.id,

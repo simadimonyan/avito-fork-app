@@ -60,10 +60,10 @@ import samaryanin.avitofork.app.activity.data.AppState
 import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.feature.profile.ui.components.AddProfile
-import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
-import samaryanin.avitofork.feature.profile.ui.components.ProfileTabLayout
-import samaryanin.avitofork.feature.profile.ui.components.TabItem
+import samaryanin.avitofork.feature.profile.ui.components.profile.AddProfile
+import samaryanin.avitofork.feature.profile.ui.components.profile.DefaultAvatar
+import samaryanin.avitofork.feature.profile.ui.components.profile.ProfileTabLayout
+import samaryanin.avitofork.feature.profile.ui.components.profile.TabItem
 import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
 import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoutes
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState

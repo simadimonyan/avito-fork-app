@@ -25,53 +25,13 @@ class PosterRepository @Inject constructor(
     private val strictUrl: String = "/api/v1"
 
     suspend fun create(
-        title: String,
-        description: String,
-        images: List<String>,
-        price: Money,
-        address: String,
+        fieldValues: List<FieldValue>,
         categoryId: String
     ): Boolean = httpClient.post("$strictUrl/ad/create") {
         header(HttpHeaders.ContentType, ContentType.Application.Json)
-        setBody(CreateAdRequestDto(UUID.randomUUID().toString(), categoryId, mutableListOf(
-            FieldValue(
-                fieldId = "base_title",
-                fieldData = FieldData.StringValue(
-                    value = title
-                )
-            ),
-            FieldValue(
-                fieldId = "base_price",
-                fieldData = FieldData.MoneyValue(
-                    amountMinor = price.amountMinor,
-                    currency = price.currency
-                )
-            ),
-            FieldValue(
-                fieldId = "base_description",
-                fieldData = FieldData.StringValue(
-                    value = description
-                )
-            ),
-            FieldValue(
-                fieldId = "base_address",
-                fieldData = FieldData.StringValue(
-                    value = address
-                )
-            ),
-            FieldValue(
-                fieldId = "base_image_ids",
-                fieldData = FieldData.ListValue(
-                    items = images.map { it.toDomain() }
-                )
-            )
-        )))
+        setBody(CreateAdRequestDto(UUID.randomUUID().toString(), categoryId, fieldValues))
     }.let { response ->
         response.status.value == 200
-    }
-
-    private fun String.toDomain(): FieldData.StringValue {
-        return FieldData.StringValue(value = this)
     }
 
 }

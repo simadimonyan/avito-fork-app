@@ -42,9 +42,9 @@ private fun CategoryPreview() {
 
     val sample = CategoryState(
         mutableListOf(
-            CategoryField.Category("", "Тестовая категория 1", "", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 2", "", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 3", "", mutableListOf())
+            CategoryField.Category("", "", "", "Тестовая категория 1", "", mutableListOf()),
+            CategoryField.Category("", "", "", "Тестовая категория 2", "", mutableListOf()),
+            CategoryField.Category("", "", "","Тестовая категория 3", "", mutableListOf())
         ),
         mutableMapOf(),
         PostState(),
