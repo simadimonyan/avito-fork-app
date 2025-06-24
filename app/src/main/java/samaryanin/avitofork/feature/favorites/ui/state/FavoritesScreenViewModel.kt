@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.favorites.ui.state
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,8 +10,8 @@ import kotlinx.coroutines.launch
 import samaryanin.avitofork.feature.favorites.data.FavoriteManager
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.data.repository.AdRepo
-import samaryanin.avitofork.shared.state.network.NetworkState
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
+import samaryanin.avitofork.shared.state.network.NetworkState
 import javax.inject.Inject
 
 @Stable
@@ -24,31 +25,35 @@ class FavoritesScreenViewModel @Inject constructor(
     val favoriteAdsState: StateFlow<NetworkState<List<Ad>>> = _favoriteAdsState
 
     init {
-        loadFavorites()
+        viewModelScope.launch {
+            favoriteManager.initialize()
+            loadFavorites()
+        }
     }
 
-    fun loadFavorites() {
-        safeScope.launch {
-            _favoriteAdsState.value = NetworkState.Loading
-            try {
-                favoriteManager.loadFromServer()
-                val ids = favoriteManager.favorites.value
-                val ads = adRepo.getAdsByIds(ids.toList())
-                _favoriteAdsState.value = NetworkState.Success(ads)
-            } catch (e: Exception) {
-                _favoriteAdsState.value = NetworkState.Error(e)
-            }
+    suspend fun loadFavorites() {
+        _favoriteAdsState.value = NetworkState.Loading
+        try {
+            val ids = favoriteManager.favorites.value
+            val ads = adRepo.getAdsByIds(ids.toList())
+            _favoriteAdsState.value = NetworkState.Success(ads)
+        } catch (e: Exception) {
+            _favoriteAdsState.value = NetworkState.Error(e)
         }
     }
 
     fun toggleFavorite(ad: Ad) {
         favoriteManager.toggleFavorite(ad.id)
-        removeFavoriteLocally(ad)
+        removeAd(ad.id)
+        safeScope.launch {
+            favoriteManager.syncWithServer()
+        }
     }
 
-    private fun removeFavoriteLocally(ad: Ad) {
-        val current = (favoriteAdsState.value as? NetworkState.Success)?.data?.toMutableList() ?: return
-        current.removeAll { it.id == ad.id }
+    private fun removeAd(id: String) {
+        val current =
+            (_favoriteAdsState.value as? NetworkState.Success)?.data?.toMutableList() ?: return
+        current.removeAll { it.id == id }
         _favoriteAdsState.value = NetworkState.Success(current)
     }
 }

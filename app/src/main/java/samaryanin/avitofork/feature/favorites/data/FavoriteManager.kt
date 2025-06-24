@@ -1,84 +1,60 @@
 package samaryanin.avitofork.feature.favorites.data
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import samaryanin.avitofork.core.cache.CacheManager
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetFavoriteAdsUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.ToggleFavoriteAdUseCase
 import javax.inject.Inject
 
+@Stable
 class FavoriteManager @Inject constructor(
     private val getFavoriteAdsUseCase: GetFavoriteAdsUseCase,
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
-    private var cacheManager: CacheManager
+    private val cacheManager: CacheManager
 ) {
 
     private val _favorites = MutableStateFlow<Set<String>>(emptySet())
     val favorites: StateFlow<Set<String>> = _favorites.asStateFlow()
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-
-    init {
-        scope.launch {
-            try {
-                loadFromServer()
-            } catch (e: Exception) {
-
-            }
+    suspend fun initialize() {
+        if (isAuthorized()) {
+            val remoteAds = getFavoriteAdsUseCase()
+            _favorites.value = remoteAds.mapTo(mutableSetOf()) { it.id }
+        } else {
+            _favorites.value = emptySet()
         }
     }
 
     fun toggleFavorite(id: String) {
-        val isCurrentlyFavorite = _favorites.value.contains(id)
-        val updatedFavorites = _favorites.value.toMutableSet().apply {
-            if (isCurrentlyFavorite) remove(id) else add(id)
+        val updated = _favorites.value.toMutableSet().apply {
+            if (!add(id)) remove(id)
         }
-        _favorites.value = updatedFavorites
-
-        scope.launch {
-            toggleFavoriteAdUseCase(id, !isCurrentlyFavorite)
-            loadFromServer()
-        }
-    }
-
-    fun isFavorite(id: String): Boolean {
-        return id in _favorites.value
-    }
-
-    fun clearFavorites() {
-        _favorites.value = emptySet()
-    }
-
-    suspend fun loadFromServer() {
-        if (cacheManager.preferences.getString("authToken", null) != null) {
-            val remoteAds = getFavoriteAdsUseCase()
-            val remoteFavorites = remoteAds.map { it.id }.toSet()
-            _favorites.value = remoteFavorites
-        } else {
-
-        }
+        _favorites.value = updated
     }
 
     suspend fun syncWithServer() {
-        val localFavorites = _favorites.value
-        val remoteAds = getFavoriteAdsUseCase()
-        val remoteFavorites = remoteAds.map { it.id }.toSet()
+        if (!isAuthorized()) return
+        val remote = getFavoriteAdsUseCase().map { it.id }.toSet()
+        val local = _favorites.value
 
-        val toAddToServer = localFavorites - remoteFavorites
-        val toRemoveFromServer = remoteFavorites - localFavorites
+        val toAdd = local - remote
+        val toRemove = remote - local
 
-        toAddToServer.forEach { id ->
-            toggleFavoriteAdUseCase(id, true)
-        }
+        toAdd.forEach { toggleFavoriteAdUseCase(it, true) }
+        toRemove.forEach { toggleFavoriteAdUseCase(it, false) }
 
-        toRemoveFromServer.forEach { id ->
-            toggleFavoriteAdUseCase(id, false)
-        }
-
-        loadFromServer()
+        _favorites.value = getFavoriteAdsUseCase().map { it.id }.toSet()
     }
+
+    fun isFavorite(id: String): Boolean = id in _favorites.value
+
+    fun clear() {
+        _favorites.value = emptySet()
+    }
+
+    private fun isAuthorized(): Boolean =
+        cacheManager.preferences.getString("authToken", null) != null
 }

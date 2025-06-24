@@ -18,7 +18,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun logout() {
-        favoriteManager.clearFavorites()
+        favoriteManager.clear()
         cacheManager.clearAuthToken()
 
         appStateStore.appStateHolder.updateState(
