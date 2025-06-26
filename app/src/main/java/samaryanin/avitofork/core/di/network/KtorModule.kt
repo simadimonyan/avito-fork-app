@@ -21,6 +21,7 @@ object KtorModule {
         @ApplicationContext context: Context, cacheManager: CacheManager, appStateHolder: AppStateHolder
     ): KtorClient {
         val baseUrl = "https://test.rubber-tree.ru/api/v1/"
+       // val baseUrl = "https://195.43.142.111/api/v1/"
         return KtorClient(context, baseUrl, cacheManager, appStateHolder)
     }
 }

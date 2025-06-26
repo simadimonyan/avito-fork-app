@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.feed.ui.feature.feed
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -45,7 +46,6 @@ class MarketplaceViewModel @Inject constructor(
     val categories: StateFlow<List<Category>> = _categories.asStateFlow()
 
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
-
     val favoriteIds: StateFlow<Set<String>> = favoriteManager.favorites
 //    val isAuthorized: StateFlow<Boolean> =
 //        MutableStateFlow(cacheManager.preferences.getString("authToken", null) != null)
@@ -53,7 +53,12 @@ class MarketplaceViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     init {
-        safeScope.launch {
+        viewModelScope.launch {
+            val data = getAllCategoriesUseCase()
+            _categories.emitIfChanged(data)
+        }
+
+        viewModelScope.launch {
             selectedCategoryIds
                 .debounce(250.milliseconds)
                 .collectLatest { ids ->
@@ -61,16 +66,13 @@ class MarketplaceViewModel @Inject constructor(
                 }
         }
 
-        safeScope.launch {
-            val data = getAllCategoriesUseCase()
-            _categories.emitIfChanged(data)
+        viewModelScope.launch {
+            favoriteManager.syncWithServer()
+            loadAds { getFilteredAdsUseCase(selectedCategoryIds.value) }
         }
-
-        refresh()
     }
 
-
-    fun refresh() = safeScope.launch {
+    fun refresh() = viewModelScope.launch {
         loadAds { getFilteredAdsUseCase(selectedCategoryIds.value) }
     }
 
@@ -81,7 +83,7 @@ class MarketplaceViewModel @Inject constructor(
             refresh(); return
         }
 
-        searchJob = safeScope.launch {
+        searchJob = viewModelScope.launch {
             loadAds {
                 delay(500)
                 getSearchedAdUseCase(text)
@@ -89,12 +91,20 @@ class MarketplaceViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavoriteAd(id: String) = favoriteManager.toggleFavorite(id)
+    fun syncFavorites() = safeScope.launch {
+        favoriteManager.syncWithServer()
+    }
 
-    private suspend fun loadAds(block: suspend () -> List<Ad>) {
-        _isLoading.value = true
-        val newAds = runCatching { block() }.getOrDefault(emptyList())
-        _ads.emitIfChanged(newAds)
-        _isLoading.value = false
+    fun toggleFavoriteAd(id: String) = viewModelScope.launch {
+        favoriteManager.toggleFavorite(id)
+    }
+
+    private fun loadAds(block: suspend () -> List<Ad>) {
+        safeScope.launch {
+            //_isLoading.value = true
+            val newAds = runCatching { block() }.getOrDefault(emptyList())
+            _ads.emitIfChanged(newAds)
+           // _isLoading.value = false
+        }
     }
 }

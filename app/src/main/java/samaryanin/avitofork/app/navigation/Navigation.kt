@@ -121,7 +121,7 @@ fun NestedScreenGraph(
         ) {
             FavoritesScreen(
                 // profileViewModel,
-                mainViewModel,
+
                 globalNavController
             )
         }

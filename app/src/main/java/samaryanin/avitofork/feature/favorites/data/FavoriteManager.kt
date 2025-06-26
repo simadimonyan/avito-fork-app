@@ -15,45 +15,33 @@ class FavoriteManager @Inject constructor(
     private val toggleFavoriteAdUseCase: ToggleFavoriteAdUseCase,
     private val cacheManager: CacheManager
 ) {
-
     private val _favorites = MutableStateFlow<Set<String>>(emptySet())
     val favorites: StateFlow<Set<String>> = _favorites.asStateFlow()
 
     suspend fun initialize() {
-        if (isAuthorized()) {
-            val remoteAds = getFavoriteAdsUseCase()
-            _favorites.value = remoteAds.mapTo(mutableSetOf()) { it.id }
-        } else {
-            _favorites.value = emptySet()
-        }
+        syncWithServer()
     }
 
-    fun toggleFavorite(id: String) {
+    suspend fun toggleFavorite(id: String) {
+        val wasFavorite = _favorites.value.contains(id)
+        val isNowFavorite = !wasFavorite
         val updated = _favorites.value.toMutableSet().apply {
-            if (!add(id)) remove(id)
+            if (isNowFavorite) add(id) else remove(id)
         }
         _favorites.value = updated
+        toggleFavoriteAdUseCase(id, isNowFavorite)
+        syncWithServer()
     }
 
     suspend fun syncWithServer() {
-        if (!isAuthorized()) return
-        val remote = getFavoriteAdsUseCase().map { it.id }.toSet()
-        val local = _favorites.value
-
-        val toAdd = local - remote
-        val toRemove = remote - local
-
-        toAdd.forEach { toggleFavoriteAdUseCase(it, true) }
-        toRemove.forEach { toggleFavoriteAdUseCase(it, false) }
-
-        _favorites.value = getFavoriteAdsUseCase().map { it.id }.toSet()
+        _favorites.value = if (isAuthorized()) {
+            getFavoriteAdsUseCase().map { it.id }.toSet()
+        } else {
+            emptySet()
+        }
     }
 
     fun isFavorite(id: String): Boolean = id in _favorites.value
-
-    fun clear() {
-        _favorites.value = emptySet()
-    }
 
     private fun isAuthorized(): Boolean =
         cacheManager.preferences.getString("authToken", null) != null

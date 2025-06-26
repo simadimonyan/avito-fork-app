@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -38,7 +39,6 @@ import samaryanin.avitofork.shared.ui.theme.AvitoForkTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketplaceScreen(globalNavController: NavHostController) {
-
     val vm: MarketplaceViewModel = hiltViewModel()
 
     val ads by vm.ads.collectAsState()
@@ -55,6 +55,13 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
 
     val gridState = rememberLazyGridState()
     val showShadow by remember { derivedStateOf { gridState.firstVisibleItemIndex > 0 } }
+
+
+        LaunchedEffect(Unit) {
+            vm.refresh()
+            vm.syncFavorites()
+        }
+
 
     AvitoForkTheme {
         PullToRefreshBox(
@@ -94,9 +101,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                                 items = ads,
                                 key = { it.id }
                             ) { ad ->
-                                val isFav by remember(favoriteIds, ad.id) {
-                                    derivedStateOf { ad.id in favoriteIds }
-                                }
+                                val isFav = ad.id in favoriteIds
                                 ProductCard(
                                     ad = ad,
                                     isFav = isFav,
