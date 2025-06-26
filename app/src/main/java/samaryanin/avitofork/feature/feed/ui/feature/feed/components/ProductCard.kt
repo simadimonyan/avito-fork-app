@@ -43,13 +43,12 @@ import samaryanin.avitofork.shared.ui.components.RemoteImage
 @Composable
 fun ProductCard(
     ad: Ad,
-    isFav: Boolean?,
+    isFav: Boolean,
     globalNavController: NavHostController,
     onFavoriteClick: () -> Unit,
     isAuthorized: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var isFavoriteState by remember { mutableStateOf(isFav ?: false) } // Добавляем состояние для избранного
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -112,15 +111,13 @@ fun ProductCard(
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
                 ) {
-                    // Иконка сердечка, которая меняется в зависимости от состояния
                     Image(
-                        painter = painterResource(if (isFavoriteState) R.drawable.like_act else R.drawable.like_non_act),
+                        painter = painterResource(if (isFav) R.drawable.like_act else R.drawable.like_non_act),
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
                                 if (isAuthorized){
-                                    isFavoriteState = !isFavoriteState // Меняем состояние
-                                    onFavoriteClick() // Вызываем callback, чтобы обновить состояние в данных
+                                    onFavoriteClick()
                                 }
                                 else {
                                     Toast.makeText(context, "Вы не авторизованы", Toast.LENGTH_SHORT).show()
