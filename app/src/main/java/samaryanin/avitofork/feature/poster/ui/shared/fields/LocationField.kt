@@ -1,6 +1,7 @@
 package samaryanin.avitofork.feature.poster.ui.shared.fields
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +26,15 @@ import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 
 @Composable
-fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String) {
+fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String, determineLocation: () -> Unit) {
     Box(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
             .background(Color.White)
+            .clickable {
+                determineLocation()
+            }
     ) {
 
         Row(modifier = Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {

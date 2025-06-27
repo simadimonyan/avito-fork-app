@@ -72,7 +72,7 @@ fun LoginScreen(
     navHostController: NavHostController
 ) {
 
-    val state by authViewModel.appStateStore.authState.authState.collectAsState()
+    val state by authViewModel.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(state.emailIsValid) {

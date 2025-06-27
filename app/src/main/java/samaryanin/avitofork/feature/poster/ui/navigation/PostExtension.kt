@@ -11,9 +11,10 @@ import androidx.navigation.navigation
 import kotlinx.serialization.json.Json
 import samaryanin.avitofork.feature.feed.ui.feature.map.ui.MapScreen
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
-import samaryanin.avitofork.feature.poster.ui.feature.category.CategoryScreen
-import samaryanin.avitofork.feature.poster.ui.feature.create.PostCreateScreen
-import samaryanin.avitofork.feature.poster.ui.feature.subcategory.SubCategoryScreen
+import samaryanin.avitofork.feature.poster.ui.feature.poster.CategoryScreen
+import samaryanin.avitofork.feature.poster.ui.feature.poster.PostCreateScreen
+import samaryanin.avitofork.feature.poster.ui.feature.location.LocationScreen
+import samaryanin.avitofork.feature.poster.ui.feature.poster.SubCategoryScreen
 import samaryanin.avitofork.feature.poster.ui.state.CategoryViewModel
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import kotlin.reflect.typeOf
@@ -149,6 +150,27 @@ fun NavGraphBuilder.utilPosterGraph(
 
 
             PostCreateScreen(globalNavController, subcategory, categoriesViewModel, profileViewModel)
+        }
+
+        composable<PostRoutes.LocationScreen>(
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(
+                        durationMillis = 250
+                    )
+                )
+            }
+        ) {
+            LocationScreen(globalNavController, categoriesViewModel)
         }
 
     }

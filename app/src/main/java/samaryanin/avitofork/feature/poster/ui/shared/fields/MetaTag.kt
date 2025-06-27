@@ -103,7 +103,8 @@ fun MetaTag(
     observer: (PostData) -> Unit,
     uploadPhoto: (Int, Uri, (Boolean) -> Unit) -> Unit,
     isRequiredCheckSubmitted: Boolean,
-    showErrorMessage: (String) -> Unit = {}
+    showErrorMessage: (String) -> Unit = {},
+    determineLocation: () -> Unit = {}
 ) {
 
     LaunchedEffect(isRequiredCheckSubmitted) {
@@ -157,7 +158,7 @@ fun MetaTag(
                     }
 
                     is CategoryField.DropdownField -> DropdownField(observer, field.key, field.value, field.options, field.isOnlyOneToChoose)
-                    is CategoryField.LocationField -> LocationField(observer, field.key)
+                    is CategoryField.LocationField -> LocationField(observer, field.key, determineLocation)
 
                     is CategoryField.NumberField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
@@ -193,7 +194,8 @@ fun MetaTag(
                         observer,
                         uploadPhoto,
                         isRequiredCheckSubmitted,
-                        showErrorMessage
+                        showErrorMessage,
+                        determineLocation
                     )
                     else -> {}
 

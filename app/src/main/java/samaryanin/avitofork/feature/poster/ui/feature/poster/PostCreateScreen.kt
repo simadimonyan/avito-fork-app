@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.poster.ui.feature.create
+package samaryanin.avitofork.feature.poster.ui.feature.poster
 
 import android.net.Uri
 import android.util.Log
@@ -58,7 +58,6 @@ import samaryanin.avitofork.app.navigation.MainRoutes
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.feature.poster.ui.feature.subcategory.DraftDialog
 import samaryanin.avitofork.feature.poster.ui.navigation.PostRoutes
 import samaryanin.avitofork.feature.poster.ui.shared.fields.MetaTag
 import samaryanin.avitofork.feature.poster.ui.state.CategoryEvent
@@ -110,6 +109,7 @@ private fun PostCreatePreview() {
     )
 
     val gap: (Int, Uri, (Boolean) -> Unit) -> Unit = { index, uri, callback ->}
+    val gap2 = {}
 
     PostCreateContent(
         onExit = { true },
@@ -124,8 +124,10 @@ private fun PostCreatePreview() {
         showRenderBlocksErrorDialog = false,
         showPublishErrorDialog = false,
         dismissRenderBlocksErrorDialog = {},
-        showPublishProgressDialog = false
-    ) {}
+        showPublishProgressDialog = false,
+        determineLocation = gap2,
+        dismissPublishErrorDialog = gap2
+    )
 }
 
 @Composable
@@ -136,7 +138,7 @@ fun PostCreateScreen(
     profileViewModel: ProfileViewModel,
 ) {
     val context = LocalContext.current
-    val draftPost by categoriesViewModel.appStateStore.categoryState.categoryState.collectAsState()
+    val draftPost by categoriesViewModel.categoryStateHolder.categoryState.collectAsState()
 
     val onExit = {
 
@@ -177,6 +179,14 @@ fun PostCreateScreen(
         }
     }
 
+    // перейти на экран для определения местоположения
+    val determineLocation: () -> Unit = {
+        globalNavController.navigate(PostRoutes.LocationScreen) {
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     val draft = draftPost.tempDraft.data
 
     if (subcategory.children.isEmpty()) { // если нет вложенных подкатегорий у подкатегории
@@ -190,19 +200,20 @@ fun PostCreateScreen(
             isRequiredCheckSubmitted = isPublishTriggered,
             showErrorMessage = {
                 Log.d("Validation", "Field with error: $it")
-                categoriesViewModel.appStateStore.categoryState.updateLastErrorField(it)
+                categoriesViewModel.categoryStateHolder.updateLastErrorField(it)
             },
             lastErrorField = lastErrorField,
             showRenderBlocksErrorDialog = showRenderBlocksErrorDialog.value,
             dismissPublishErrorDialog = { showPublishErrorDialog.value = false },
             showPublishErrorDialog = showPublishErrorDialog.value,
             dismissRenderBlocksErrorDialog = { showRenderBlocksErrorDialog.value = false },
-            showPublishProgressDialog = showPublishProgressDialog.value
+            showPublishProgressDialog = showPublishProgressDialog.value,
+            determineLocation = determineLocation
         )
     }
     else { // рекурсивная обработка окна для выбора подкатегории
 
-        val categoryState by categoriesViewModel.appStateStore.categoryState.categoryState.collectAsState()
+        val categoryState by categoriesViewModel.categoryStateHolder.categoryState.collectAsState()
 
         var renderDraftAlert by remember { mutableStateOf(false) } // условие рендера окна черновика
         var tempSubCategory by remember { mutableStateOf<CategoryField.SubCategory?>(null) } // передача состояния категории между кнопками
@@ -312,7 +323,7 @@ fun PostCreateScreen(
                         else -> ""
                     }
                 } ?: ""
-                categoriesViewModel.appStateStore.categoryState.updateLastErrorField(firstMissingFieldKey)
+                categoriesViewModel.categoryStateHolder.updateLastErrorField(firstMissingFieldKey)
             } else {
                 Log.d("TEST", draftPost.tempDraft.data.toString())
                 profileViewModel.handleEvent(ProfileEvent.AddPublication(draftPost.tempDraft))
@@ -355,7 +366,8 @@ private fun PostCreateContent(
     showPublishProgressDialog: Boolean,
     showPublishErrorDialog: Boolean,
     dismissRenderBlocksErrorDialog: () -> Unit,
-    dismissPublishErrorDialog: () -> Unit
+    dismissPublishErrorDialog: () -> Unit,
+    determineLocation: () -> Unit
 ) {
 
     Scaffold(
@@ -438,7 +450,8 @@ private fun PostCreateContent(
                                 observer = updateDraft,
                                 uploadPhoto = uploadPhoto,
                                 isRequiredCheckSubmitted = isRequiredCheckSubmitted,
-                                showErrorMessage = showErrorMessage
+                                showErrorMessage = showErrorMessage,
+                                determineLocation = determineLocation
                             )
                         }
                     }
