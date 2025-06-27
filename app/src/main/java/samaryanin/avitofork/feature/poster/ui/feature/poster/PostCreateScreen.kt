@@ -302,7 +302,7 @@ fun PostCreateScreen(
                         is CategoryField.TextField -> draft.options[field.key] == null
                         is CategoryField.DropdownField -> draft.options[field.key] == null
                         is CategoryField.NumberField -> draft.options[field.key] == null
-                        is CategoryField.LocationField -> draft.options[field.key] == null
+                        is CategoryField.LocationField -> (draft.location.isBlank() || draft.location == "Не установлено") //draft.options[field.key] == null
                         is CategoryField.PhotoPickerField -> draft.photos.all { it == null }
                         else -> false
                     }
@@ -478,12 +478,6 @@ private fun PostCreateContent(
                         )
                     }
                 }
-//            AlertDialog(
-//                onDismissRequest = {},
-//                confirmButton = {},
-//                title = { Text("Загрузка") },
-//                text = { Text("Фотография загружается на сервер...") }
-//            )
             }
 
             // ошибка заполнения полей

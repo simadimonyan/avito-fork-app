@@ -17,16 +17,27 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 
 @Composable
-fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String, determineLocation: () -> Unit) {
+fun LocationField(
+    key: String,
+    value: String,
+    determineLocation: () -> Unit,
+    isRequiredCheckSubmitted: Boolean,
+    isRequired: Boolean,
+    showErrorMessage: (String) -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -37,13 +48,22 @@ fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String, determi
             }
     ) {
 
+        var isError by remember { mutableStateOf(false) }
+
+        LaunchedEffect(isRequiredCheckSubmitted) {
+            if (isRequired && isRequiredCheckSubmitted == true) {
+                isError = value.isEmpty() || value == "Не установлено"
+                if (isError) showErrorMessage(key)
+            }
+        }
+
         Row(modifier = Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
 
             Icon(
                 imageVector = Icons.Default.LocationOn,
                 contentDescription = "Location",
-                tint = Color.DarkGray,
-                modifier = Modifier.size(35.dp)
+                tint = if (isError) Color.Red else Color.DarkGray,
+                modifier = Modifier.size(35.dp).align(Alignment.Top)
             )
 
             Space(7.dp)
@@ -52,12 +72,12 @@ fun LocationField(draftOptionsObserver: (PostData) -> Unit, key: String, determi
 
                 Text(modifier = Modifier
                     .padding(end = 16.dp)
-                    .width(250.dp), text = key, fontSize = 16.sp, color = Color.Black)
+                    .width(250.dp), text = key, fontSize = 16.sp, color = if (isError) Color.Red else Color.Black)
 
                 Space(3.dp)
 
                 Text(modifier = Modifier
-                    .width(250.dp), text = "Определяем местоположение", fontSize = 14.sp, color = Color.Gray)
+                    .width(250.dp), text = if (value.isBlank()) "Не установлено" else value, fontSize = 14.sp, color = Color.Gray)
 
             }
 

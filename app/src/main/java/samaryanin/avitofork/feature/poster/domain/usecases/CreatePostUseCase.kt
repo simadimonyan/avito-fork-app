@@ -59,7 +59,7 @@ class CreatePostUseCase @Inject constructor(
                 FieldValue(
                     fieldId = "base_address",
                     fieldData = FieldData.StringValue(
-                        value = "test"
+                        value = state.data.location
                     )
                 ),
                 FieldValue(
@@ -80,12 +80,23 @@ class CreatePostUseCase @Inject constructor(
                                 value = field.value
                             )
                         )
-                        is CategoryField.NumberField -> FieldValue(
-                            fieldId = field.baseId,
-                            fieldData = FieldData.IntValue(
-                                value = field.value.toInt()
-                            )
-                        )
+                        is CategoryField.NumberField -> {
+                            when (field.semanticType) {
+                                "int_value" -> FieldValue(
+                                    fieldId = field.baseId,
+                                    fieldData = FieldData.IntValue(
+                                        value = field.value.toInt()
+                                    )
+                                )
+                                "double_value" -> FieldValue(
+                                    fieldId = field.baseId,
+                                    fieldData = FieldData.DoubleValue(
+                                        value = field.value.toDouble()
+                                    )
+                                )
+                                else -> null
+                            }
+                        }
                         is CategoryField.DropdownField -> FieldValue(
                             fieldId = field.baseId,
                             fieldData = FieldData.ListValue(

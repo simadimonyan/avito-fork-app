@@ -77,7 +77,7 @@ class ConfigurationUseCase @Inject constructor(
                     CategoryField.TitleField("base_title", "string_value", "Название", "", true),
                     CategoryField.PriceField("base_price", "money_value", "Стоимость", "", "руб"),
                     CategoryField.DescriptionField("base_description", "string_value", "Описание:", ""),
-                    CategoryField.LocationField("base_address", "string_value", "", true)
+                    CategoryField.LocationField("base_address", "string_value", "Местоположение", true)
                 ),
             )
         )
@@ -87,8 +87,9 @@ class ConfigurationUseCase @Inject constructor(
         val categoryParams = allFieldDefinitions.mapNotNull { field ->
             when (field.semantic.dataType) {
                 is DataType.Text -> CategoryField.TextField(field.id, "string_value", field.name, "", field.isRequired)
-                is DataType.DoubleNumber, is DataType.IntNumber -> CategoryField.NumberField(field.id, "int_value", field.name, "", "", field.isRequired)
-                is DataType.SingleOption -> CategoryField.DropdownField(field.id, "list_value", field.name,"", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
+                is DataType.IntNumber -> CategoryField.NumberField(field.id, "int_value", field.name, "", "", field.isRequired)
+                is DataType.DoubleNumber -> CategoryField.NumberField(field.id, "double_value", field.name, "", "", field.isRequired)
+                is DataType.SingleOption -> CategoryField.DropdownField(field.id, "list_value", field.name, "", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
                 else -> null
             }
         }

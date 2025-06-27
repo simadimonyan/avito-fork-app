@@ -125,7 +125,7 @@ fun MetaTag(
 
                 when (field) {
 
-                    // data передается и для обновления колбеком и для получения данных из черновиков в value
+                    // draft передается и для обновления колбеком и для получения данных из черновиков в value
                     is CategoryField.PriceField -> PriceField(
                         observer, draft, field.key, field.unitMeasure, field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
@@ -145,26 +145,33 @@ fun MetaTag(
                     )
 
                     is CategoryField.TextField -> {
-                        // data.options[field.key] - поиск значения поля по ключу поля
+                        // draft.options[field.key] - поиск значения поля по ключу поля
                         TextField(
                             field.key, (draft.options[field.key] as? CategoryField.TextField)?.value ?: field.value, "до 3000 символов",
                             isRequired = field.isRequired,
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage
                         ) {
-                            params[field.key] = field
+                            val updatedField = field.copy(value = it)
+                            params[field.key] = updatedField
                             observer(draft.copy(options = params))
                         }
                     }
 
                     is CategoryField.DropdownField -> DropdownField(observer, field.key, field.value, field.options, field.isOnlyOneToChoose)
-                    is CategoryField.LocationField -> LocationField(observer, field.key, determineLocation)
+
+                    is CategoryField.LocationField -> LocationField(
+                        field.key, draft.location, determineLocation,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        isRequired = field.isRequired,
+                        showErrorMessage = showErrorMessage
+                    )
 
                     is CategoryField.NumberField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
                         NumberField(
                             field.key,
-                            (draft.options[field.key] as? CategoryField.TextField)?.value ?: field.value,
+                            (draft.options[field.key] as? CategoryField.NumberField)?.value ?: field.value,
                             field.unitMeasure,
                             field.value,
                             visualTransformation = VisualTransformation.None,
@@ -172,7 +179,8 @@ fun MetaTag(
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage,
                         ) {
-                            params[field.key] = field
+                            val updatedField = field.copy(value = it)
+                            params[field.key] = updatedField
                             observer(draft.copy(options = params))
                         }
                     }
