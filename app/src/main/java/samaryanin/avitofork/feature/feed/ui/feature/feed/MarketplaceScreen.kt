@@ -46,7 +46,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     val categories by vm.categories.collectAsState()
     val selectedIds by vm.selectedCategoryIds.collectAsState()
     val favoriteIds by vm.favoriteIds.collectAsState()
-    val appState by vm.appStateStore.appState.appState.collectAsState()
+    val appState by vm.appStateHolder.appState.collectAsState()
 
     var searchText by remember { mutableStateOf("") }
 

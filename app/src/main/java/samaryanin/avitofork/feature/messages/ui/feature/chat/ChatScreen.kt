@@ -114,7 +114,7 @@ fun ChatPreview() {
 @Composable
 fun ChatScreen(globalNavController: NavHostController, viewModel: MessagesViewModel, directId: String) {
 
-    val state by viewModel.appStateStore.messageState.messagesState.collectAsState()
+    val state by viewModel.messageStateHolder.messagesState.collectAsState()
     val chat = state.chats.find { it.chatId == directId } ?: return
 
     val keyboardController = LocalSoftwareKeyboardController.current

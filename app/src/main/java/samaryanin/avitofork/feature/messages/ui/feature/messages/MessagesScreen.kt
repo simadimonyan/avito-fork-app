@@ -137,7 +137,7 @@ fun MessagesPreview() {
 @Composable
 fun MessagesScreen(navHostController: NavHostController, viewModel: MessagesViewModel) {
 
-    val chats by viewModel.appStateStore.messageState.messagesState.collectAsState()
+    val chats by viewModel.messageStateHolder.messagesState.collectAsState()
 
     // обновление сообщений
     viewModel.handleEvent(MessagesEvent.ChatsRefresh)

@@ -53,7 +53,7 @@ fun SettingsScreen(
     navController: NavHostController,
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
-    val appState by viewModel.appStateStore.appState.appState.collectAsState()
+    val appState by viewModel.appStateHolder.appState.collectAsState()
 
     if (appState.isLoggedIn) {
         SettingsAuthorizedContent(

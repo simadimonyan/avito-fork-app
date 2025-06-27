@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.poster.ui.feature.subcategory
+package samaryanin.avitofork.feature.poster.ui.feature.poster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -67,7 +67,7 @@ fun SubCategoryScreen(
     viewModel: CategoryViewModel
 ) {
 
-    val categoryState by viewModel.appStateStore.categoryState.categoryState.collectAsState()
+    val categoryState by viewModel.categoryStateHolder.categoryState.collectAsState()
 
     var renderDraftAlert by remember { mutableStateOf(false) } // условие рендера окна черновика
     var tempSubCategory by remember { mutableStateOf<CategoryField.SubCategory?>(null) } // передача состояния категории между кнопками

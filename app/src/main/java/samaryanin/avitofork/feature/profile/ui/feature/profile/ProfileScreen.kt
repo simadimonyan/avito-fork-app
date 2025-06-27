@@ -100,9 +100,9 @@ fun ProfileScreen(
     globalNavController: NavController
 ) {
 
-    val appState by mainViewModel.appStateStore.appState.appState.collectAsState()
-    val authState by mainViewModel.appStateStore.authState.authState.collectAsState()
-    val profileState by profileViewModel.appStateStore.profileState.profileState.collectAsState()
+    val appState by mainViewModel.appStateHolder.appState.collectAsState()
+    val authState by profileViewModel.authStateHolder.authState.collectAsState()
+    val profileState by profileViewModel.profileStateHolder.profileState.collectAsState()
 
     val navigateTo = { index: Int ->
         when (index) {

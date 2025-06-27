@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.poster.ui.feature.category
+package samaryanin.avitofork.feature.poster.ui.feature.poster
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -59,7 +59,7 @@ fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewMo
 
     viewModel.handleEvent(CategoryEvent.UpdateCategoryListConfiguration)
 
-    val categories by viewModel.appStateStore.categoryState.categoryState.collectAsState()
+    val categories by viewModel.categoryStateHolder.categoryState.collectAsState()
 
     Log.d("LOADED", "CategoryScreen: Categories loaded: ${categories.categories}")
 

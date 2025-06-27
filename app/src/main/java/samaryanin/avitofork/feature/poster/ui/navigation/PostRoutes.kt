@@ -45,4 +45,11 @@ sealed class PostRoutes(val route: String) {
          const val route = "map/{lat}/{lon}"
          fun withArgs(lat: Double, lon: Double): String = "map/$lat/$lon"
      }
+
+    /**
+     * Окно определения местоположения для товара или услуги при создании объявления
+     */
+    @Serializable
+    @Immutable
+    object LocationScreen : PostRoutes("location_screen")
 }

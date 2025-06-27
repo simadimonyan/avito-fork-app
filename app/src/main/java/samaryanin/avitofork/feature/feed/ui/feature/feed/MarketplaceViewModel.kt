@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.app.activity.data.AppStateHolder
 import samaryanin.avitofork.core.cache.CacheManager
 import samaryanin.avitofork.feature.favorites.data.FavoriteManager
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
@@ -20,7 +21,6 @@ import samaryanin.avitofork.feature.favorites.domain.usecases.GetFilteredAdsUseC
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCase
 import samaryanin.avitofork.shared.extensions.emitIfChanged
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
-import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -32,7 +32,7 @@ class MarketplaceViewModel @Inject constructor(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val favoriteManager: FavoriteManager,
     cacheManager: CacheManager,
-    val appStateStore: AppStateStore
+    val appStateHolder: AppStateHolder
 ) : ViewModel() {
 
     private val _ads = MutableStateFlow<List<Ad>>(emptyList())

@@ -5,13 +5,12 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import samaryanin.avitofork.feature.messages.domain.models.Message
 import samaryanin.avitofork.feature.messages.domain.usecases.LoadChatsUseCase
-import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
 
 @Stable
 @HiltViewModel
 class MessagesViewModel @Inject constructor(
-    val appStateStore: AppStateStore,
+    val messageStateHolder: MessageStateHolder,
     private val loadChatsUseCase: LoadChatsUseCase
 ) : ViewModel() {
 
@@ -23,7 +22,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     private fun sendMessage(chatId: String, message: Message) {
-        val currentState = appStateStore.messageState.messagesState.value
+        val currentState = messageStateHolder.messagesState.value
 
         val newMessage = message.copy(
             user = "myId",
@@ -37,11 +36,11 @@ class MessagesViewModel @Inject constructor(
             } else chat
         }.toMutableList()
 
-        appStateStore.messageState.updateChatList(updatedChats)
+        messageStateHolder.updateChatList(updatedChats)
     }
 
     private fun refresh() {
-        appStateStore.messageState.updateChatList(loadChatsUseCase.loadChats())
+        messageStateHolder.updateChatList(loadChatsUseCase.loadChats())
     }
 
 }

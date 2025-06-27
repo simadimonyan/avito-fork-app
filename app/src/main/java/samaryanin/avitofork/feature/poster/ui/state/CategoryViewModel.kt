@@ -18,7 +18,6 @@ import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.CreatePostUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.UploadAdImageUseCase
-import samaryanin.avitofork.shared.state.AppStateStore
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    val appStateStore: AppStateStore,
+    val categoryStateHolder: CategoryStateHolder,
     private val configurationUseCase: ConfigurationUseCase,
     private val dataStore: DataStore<Preferences>,
     private val uploadAdImageUseCase: UploadAdImageUseCase,
@@ -47,16 +46,16 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun updateDraftParams(draft: PostState) {
-        appStateStore.categoryState.updateTempDraftPost(draft)
+        categoryStateHolder.updateTempDraftPost(draft)
     }
 
     suspend fun uploadPhoto(index: Int, uri: Uri): Boolean {
         return try {
             val id = uploadAdImageUseCase.upload(context, uri)
             if (id.isNotBlank()) {
-                val state = appStateStore.categoryState.categoryState.value.tempDraft
+                val state = categoryStateHolder.categoryState.value.tempDraft
                 state.data.photos[index] = id
-                appStateStore.categoryState.updateTempDraftPost(state)
+                categoryStateHolder.updateTempDraftPost(state)
                 true
             } else {
                 false
@@ -68,7 +67,7 @@ class CategoryViewModel @Inject constructor(
 
     suspend fun publish(): Boolean {
         return try {
-            val state = appStateStore.categoryState.categoryState.value.tempDraft
+            val state = categoryStateHolder.categoryState.value.tempDraft
             createPostUseCase.create(state)
         }
         catch (_: Exception) {
@@ -77,33 +76,33 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun saveDraft(subCategory: String) {
-        val state = appStateStore.categoryState.categoryState.value
+        val state = categoryStateHolder.categoryState.value
 
         val draft = state.tempDraft
         val mapping = state.drafts.toMutableMap()
 
         mapping[subCategory] = draft
 
-        appStateStore.categoryState.updateDrafts(mapping)
+        categoryStateHolder.updateDrafts(mapping)
         saveDraftsStateToCache()
     }
 
     private fun clearDraft(subCategory: String) {
-        val state = appStateStore.categoryState.categoryState.value
+        val state = categoryStateHolder.categoryState.value
 
         val mapping = state.drafts.toMutableMap()
 
         mapping.remove(subCategory)
 
-        appStateStore.categoryState.updateDrafts(mapping)
+        categoryStateHolder.updateDrafts(mapping)
         saveDraftsStateToCache()
     }
 
     private fun updateConfiguration() {
         safeScope.launch {
-            appStateStore.categoryState.updateLoading(true)
-            appStateStore.categoryState.updateCategories(configurationUseCase.getCategories())
-            appStateStore.categoryState.updateLoading(false)
+            categoryStateHolder.updateLoading(true)
+            categoryStateHolder.updateCategories(configurationUseCase.getCategories())
+            categoryStateHolder.updateLoading(false)
         }
     }
 
@@ -113,7 +112,7 @@ class CategoryViewModel @Inject constructor(
         safeScope.launch {
 
             val gson = Gson()
-            val json = gson.toJson(appStateStore.categoryState.categoryState.value.drafts)
+            val json = gson.toJson(categoryStateHolder.categoryState.value.drafts)
 
             withContext(Dispatchers.IO) {
                 dataStore.edit { preferences ->

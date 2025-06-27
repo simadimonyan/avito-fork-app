@@ -1,6 +1,5 @@
 package samaryanin.avitofork.feature.poster.domain.usecases
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import ru.dimagor555.avito.category.domain.Category
 import ru.dimagor555.avito.category.domain.field.DataType
@@ -39,7 +38,7 @@ class ConfigurationUseCase @Inject constructor(
         treeMap.all().filter { it.isSubcategory }.forEach { node ->
             val parentNode = categoryFields.firstOrNull { it.id == node.parent?.id }
                 ?: run {
-                    Log.e("ConfigurationUseCase", "Parent not found for ${node.name}")
+                    //Log.e("ConfigurationUseCase", "Parent not found for ${node.name}")
                     return@forEach
                 }
 
@@ -77,7 +76,8 @@ class ConfigurationUseCase @Inject constructor(
                     CategoryField.PhotoPickerField("base_image_ids", "list_value",  "", 8),
                     CategoryField.TitleField("base_title", "string_value", "Название", "", true),
                     CategoryField.PriceField("base_price", "money_value", "Стоимость", "", "руб"),
-                    CategoryField.DescriptionField("base_description", "string_value", "Описание:", "")
+                    CategoryField.DescriptionField("base_description", "string_value", "Описание:", ""),
+                    CategoryField.LocationField("base_address", "string_value", "", true)
                 ),
             )
         )
