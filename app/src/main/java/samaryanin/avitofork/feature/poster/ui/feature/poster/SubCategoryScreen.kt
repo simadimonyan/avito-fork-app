@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.poster.ui.feature.subcategory
+package samaryanin.avitofork.feature.poster.ui.feature.poster
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -49,11 +50,11 @@ import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 @Composable
 private fun SubCategoryPreview() {
 
-    val sample = CategoryField.Category("", "Тестовая категория",
+    val sample = CategoryField.Category("", "", "Тестовая категория", "", "",
         mutableListOf(
-            CategoryField.SubCategory("", "Тестовая подкатегория 1", mutableListOf()),
-            CategoryField.SubCategory("", "Тестовая подкатегория 2", mutableListOf()),
-            CategoryField.SubCategory("", "Тестовая подкатегория 3", mutableListOf())
+            CategoryField.SubCategory("",  "", "", "Тестовая подкатегория 1", "", mutableListOf()),
+            CategoryField.SubCategory("", "", "", "Тестовая подкатегория 2", "", mutableListOf()),
+            CategoryField.SubCategory("", "", "", "Тестовая подкатегория 3", "", mutableListOf())
         ))
 
     SubCategoryContent({ true }, sample, {})
@@ -66,7 +67,7 @@ fun SubCategoryScreen(
     viewModel: CategoryViewModel
 ) {
 
-    val categoryState by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+    val categoryState by viewModel.categoryStateHolder.categoryState.collectAsState()
 
     var renderDraftAlert by remember { mutableStateOf(false) } // условие рендера окна черновика
     var tempSubCategory by remember { mutableStateOf<CategoryField.SubCategory?>(null) } // передача состояния категории между кнопками
@@ -91,7 +92,7 @@ fun SubCategoryScreen(
     // навигация на кнопку "Создать новое"
     val createNewPostButton: () -> Unit = {
         if (tempSubCategory != null) {
-            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, tempSubCategory!!.name)))
+            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.categoryName, tempSubCategory!!.name)))
             viewModel.handleEvent(CategoryEvent.ClearDraft(tempSubCategory!!.name))
             globalNavController.navigate(PostRoutes.PostCreate(tempSubCategory!!)) {
                 launchSingleTop = true
@@ -103,11 +104,13 @@ fun SubCategoryScreen(
 
     // навигация с проверкой наличия черновика
     val onSubCategoryClick: (CategoryField.SubCategory) -> Unit = { subcategory ->
+
         if (categoryState.drafts.containsKey(subcategory.name)) {
             tempSubCategory = subcategory
             renderDraftAlert = true
-        } else {
-            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.category, subcategory.name)))
+        }
+        else {
+            viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(categoryState.tempDraft.categoryName, subcategory.name)))
             globalNavController.navigate(PostRoutes.PostCreate(subcategory)) {
                 launchSingleTop = true
                 restoreState = true
@@ -125,7 +128,7 @@ fun SubCategoryScreen(
 }
 
 @Composable
-private fun SubCategoryContent(
+fun SubCategoryContent(
     onExit: () -> Boolean,
     category: CategoryField.Category,
     onCategoryClick: (CategoryField.SubCategory) -> Unit
@@ -155,33 +158,35 @@ private fun SubCategoryContent(
         }
     ) { innerPadding ->
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
 
-            AppTextTitle(text = category.name)
+            item { AppTextTitle(text = category.name) }
 
-            Space(20.dp)
+            item { Space(20.dp) }
 
             category.subs.forEachIndexed{ index, categoryField ->
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                        .clickable { onCategoryClick(categoryField) }
-                ) {
-                    Text(
-                        text = categoryField.name,
-                        color = Color.Black,
-                        fontSize = 20.sp
-                    )
-                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                            .clickable { onCategoryClick(categoryField) }
+                    ) {
+                        Text(
+                            text = categoryField.name,
+                            color = Color.Black,
+                            fontSize = 20.sp
+                        )
+                    }
 
-                if (index != category.subs.size - 1) Divider()
+                    if (index != category.subs.size - 1) Divider()
+                }
 
             }
         }

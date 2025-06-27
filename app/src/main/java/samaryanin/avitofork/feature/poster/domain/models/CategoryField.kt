@@ -2,8 +2,12 @@ package samaryanin.avitofork.feature.poster.domain.models
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+interface ApiForm {
+    val baseId: String
+    val semanticType: String
+}
 
 /**
  * Модель структур данных для характеристик категорий
@@ -11,7 +15,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Polymorphic
 @Immutable
-sealed class CategoryField {
+sealed class CategoryField : ApiForm {
 
     /**
      * Модель верхнеуровневых категорий
@@ -20,20 +24,36 @@ sealed class CategoryField {
      * @param subs список подкатегорий
      */
     @Serializable
-    @SerialName("category")
     @Immutable
-    data class Category(val id: String = "", val name: String = "", val subs: List<SubCategory> = emptyList()) : CategoryField()
+    data class Category(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val id: String = "",
+        val name: String = "",
+        val imageId: String = "",
+        var subs: MutableList<SubCategory> = mutableListOf()
+    ) : CategoryField()
 
     /**
      * Модель подкатегорий
      * @param id уникальный идентификатор подкатегории
      * @param name название категории
+     * @param children список подподкатегорий
      * @param fields список характеристик объявления
      */
     @Serializable
-    @SerialName("subcategory")
     @Immutable
-    data class SubCategory(val id: String, val name: String, val fields: List<CategoryField>) : CategoryField()
+    data class SubCategory(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val id: String,
+        val name: String,
+        val imageId: String = "",
+        val fields: List<CategoryField>,
+        var children: List<SubCategory> = emptyList()
+    ) : CategoryField()
 
     /**
      * Мета-тег для разделения полей на категории
@@ -41,9 +61,14 @@ sealed class CategoryField {
      * @param fields значение
      */
     @Serializable
-    @SerialName("meta-tag")
     @Immutable
-    data class MetaTag(val key: String, val fields: List<CategoryField>) : CategoryField()
+    data class MetaTag(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val fields: List<CategoryField>
+    ) : CategoryField()
 
     /**
      * Поле для ввода текстовых данных категории: описание
@@ -51,9 +76,15 @@ sealed class CategoryField {
      * @param value значение
      */
     @Serializable
-    @SerialName("text-field")
     @Immutable
-    data class TextField(val key: String, val value: String, val isRequired: Boolean = false) : CategoryField()
+    data class TextField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val value: String,
+        val isRequired: Boolean = false
+    ) : CategoryField()
 
     /**
      * Поле для ввода текстовых данных заголовка
@@ -61,9 +92,15 @@ sealed class CategoryField {
      * @param value значение
      */
     @Serializable
-    @SerialName("title-field")
     @Immutable
-    data class TitleField(val key: String, val value: String, val isRequired: Boolean = true) : CategoryField()
+    data class TitleField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val value: String,
+        val isRequired: Boolean = true
+    ) : CategoryField()
 
     /**
      * Поле для ввода данных описания
@@ -71,9 +108,15 @@ sealed class CategoryField {
      * @param value значение
      */
     @Serializable
-    @SerialName("description-field")
     @Immutable
-    data class DescriptionField(val key: String,  val value: String, val isRequired: Boolean = true) : CategoryField()
+    data class DescriptionField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val value: String,
+        val isRequired: Boolean = true
+    ) : CategoryField()
 
     /**
      * Поле для ввода данных стоимости
@@ -82,9 +125,16 @@ sealed class CategoryField {
      * @param unitMeasure единица измерения
      */
     @Serializable
-    @SerialName("price-field")
     @Immutable
-    data class PriceField(val key: String, val value: String, val unitMeasure: String, val isRequired: Boolean = true) : CategoryField()
+    data class PriceField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val value: String,
+        val unitMeasure: String,
+        val isRequired: Boolean = true
+    ) : CategoryField()
 
     /**
      * Поле для ввода числовых данных категории: площадь, стоимость, размеры, время
@@ -93,9 +143,16 @@ sealed class CategoryField {
      * @param unitMeasure единица измерения
      */
     @Serializable
-    @SerialName("number-field")
     @Immutable
-    data class NumberField(val key: String, val value: String, val unitMeasure: String, val isRequired: Boolean = false) : CategoryField()
+    data class NumberField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val value: String,
+        val unitMeasure: String,
+        val isRequired: Boolean = false
+    ) : CategoryField()
 
     /**
      * Поле для выбора типа данных: тип дома, вид работы
@@ -105,9 +162,17 @@ sealed class CategoryField {
      * @param isOnlyOneToChoose выбрать только один тип или несколько
      */
     @Serializable
-    @SerialName("dropdown-field")
     @Immutable
-    data class DropdownField(val key: String, val value: String, val options: List<String>, val isOnlyOneToChoose: Boolean, val isRequired: Boolean = false) : CategoryField()
+    data class DropdownField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val value: String,
+        val options: List<String>,
+        val isOnlyOneToChoose: Boolean,
+        val isRequired: Boolean = false
+    ) : CategoryField()
 
     /**
      * Поле для загрузки фотографий
@@ -115,9 +180,15 @@ sealed class CategoryField {
      * @param count максимальное значение фотографий
      */
     @Serializable
-    @SerialName("photo-picker-field")
     @Immutable
-    data class PhotoPickerField(val key: String, val count: Int, val isRequired: Boolean = true) : CategoryField()
+    data class PhotoPickerField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val count: Int,
+        val isRequired: Boolean = true
+    ) : CategoryField()
 
     /**
      * Поле для загрузки фотографий по категориям: фотографии гостинной, спальни
@@ -125,18 +196,29 @@ sealed class CategoryField {
      * @param options категория - максимальное значение фотографий
      */
     @Serializable
-    @SerialName("photo-picker-by-category-field")
     @Immutable
-    data class PhotoPickerByCategoryField(val key: String, val options: HashMap<String, Int>, val isRequired: Boolean = false) : CategoryField()
+    data class PhotoPickerByCategoryField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val options: HashMap<String, Int>,
+        val isRequired: Boolean = false
+    ) : CategoryField()
 
     /**
      * Поле для определения местоположения: адрес дома
      * @param key ключ
      */
     @Serializable
-    @SerialName("location-field")
     @Immutable
-    data class LocationField(val key: String, val isRequired: Boolean = false) : CategoryField()
+    data class LocationField(
+        override val baseId: String = "null",
+        override val semanticType: String = "null",
+
+        val key: String,
+        val isRequired: Boolean = false
+    ) : CategoryField()
 
 }
 

@@ -19,9 +19,9 @@ import javax.inject.Singleton
 @Stable
 @Singleton
 class AuthRepository @Inject constructor(
-    ktorClient: KtorClient,
+    val ktorClient: KtorClient,
 ) {
-    private val httpClient = ktorClient.httpClient
+    private var httpClient = ktorClient.httpClient
 
     suspend fun register(email: String, password: String, name: String): Boolean =
         httpClient.post("auth/register") {

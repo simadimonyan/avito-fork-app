@@ -46,7 +46,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
     val categories by vm.categories.collectAsState()
     val selectedIds by vm.selectedCategoryIds.collectAsState()
     val favoriteIds by vm.favoriteIds.collectAsState()
-    val isAuth by vm.isAuthorized.collectAsState()
+    val appState by vm.appStateHolder.appState.collectAsState()
 
     var searchText by remember { mutableStateOf("") }
 
@@ -107,7 +107,7 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
                                     isFav = isFav,
                                     globalNavController = globalNavController,
                                     onFavoriteClick = { vm.toggleFavoriteAd(ad.id) },
-                                    isAuthorized = isAuth
+                                    isAuthorized = appState.isLoggedIn
                                 )
                             }
                         }

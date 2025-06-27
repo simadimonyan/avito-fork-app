@@ -1,5 +1,6 @@
 package samaryanin.avitofork.feature.profile.ui.feature.notifications
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -80,6 +81,7 @@ fun NotificationsContent(onExit: () -> Boolean) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {

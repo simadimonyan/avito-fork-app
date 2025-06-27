@@ -50,7 +50,7 @@ fun MainScreen(
     messagesViewModel: MessagesViewModel,
     globalNavHostController: NavHostController
 ) {
-    val uiAppState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
+    val uiAppState by mainViewModel.appStateHolder.appState.collectAsState()
     val screenController = rememberNavController()
     var currentRoute by remember { mutableStateOf("search") }
     var selectedIndex by remember { mutableIntStateOf(0) }

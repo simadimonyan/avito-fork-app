@@ -4,7 +4,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import samaryanin.avitofork.core.cache.CacheManager
-import samaryanin.avitofork.shared.state.AppStateStore
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetImageBytesByIdUseCase
 import javax.inject.Inject
 
@@ -12,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val cacheManager: CacheManager,
-    val appStateStore: AppStateStore,
+    val appStateHolder: AppStateHolder,
     private val getImageBytesByIdUseCase: GetImageBytesByIdUseCase
 ) : ViewModel() {
 
@@ -25,23 +24,23 @@ class MainViewModel @Inject constructor(
             is AppEvent.SaveAppState -> saveAppState()
             is AppEvent.RestoreCache -> restoreCache()
             is AppEvent.FirstStartUp -> firstStartUp(event.isFirstStartUp)
-            is AppEvent.ToggleAuthRequest -> appStateStore.appStateHolder.toggleAuthRequest()
-            is AppEvent.ProfileHasLoggedIn -> appStateStore.appStateHolder.authorizeProfile()
+            is AppEvent.ToggleAuthRequest -> appStateHolder.toggleAuthRequest()
+            is AppEvent.ProfileHasLoggedIn -> appStateHolder.authorizeProfile()
         }
         saveAppState()
     }
 
     private fun firstStartUp(bool: Boolean) {
-        appStateStore.appStateHolder.setFirstStartUpSettings(bool)
+        appStateHolder.setFirstStartUpSettings(bool)
     }
 
     private fun saveAppState() {
-        cacheManager.saveAppState(appStateStore.appStateHolder.appState.value)
+        cacheManager.saveAppState(appStateHolder.appState.value)
     }
 
     private fun restoreCache() {
         val cachedState = cacheManager.getAppState()
-        appStateStore.appStateHolder.updateState(cachedState)
+        appStateHolder.updateState(cachedState)
     }
 
     suspend fun loadImage(id: String): ByteArray? {
