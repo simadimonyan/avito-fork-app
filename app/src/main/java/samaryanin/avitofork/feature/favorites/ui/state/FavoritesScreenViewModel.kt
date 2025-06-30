@@ -42,10 +42,10 @@ class FavoritesScreenViewModel @Inject constructor(
 
     fun refresh() {
         safeScope.launch {
-        //    _isLoading.value = true
+            _isLoading.value = true
             val newFavorites = adRepo.getFavoriteAds()
             _favorites.emitIfChanged(newFavorites)
-         //   _isLoading.value = false
+            _isLoading.value = false
         }
     }
 }

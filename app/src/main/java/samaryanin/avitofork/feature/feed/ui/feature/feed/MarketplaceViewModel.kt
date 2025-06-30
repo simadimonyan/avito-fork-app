@@ -97,12 +97,10 @@ class MarketplaceViewModel @Inject constructor(
         favoriteManager.toggleFavorite(id)
     }
 
-    private fun loadAds(block: suspend () -> List<Ad>) {
-        safeScope.launch {
-            //_isLoading.value = true
-            val newAds = runCatching { block() }.getOrDefault(emptyList())
-            _ads.emitIfChanged(newAds)
-           // _isLoading.value = false
-        }
+    private suspend fun loadAds(block: suspend () -> List<Ad>) {
+        _isLoading.value = true
+        val newAds = runCatching { block() }.getOrDefault(emptyList())
+        _ads.emitIfChanged(newAds)
+        _isLoading.value = false
     }
 }
