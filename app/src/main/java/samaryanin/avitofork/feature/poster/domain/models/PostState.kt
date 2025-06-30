@@ -7,9 +7,11 @@ import kotlinx.serialization.Serializable
 @Immutable
 data class PostState(
 
-    val category: String = "",
+    // может быть подкатегорией
+    val categoryName: String = "",
 
-    val subcategory: String = "",
+    // может быть подкатегорией
+    val categoryId: String = "",
 
     val data: PostData = PostData(),
 
@@ -32,8 +34,8 @@ data class PostData(
     val description: String = "",
 
     // ключи характеристик карточки товара
-    val options: Map<String, String> = mutableMapOf(),
+    val options: Map<String, CategoryField> = mutableMapOf(),
 
-    val location: String = "test"
+    val location: String = "Не установлено"
 
 )

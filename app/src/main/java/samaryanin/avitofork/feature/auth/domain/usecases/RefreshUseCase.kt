@@ -26,4 +26,5 @@ class RefreshUseCase @Inject constructor(
             AuthStatus.TOKEN_REFRESH_ERROR
         }
     }
+
 }

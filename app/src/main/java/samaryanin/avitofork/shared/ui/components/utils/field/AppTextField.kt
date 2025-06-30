@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -16,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -101,6 +104,91 @@ fun AppTextFieldPlaceholder(
         placeholder = {
             Text("$placeholder", color = Color.Gray)
         },
+
+        trailingIcon = {
+            if (isPassword) {
+                val icon = if (passwordVisible) painterResource(R.drawable.ic_pass_view) else painterResource(R.drawable.ic_pass_hide)
+                val contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                Image(
+                    painter = icon,
+                    contentDescription = contentDescription,
+                    modifier = Modifier
+                        .size(25.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                passwordVisible = !passwordVisible
+                            })
+                        }
+                )
+            }
+        },
+
+        colors = TextFieldDefaults.colors(
+
+            unfocusedContainerColor = lightGrayColor,
+            unfocusedIndicatorColor = Color.Transparent,
+
+            focusedContainerColor = lightGrayColor,
+            focusedIndicatorColor = Color.Transparent,
+
+            errorPlaceholderColor = lightGrayColor,
+            errorContainerColor = lightGrayColor,
+            errorIndicatorColor = Color.Transparent,
+            errorCursorColor = Color.Red,
+            errorLabelColor = Color.Red
+
+        ),
+
+        modifier = if (errorListener) {
+            modifier.fillMaxWidth()
+                .border(
+                    1.dp,
+                    color = Color.Red,
+                    shape = RoundedCornerShape(10.dp)
+                )
+        }
+        else
+            modifier.fillMaxWidth()
+
+    )
+
+}
+
+@Composable
+fun AppTextFieldPlaceholder(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String?,
+    errorListener: Boolean,
+    isPassword: Boolean = false,
+    modifier: Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(
+        imeAction = ImeAction.Next
+    ),
+    keyboardActions: KeyboardActions = KeyboardActions(
+        onNext = {}
+    )
+) {
+
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    TextField(
+        value,
+        onValueChange,
+        isError = errorListener,
+        maxLines = 1,
+        singleLine = true,
+
+        visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation()
+        else VisualTransformation.None,
+
+        shape = RoundedCornerShape(10.dp),
+        placeholder = {
+            Text("$placeholder", color = Color.Gray)
+        },
+
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
 
         trailingIcon = {
             if (isPassword) {

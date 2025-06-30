@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.poster.ui.feature.category
+package samaryanin.avitofork.feature.poster.ui.feature.poster
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -42,9 +42,9 @@ private fun CategoryPreview() {
 
     val sample = CategoryState(
         mutableListOf(
-            CategoryField.Category("", "Тестовая категория 1", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 2", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 3", mutableListOf())
+            CategoryField.Category("", "", "", "Тестовая категория 1", "", mutableListOf()),
+            CategoryField.Category("", "", "", "Тестовая категория 2", "", mutableListOf()),
+            CategoryField.Category("", "", "","Тестовая категория 3", "", mutableListOf())
         ),
         mutableMapOf(),
         PostState(),
@@ -59,7 +59,7 @@ fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewMo
 
     viewModel.handleEvent(CategoryEvent.UpdateCategoryListConfiguration)
 
-    val categories by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+    val categories by viewModel.categoryStateHolder.categoryState.collectAsState()
 
     Log.d("LOADED", "CategoryScreen: Categories loaded: ${categories.categories}")
 
