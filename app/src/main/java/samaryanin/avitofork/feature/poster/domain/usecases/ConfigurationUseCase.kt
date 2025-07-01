@@ -7,6 +7,14 @@ import ru.dimagor555.avito.category.domain.field.FieldDefinition
 import ru.dimagor555.avito.category.domain.tree.CategoryTreeMapper
 import samaryanin.avitofork.feature.poster.data.repository.CategoryRepository
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.DescriptionField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.DropdownField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.LocationField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.NumberField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.PhotoPickerField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.PriceField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.TextField
+import samaryanin.avitofork.feature.poster.domain.models.CategoryField.TitleField
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,35 +75,53 @@ class ConfigurationUseCase @Inject constructor(
 
     // маппинг полей в рендерные блоки
     private fun formFields(child: Category): CategoryField.SubCategory {
-        val fields = mutableListOf<CategoryField>(
-            CategoryField.MetaTag(
-                "null",
-                "",
-                "",
-                mutableListOf(
-                    CategoryField.PhotoPickerField("base_image_ids", "list_value",  "", 8),
-                    CategoryField.TitleField("base_title", "string_value", "Название", "", true),
-                    CategoryField.PriceField("base_price", "money_value", "Стоимость", "", "руб"),
-                    CategoryField.DescriptionField("base_description", "string_value", "Описание:", ""),
-                    CategoryField.LocationField("base_address", "string_value", "Местоположение", true)
-                ),
-            )
-        )
+        val fields = mutableListOf<CategoryField>()
 
         val allFieldDefinitions = collectAllFields(child)
 
-        val categoryParams = allFieldDefinitions.mapNotNull { field ->
-            when (field.semantic.dataType) {
-                is DataType.Text -> CategoryField.TextField(field.id, "string_value", field.name, "", field.isRequired)
-                is DataType.IntNumber -> CategoryField.NumberField(field.id, "int_value", field.name, "", "", field.isRequired)
-                is DataType.DoubleNumber -> CategoryField.NumberField(field.id, "double_value", field.name, "", "", field.isRequired)
-                is DataType.SingleOption -> CategoryField.DropdownField(field.id, "list_value", field.name, "", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
-                else -> null
-            }
+        val bases: List<CategoryField> = allFieldDefinitions.mapNotNull { field ->
+            if (field.semantic.id.contains("base")) {
+                when(field.semantic.id) {
+                    "base_image_ids" -> PhotoPickerField("base_image_ids", "list_value",  "", 8)
+                    "base_title" -> TitleField("base_title", "string_value", "Название", "", true)
+                    "base_price" -> PriceField("base_price", "money_value", "Стоимость", "", "руб")
+                    "base_description" -> DescriptionField("base_description", "string_value", "Описание:", "")
+                    "base_address" -> LocationField("base_address", "string_value", "Местоположение", true)
+                    else -> null
+                }
+            } else null
         }
 
-        if (categoryParams.isNotEmpty())
-            fields.add(CategoryField.MetaTag("null", "", "Характеристики категории", categoryParams.toMutableList()))
+        val categoryParams: List<CategoryField> = allFieldDefinitions.mapNotNull { field ->
+            if (!field.semantic.id.contains("base")) {
+                when (field.semantic.dataType) {
+                    is DataType.Text -> TextField(field.id, "string_value", field.name, "", field.isRequired)
+                    is DataType.IntNumber -> NumberField(field.id, "int_value", field.name, "", "", field.isRequired)
+                    is DataType.DoubleNumber -> NumberField(field.id, "double_value", field.name, "", "", field.isRequired)
+                    is DataType.SingleOption -> DropdownField(field.id, "list_value", field.name, "", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
+                    else -> null
+                }
+            } else null
+        }
+
+        if (categoryParams.isNotEmpty()) {
+            fields.add(
+                CategoryField.MetaTag(
+                    "null",
+                    "",
+                    "",
+                    bases
+                )
+            )
+            fields.add(
+                CategoryField.MetaTag(
+                    "null",
+                    "",
+                    "Характеристики категории",
+                    categoryParams
+                )
+            )
+        }
 
         return CategoryField.SubCategory(
             id = child.id,
@@ -112,18 +138,16 @@ class ConfigurationUseCase @Inject constructor(
         var current: Category? = category
 
         while (current != null) {
-            if (current.id != "root") {
-                current.ownFieldDefinitions.reversed().forEach { field ->
-                    if (field.semantic.id !in seen) {
-                        allFields.add(0, field)
-                        seen.add(field.semantic.id)
-                    }
+            current.ownFieldDefinitions.reversed().forEach { field ->
+                if (field.semantic.id !in seen) {
+                    allFields.add(field)
+                    seen.add(field.semantic.id)
                 }
             }
             current = current.parent
         }
 
-        return allFields
+        return allFields.sortedBy { it.priority }
     }
 
 }
