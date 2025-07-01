@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.auth.ui.feature.login
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
@@ -144,6 +149,24 @@ fun LoginContent(
     LaunchedEffect(verificationEmail) {
         if (state.email.isNotBlank()) emailErrorFrame = !state.emailIsValid
         verificationEmail = false
+    }
+
+    if (state.isLoading) {
+        Dialog(
+            onDismissRequest = {}
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(64.dp).background(Color.White).padding(13.dp),
+                    color = Color.LightGray,
+                    trackColor = Color.Black,
+                )
+            }
+        }
     }
 
     LaunchedEffect(state.isLoading) {
