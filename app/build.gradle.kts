@@ -97,7 +97,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.3.0.jar"))
+    implementation(files("libs/domain-jvm-1.3.1.jar"))
 
     // Yandex
     implementation (libs.maps.mobile)
