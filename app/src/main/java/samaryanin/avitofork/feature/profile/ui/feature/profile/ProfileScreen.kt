@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
@@ -104,6 +105,12 @@ fun ProfileScreen(
     val authState by profileViewModel.authStateHolder.authState.collectAsState()
     val profileState by profileViewModel.profileStateHolder.profileState.collectAsState()
 
+    val viewModel: ProfileViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+
+    }
+
     val navigateTo = { index: Int ->
         when (index) {
             0 -> { // 0 - индекс навигации на экран уведомлений
@@ -115,6 +122,7 @@ fun ProfileScreen(
                     launchSingleTop = true
                 }
             }
+
             1 -> { // 1 - индекс навигации на экран настроек
                 globalNavController.navigate(SettingsRoutes.Settings.route) {
                     popUpTo(globalNavController.graph.findStartDestination().id) {
@@ -172,12 +180,16 @@ fun ProfileContent(
             }
 
             Card(
-                modifier = Modifier.fillMaxWidth().then(
-                    if (isNextEnabled)
-                        Modifier.shadow(2.dp,
-                            RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-                    else Modifier
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (isNextEnabled)
+                            Modifier.shadow(
+                                2.dp,
+                                RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                            )
+                        else Modifier
+                    ),
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
@@ -243,7 +255,9 @@ fun ProfileAuthorized(
 //    )
 
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
 
         // first element for scroll & padding
@@ -258,9 +272,10 @@ fun ProfileAuthorized(
             var name = authState.invoke().profile
             name = if (name != "") name else "Тестовое имя"
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, top = 10.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 DefaultAvatar(name = name)
@@ -323,8 +338,17 @@ fun ProfileAuthorized(
 
                 if (cards.isEmpty()) {
 
-                    Row(modifier = Modifier.fillMaxWidth().height(500.dp), horizontalArrangement = Arrangement.Center) {
-                        Column(Modifier.padding(vertical = 120.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            Modifier.padding(vertical = 120.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             ProfileEmptyPublication()
                             Space()
                             ProfileEmptyPublication()
@@ -338,8 +362,7 @@ fun ProfileAuthorized(
                             )
                         }
                     }
-                }
-                else {
+                } else {
 
                     LazyVerticalGrid(
                         modifier = Modifier
@@ -373,11 +396,19 @@ fun ProfileAuthorized(
 
                 }
 
-            }
-            else { // таб архив
+            } else { // таб архив
 
-                Row(modifier = Modifier.fillMaxWidth().height(500.dp), horizontalArrangement = Arrangement.Center) {
-                    Column(Modifier.padding(vertical = 120.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(
+                        Modifier.padding(vertical = 120.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         ProfileEmptyPublication()
                         Space()
                         ProfileEmptyPublication()
@@ -426,9 +457,10 @@ fun ProfileAuthorized(
 @Composable
 fun ProfileUnauthorized(authRequest: () -> Unit) {
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
