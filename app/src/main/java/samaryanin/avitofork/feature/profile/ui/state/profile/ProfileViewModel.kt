@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.app.activity.data.AppStateHolder
 import samaryanin.avitofork.feature.auth.ui.state.AuthStateHolder
+import samaryanin.avitofork.feature.favorites.domain.usecases.GetUsersAdsUseCase
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.ui.state.CategoryStateHolder
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
@@ -24,6 +25,7 @@ class ProfileViewModel @Inject constructor(
     val appStateHolder: AppStateHolder,
     val authStateHolder: AuthStateHolder,
     val profileStateHolder: ProfileStateHolder,
+    val getUsersAdsUseCase: GetUsersAdsUseCase,
     val categoryStateHolder: CategoryStateHolder,
     private val dataStore: DataStore<Preferences>
 ): ViewModel() {
@@ -32,6 +34,8 @@ class ProfileViewModel @Inject constructor(
 
     init { // загрузка черновиков из кеша
         safeScope.launch {
+            getUsersAdsUseCase()
+
             if (categoryStateHolder.categoryState.value.drafts.isEmpty()) {
 
                 val gson = Gson()

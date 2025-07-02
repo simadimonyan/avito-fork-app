@@ -43,6 +43,13 @@ class AdRepo @Inject constructor(
         .map { it.toDomain() }
         .firstOrNull()
 
+    suspend fun getUsersAd(
+    ): List<Ad> = httpClient
+        .get("ad/owner") {
+        }
+        .body<List<AdDto>>()
+        .map { it.toDomain() }
+
     suspend fun getAdsByIds(
         adsIds: List<String>
     ): List<Ad> = httpClient
@@ -119,9 +126,15 @@ class AdRepo @Inject constructor(
             Log.d("AdRepo", "FieldId=${field.fieldId}, Data=${field.fieldData}")
             when (field.fieldId) {
                 "base_title" -> title = (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
-                "base_price" -> price = (field.fieldData as? FieldData.MoneyValue)?.amountMinor?.toString().orEmpty()
-                "base_description" -> description = (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
-                "base_address" -> address = (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
+                "base_price" -> price =
+                    (field.fieldData as? FieldData.MoneyValue)?.amountMinor?.toString().orEmpty()
+
+                "base_description" -> description =
+                    (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
+
+                "base_address" -> address =
+                    (field.fieldData as? FieldData.StringValue)?.value.orEmpty()
+
                 "base_image_ids" -> {
                     val list = (field.fieldData as? FieldData.ListValue)?.items.orEmpty()
                     imageIds = list
