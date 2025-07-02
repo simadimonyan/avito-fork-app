@@ -14,22 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import samaryanin.avitofork.R
@@ -72,7 +61,6 @@ import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.AppState
 import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
-import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.profile.ui.components.AddProfile
 import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
@@ -118,6 +106,12 @@ fun ProfileScreen(
     val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
     val profileState by profileViewModel.appStateStore.profileStateHolder.profileState.collectAsState()
 
+    val viewModel: ProfileViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+
+    }
+
     val navigateTo = { index: Int ->
         when (index) {
             0 -> { // 0 - индекс навигации на экран уведомлений
@@ -129,6 +123,7 @@ fun ProfileScreen(
                     launchSingleTop = true
                 }
             }
+
             1 -> { // 1 - индекс навигации на экран настроек
                 globalNavController.navigate(SettingsRoutes.Settings.route) {
                     popUpTo(globalNavController.graph.findStartDestination().id) {
@@ -186,12 +181,16 @@ fun ProfileContent(
             }
 
             Card(
-                modifier = Modifier.fillMaxWidth().then(
-                    if (isNextEnabled)
-                        Modifier.shadow(2.dp,
-                            RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-                    else Modifier
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (isNextEnabled)
+                            Modifier.shadow(
+                                2.dp,
+                                RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                            )
+                        else Modifier
+                    ),
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
@@ -257,7 +256,9 @@ fun ProfileAuthorized(
 //    )
 
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
 
         // first element for scroll & padding
@@ -272,9 +273,10 @@ fun ProfileAuthorized(
             var name = authState.invoke().profile
             name = if (name != "") name else "Тестовое имя"
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, top = 10.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 DefaultAvatar(name = name)
@@ -337,8 +339,17 @@ fun ProfileAuthorized(
 
                 if (cards.isEmpty()) {
 
-                    Row(modifier = Modifier.fillMaxWidth().height(500.dp), horizontalArrangement = Arrangement.Center) {
-                        Column(Modifier.padding(vertical = 120.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            Modifier.padding(vertical = 120.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             ProfileEmptyPublication()
                             Space()
                             ProfileEmptyPublication()
@@ -352,8 +363,7 @@ fun ProfileAuthorized(
                             )
                         }
                     }
-                }
-                else {
+                } else {
 
                     LazyVerticalGrid(
                         modifier = Modifier
@@ -387,11 +397,19 @@ fun ProfileAuthorized(
 
                 }
 
-            }
-            else { // таб архив
+            } else { // таб архив
 
-                Row(modifier = Modifier.fillMaxWidth().height(500.dp), horizontalArrangement = Arrangement.Center) {
-                    Column(Modifier.padding(vertical = 120.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(
+                        Modifier.padding(vertical = 120.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         ProfileEmptyPublication()
                         Space()
                         ProfileEmptyPublication()
@@ -440,9 +458,10 @@ fun ProfileAuthorized(
 @Composable
 fun ProfileUnauthorized(authRequest: () -> Unit) {
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -11,15 +11,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import samaryanin.avitofork.feature.favorites.domain.usecases.GetUsersAdsUseCase
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.shared.state.AppStateStore
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
+import samaryanin.avitofork.shared.state.AppStateStore
 import javax.inject.Inject
 
 @Stable
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     val appStateStore: AppStateStore,
+    val getUsersAdsUseCase: GetUsersAdsUseCase,
     private val dataStore: DataStore<Preferences>
 ): ViewModel() {
 
@@ -27,6 +29,9 @@ class ProfileViewModel @Inject constructor(
 
     init { // загрузка черновиков из кеша
         safeScope.launch {
+
+            getUsersAdsUseCase()
+
             if (appStateStore.categoryStateHolder.categoryState.value.drafts.isEmpty()) {
 
                 val gson = Gson()

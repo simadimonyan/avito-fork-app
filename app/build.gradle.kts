@@ -85,7 +85,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.3.0.jar"))
+    implementation(files("libs/domain-jvm-1.3.2.jar"))
 
     implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
 
