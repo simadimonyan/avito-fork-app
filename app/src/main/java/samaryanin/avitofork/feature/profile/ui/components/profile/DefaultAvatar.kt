@@ -1,4 +1,4 @@
-package samaryanin.avitofork.feature.profile.ui.components
+package samaryanin.avitofork.feature.profile.ui.components.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import samaryanin.avitofork.shared.ui.theme.alphaLightBlue
 import samaryanin.avitofork.shared.ui.theme.navigationSelected
 import samaryanin.avitofork.shared.ui.theme.veryLightBlueColor
 

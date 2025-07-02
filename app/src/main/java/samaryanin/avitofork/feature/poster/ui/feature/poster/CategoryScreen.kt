@@ -1,7 +1,8 @@
-package samaryanin.avitofork.feature.poster.ui.feature.category
+package samaryanin.avitofork.feature.poster.ui.feature.poster
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,17 +13,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import samaryanin.avitofork.R
@@ -42,9 +52,9 @@ private fun CategoryPreview() {
 
     val sample = CategoryState(
         mutableListOf(
-            CategoryField.Category("", "Тестовая категория 1", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 2", mutableListOf()),
-            CategoryField.Category("", "Тестовая категория 3", mutableListOf())
+            CategoryField.Category("", "", "", "Тестовая категория 1", "", mutableListOf()),
+            CategoryField.Category("", "", "", "Тестовая категория 2", "", mutableListOf()),
+            CategoryField.Category("", "", "","Тестовая категория 3", "", mutableListOf())
         ),
         mutableMapOf(),
         PostState(),
@@ -56,12 +66,21 @@ private fun CategoryPreview() {
 
 @Composable
 fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewModel = hiltViewModel()) {
+    var loading by remember { mutableStateOf(false) }
 
-    viewModel.handleEvent(CategoryEvent.UpdateCategoryListConfiguration)
+    LaunchedEffect(Unit) {
+        loading = true
+        viewModel.handleEvent(CategoryEvent.UpdateCategoryListConfiguration)
+    }
 
-    val categories by viewModel.appStateStore.categoryStateHolder.categoryState.collectAsState()
+    val categories by viewModel.categoryStateHolder.categoryState.collectAsState()
 
-    Log.d("LOADED", "CategoryScreen: Categories loaded: ${categories.categories}")
+    LaunchedEffect(categories.categories) {
+        if (categories.categories.isNotEmpty()) {
+            loading = false
+            Log.d("LOADED", "CategoryScreen: Categories loaded: ${categories.categories}")
+        }
+    }
 
     val onExit = {
         globalNavController.navigateUp()
@@ -70,6 +89,24 @@ fun CategoryScreen(globalNavController: NavController, viewModel: CategoryViewMo
     val onSubCategoryClick: (CategoryField.Category) -> Unit = { category ->
         viewModel.handleEvent(CategoryEvent.UpdateDraftParams(PostState(category.name)))
         globalNavController.navigate(PostRoutes.PostSubCategories(category))
+    }
+
+    if (loading) {
+        Dialog(
+            onDismissRequest = {}
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(64.dp).background(Color.White).padding(13.dp),
+                    color = Color.LightGray,
+                    trackColor = Color.Black,
+                )
+            }
+        }
     }
 
     CategoryContent(onExit, categories, onSubCategoryClick)

@@ -33,13 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
-import samaryanin.avitofork.shared.ui.components.utils.space.Space
-import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
-import samaryanin.avitofork.shared.ui.components.utils.field.AppTextFieldPlaceholder
+import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
 import samaryanin.avitofork.feature.auth.ui.state.AuthEvent
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
 import samaryanin.avitofork.feature.auth.ui.state.AuthViewModel
-import samaryanin.avitofork.feature.auth.ui.navigation.AuthRoutes
+import samaryanin.avitofork.shared.ui.components.utils.field.AppTextFieldPlaceholder
+import samaryanin.avitofork.shared.ui.components.utils.space.Space
+import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 
 /**
  * Функция для предпросмотра макета
@@ -62,7 +62,7 @@ fun SignUpScreen(
     navHostController: NavHostController
 ) {
 
-    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
+    val state by authViewModel.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик выхода
@@ -123,8 +123,9 @@ fun SignUpContent(
                     if (state.invoke().emailIsValid) {
                         onLogin()
                     }
-                    else
+                    else {
                         errorFrame = true // ошибка валидации
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                 shape = RoundedCornerShape(10.dp),

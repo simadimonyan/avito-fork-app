@@ -37,11 +37,11 @@ fun FieldsPreview() {
         MetaTag(
             key = "",
             fields = mutableListOf(
-                CategoryField.PhotoPickerField("", 8),
-                CategoryField.TextField("Описание:", ""),
-                CategoryField.TextField("Описание 1:", ""),
+                CategoryField.PhotoPickerField("", "", "", 8),
+                CategoryField.TextField("", "", "Описание:", ""),
+                CategoryField.TextField("", "", "Описание 1:", ""),
             ),
-            data = PostData(),
+            draft = PostData(),
             observer = {},
             uploadPhoto = gap,
             isRequiredCheckSubmitted = false,
@@ -49,10 +49,10 @@ fun FieldsPreview() {
         MetaTag(
             key = "Характеристики 2",
             fields = mutableListOf(
-                CategoryField.NumberField("Год выпуска:", "", "г"),
-                CategoryField.NumberField("Объем двигателя:", "", "л")
+                CategoryField.NumberField("", "", "Год выпуска:", "", "г"),
+                CategoryField.NumberField("", "", "Объем двигателя:", "", "л")
             ),
-            data = PostData(),
+            draft = PostData(),
             observer = {},
             uploadPhoto = gap,
             isRequiredCheckSubmitted = false,
@@ -61,14 +61,16 @@ fun FieldsPreview() {
             key = "Характеристики 3",
             fields = mutableListOf(
                 CategoryField.DropdownField(
+                    "",
+                    "",
                     "Тип недвижимости:",
                     "Не выбран",
                     mutableListOf(),
                     true
                 ),
-                CategoryField.LocationField("Местоположение строения")
+                CategoryField.LocationField("", "", "Местоположение строения")
             ),
-            data = PostData(),
+            draft = PostData(),
             observer = {},
             uploadPhoto = gap,
             isRequiredCheckSubmitted = false,
@@ -82,7 +84,7 @@ fun FieldsPreview() {
  * @param key имя разделителя характеристик
  *
  * @param fields поля для карточки товара
- * @param data состояние данных по карточке товара
+ * @param draft состояние данных по карточке товара
  *
  * @param observer колбек функция для обновления данных с блоков полей
  * @param uploadPhoto колбек функция для загрузки фотографий
@@ -94,14 +96,15 @@ fun MetaTag(
 
     // данные по карточке товара
     fields: List<CategoryField>,
-    params: SnapshotStateMap<String, String> = remember { mutableStateMapOf() },
-    data: PostData,
+    params: SnapshotStateMap<String, CategoryField> = remember { mutableStateMapOf() },
+    draft: PostData,
 
     // колбек функции для работы с данными
     observer: (PostData) -> Unit,
     uploadPhoto: (Int, Uri, (Boolean) -> Unit) -> Unit,
     isRequiredCheckSubmitted: Boolean,
-    showErrorMessage: (String) -> Unit = {}
+    showErrorMessage: (String) -> Unit = {},
+    determineLocation: () -> Unit = {}
 ) {
 
     LaunchedEffect(isRequiredCheckSubmitted) {
@@ -122,45 +125,53 @@ fun MetaTag(
 
                 when (field) {
 
-                    // data передается и для обновления колбеком и для получения данных из черновиков в value
+                    // draft передается и для обновления колбеком и для получения данных из черновиков в value
                     is CategoryField.PriceField -> PriceField(
-                        observer, data, field.key, field.unitMeasure, field.isRequired,
+                        observer, draft, field.key, field.unitMeasure, field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
                     is CategoryField.DescriptionField -> DescriptionField(
-                        observer, data, field.key,
+                        observer, draft, field.key,
                         isRequired = field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
-                    is CategoryField.TitleField -> TitleField(observer, data, field.key,
+                    is CategoryField.TitleField -> TitleField(
+                        observer, draft, field.key,
                         isRequired = field.isRequired,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
 
                     is CategoryField.TextField -> {
-                        // data.options[field.key] - поиск значения поля по ключу поля
+                        // draft.options[field.key] - поиск значения поля по ключу поля
                         TextField(
-                            field.key, data.options[field.key] ?: field.value, "до 3000 символов",
+                            field.key, (draft.options[field.key] as? CategoryField.TextField)?.value ?: field.value, "до 3000 символов",
                             isRequired = field.isRequired,
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage
                         ) {
-                            params[field.key] = it
-                            observer(data.copy(options = params))
+                            val updatedField = field.copy(value = it)
+                            params[field.key] = updatedField
+                            observer(draft.copy(options = params))
                         }
                     }
 
                     is CategoryField.DropdownField -> DropdownField(observer, field.key, field.value, field.options, field.isOnlyOneToChoose)
-                    is CategoryField.LocationField -> LocationField(observer, field.key)
+
+                    is CategoryField.LocationField -> LocationField(
+                        field.key, draft.location, determineLocation,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        isRequired = field.isRequired,
+                        showErrorMessage = showErrorMessage
+                    )
 
                     is CategoryField.NumberField -> {
                         // data.options[field.key] - поиск значения поля по ключу поля
                         NumberField(
                             field.key,
-                            data.options[field.key] ?: field.value,
+                            (draft.options[field.key] as? CategoryField.NumberField)?.value ?: field.value,
                             field.unitMeasure,
                             field.value,
                             visualTransformation = VisualTransformation.None,
@@ -168,15 +179,16 @@ fun MetaTag(
                             isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                             showErrorMessage = showErrorMessage,
                         ) {
-                            params[field.key] = it
-                            observer(data.copy(options = params))
+                            val updatedField = field.copy(value = it)
+                            params[field.key] = updatedField
+                            observer(draft.copy(options = params))
                         }
                     }
 
                     is CategoryField.PhotoPickerByCategoryField -> TODO()
 
                     is CategoryField.PhotoPickerField -> PhotoPickerField(
-                        observer, field.key, data.photos, field.count, uploadPhoto,
+                        observer, field.key, draft.photos, field.count, uploadPhoto,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         showErrorMessage = showErrorMessage
                     )
@@ -186,11 +198,12 @@ fun MetaTag(
                         field.key,
                         field.fields,
                         params,
-                        data,
+                        draft,
                         observer,
                         uploadPhoto,
                         isRequiredCheckSubmitted,
-                        showErrorMessage
+                        showErrorMessage,
+                        determineLocation
                     )
                     else -> {}
 

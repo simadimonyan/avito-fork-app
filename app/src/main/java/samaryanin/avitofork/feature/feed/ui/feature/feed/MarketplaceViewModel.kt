@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import samaryanin.avitofork.app.activity.data.AppStateHolder
 import samaryanin.avitofork.core.cache.CacheManager
 import samaryanin.avitofork.feature.favorites.data.FavoriteManager
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
@@ -31,7 +32,8 @@ class MarketplaceViewModel @Inject constructor(
     private val getSearchedAdUseCase: GetSearchedAdUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val favoriteManager: FavoriteManager,
-    cacheManager: CacheManager
+    cacheManager: CacheManager,
+    val appStateHolder: AppStateHolder
 ) : ViewModel() {
 
     private val _ads = MutableStateFlow<List<Ad>>(emptyList())
@@ -45,8 +47,8 @@ class MarketplaceViewModel @Inject constructor(
 
     val selectedCategoryIds = MutableStateFlow<List<String>>(emptyList())
     val favoriteIds: StateFlow<Set<String>> = favoriteManager.favorites
-    val isAuthorized: StateFlow<Boolean> =
-        MutableStateFlow(cacheManager.preferences.getString("authToken", null) != null)
+//    val isAuthorized: StateFlow<Boolean> =
+//        MutableStateFlow(cacheManager.preferences.getString("authToken", null) != null)
 
     private var searchJob: Job? = null
 
@@ -97,12 +99,10 @@ class MarketplaceViewModel @Inject constructor(
         favoriteManager.toggleFavorite(id)
     }
 
-    private fun loadAds(block: suspend () -> List<Ad>) {
-        safeScope.launch {
-            //_isLoading.value = true
-            val newAds = runCatching { block() }.getOrDefault(emptyList())
-            _ads.emitIfChanged(newAds)
-           // _isLoading.value = false
-        }
+    private suspend fun loadAds(block: suspend () -> List<Ad>) {
+        _isLoading.value = true
+        val newAds = runCatching { block() }.getOrDefault(emptyList())
+        _ads.emitIfChanged(newAds)
+        _isLoading.value = false
     }
 }

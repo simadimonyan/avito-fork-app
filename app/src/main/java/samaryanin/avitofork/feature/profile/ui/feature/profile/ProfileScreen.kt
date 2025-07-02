@@ -38,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -62,10 +61,10 @@ import samaryanin.avitofork.app.activity.data.AppState
 import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.feature.profile.ui.components.AddProfile
-import samaryanin.avitofork.feature.profile.ui.components.DefaultAvatar
-import samaryanin.avitofork.feature.profile.ui.components.ProfileTabLayout
-import samaryanin.avitofork.feature.profile.ui.components.TabItem
+import samaryanin.avitofork.feature.profile.ui.components.profile.AddProfile
+import samaryanin.avitofork.feature.profile.ui.components.profile.DefaultAvatar
+import samaryanin.avitofork.feature.profile.ui.components.profile.ProfileTabLayout
+import samaryanin.avitofork.feature.profile.ui.components.profile.TabItem
 import samaryanin.avitofork.feature.profile.ui.navigation.profile.ProfileRoutes
 import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoutes
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState
@@ -102,9 +101,9 @@ fun ProfileScreen(
     globalNavController: NavController
 ) {
 
-    val appState by mainViewModel.appStateStore.appStateHolder.appState.collectAsState()
-    val authState by mainViewModel.appStateStore.authStateHolder.authState.collectAsState()
-    val profileState by profileViewModel.appStateStore.profileStateHolder.profileState.collectAsState()
+    val appState by mainViewModel.appStateHolder.appState.collectAsState()
+    val authState by profileViewModel.authStateHolder.authState.collectAsState()
+    val profileState by profileViewModel.profileStateHolder.profileState.collectAsState()
 
     val viewModel: ProfileViewModel = hiltViewModel()
 

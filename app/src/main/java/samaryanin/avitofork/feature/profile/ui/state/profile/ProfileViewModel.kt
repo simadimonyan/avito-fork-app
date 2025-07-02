@@ -11,15 +11,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import samaryanin.avitofork.feature.favorites.domain.usecases.GetUsersAdsUseCase
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import samaryanin.avitofork.shared.state.AppStateStore
+import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject
 
 @Stable
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    val appStateHolder: AppStateHolder,
+    val authStateHolder: AuthStateHolder,
+    val profileStateHolder: ProfileStateHolder,
+    val categoryStateHolder: CategoryStateHolder,
     val appStateStore: AppStateStore,
     val getUsersAdsUseCase: GetUsersAdsUseCase,
     private val dataStore: DataStore<Preferences>
@@ -32,7 +35,7 @@ class ProfileViewModel @Inject constructor(
 
             getUsersAdsUseCase()
 
-            if (appStateStore.categoryStateHolder.categoryState.value.drafts.isEmpty()) {
+            if (categoryStateHolder.categoryState.value.drafts.isEmpty()) {
 
                 val gson = Gson()
 
@@ -49,7 +52,7 @@ class ProfileViewModel @Inject constructor(
                                 mutableMapOf()
                             }
 
-                            appStateStore.categoryStateHolder.updateDrafts(state)
+                            categoryStateHolder.updateDrafts(state)
                         }
                     }
                 }
@@ -65,14 +68,14 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun addPublication(post: PostState) {
-        val currentPosts = appStateStore.profileStateHolder.profileState.value.posts
+        val currentPosts = profileStateHolder.profileState.value.posts
         val map = HashMap(currentPosts)
         val list = ArrayList(map["0"] ?: emptyList())
 
         list.add(post)
         map["0"] = list
 
-        appStateStore.profileStateHolder.updatePostsList(map)
+        profileStateHolder.updatePostsList(map)
 
     }
 

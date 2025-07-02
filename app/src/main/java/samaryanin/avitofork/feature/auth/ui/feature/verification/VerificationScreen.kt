@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.auth.ui.feature.verification
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
@@ -78,7 +83,7 @@ fun VerificationScreen(
    // profileCreating: Boolean = false
 ) {
 
-    val state by authViewModel.appStateStore.authStateHolder.authState.collectAsState()
+    val state by authViewModel.authStateHolder.authState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // обработчик навигации выхода
@@ -146,6 +151,24 @@ fun VerificationContent(
     var errorCodeIsNotValid by remember { mutableStateOf(false) }
     var sendCodeState by remember { mutableStateOf(false) }
     var launchedEffectFlagTrigger by remember { mutableStateOf(false) }
+
+    if (state.isLoading) {
+        Dialog(
+            onDismissRequest = {}
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(64.dp).background(Color.White).padding(13.dp),
+                    color = Color.LightGray,
+                    trackColor = Color.Black,
+                )
+            }
+        }
+    }
 
     LaunchedEffect(launchedEffectFlagTrigger, state.isLoading) {
         if (code.isNotEmpty() && !state.isLoading) {
