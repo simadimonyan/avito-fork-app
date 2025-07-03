@@ -1,3 +1,6 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -9,6 +12,11 @@ plugins {
     alias(libs.plugins.baselineprofile)
     id("com.google.devtools.ksp")
 }
+
+val properties = Properties().apply { load(File(rootProject.rootDir, "gradle.properties").inputStream()) }
+
+val mapKitKey = properties["mapKitKey"] as String
+
 
 android {
 
@@ -33,6 +41,8 @@ android {
 
         debug {
             signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField("String", "MAPS_KEY", "\"$mapKitKey\"")
         }
 
         release {
@@ -43,6 +53,8 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField("String", "MAPS_KEY", "\"$mapKitKey\"")
         }
 
         create("benchmark") {
@@ -50,6 +62,8 @@ android {
             matchingFallbacks += listOf("release")
             isDebuggable = false
             signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField("String", "MAPS_KEY", "\"$mapKitKey\"")
         }
 
     }
@@ -87,9 +101,8 @@ dependencies {
     // Domain Lib
     implementation(files("libs/domain-jvm-1.3.2.jar"))
 
-    implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
-
-    implementation (libs.androidx.datastore.preferences)
+    // Maps
+    implementation (libs.maps.mobile)
 
     // Decompose
     implementation(libs.decompose)
@@ -146,6 +159,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.ui.tooling)
     implementation(libs.androidx.security.crypto)
+    implementation (libs.androidx.datastore.preferences)
 
     // Baseline Profiler
     implementation(libs.androidx.profileinstaller)
