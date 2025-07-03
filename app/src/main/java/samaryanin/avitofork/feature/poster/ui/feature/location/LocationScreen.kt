@@ -60,6 +60,7 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CameraUpdateReason
 import com.yandex.mapkit.map.VisibleRegionUtils
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.search.Address
 import com.yandex.mapkit.search.Response
 import com.yandex.mapkit.search.SearchFactory
 import com.yandex.mapkit.search.SearchManagerType
@@ -68,6 +69,7 @@ import com.yandex.mapkit.search.SearchType
 import com.yandex.mapkit.search.Session
 import com.yandex.mapkit.search.ToponymObjectMetadata
 import com.yandex.runtime.Error
+import ru.dimagor555.avito.category.domain.field.FieldData
 import samaryanin.avitofork.R
 import samaryanin.avitofork.feature.poster.domain.models.Location
 import samaryanin.avitofork.feature.poster.domain.models.PostData
@@ -82,7 +84,8 @@ import samaryanin.avitofork.shared.ui.theme.lightBlue
 @Preview
 @Composable
 fun LocationPreview() {
-    LocationContent(MapView(LocalContext.current), false, {}, Point(), {}, {})
+    val gap: (String, String, Double, Double) -> Unit = {_, _, _, _ -> }
+    LocationContent(MapView(LocalContext.current), false, {}, Point(), gap, {})
 }
 
 @Composable
@@ -99,7 +102,7 @@ fun LocationScreen(globalNavController: NavHostController, categoriesViewModel: 
         dragging = true
     }
 
-    val setLocation: (String) -> Unit = { location ->
+    val setLocation: (String, String, Double, Double) -> Unit = { location, region, longitude, latitude ->
         val draft = state.tempDraft
         categoriesViewModel.handleEvent(CategoryEvent.UpdateDraftParams(
             PostState(
@@ -112,7 +115,7 @@ fun LocationScreen(globalNavController: NavHostController, categoriesViewModel: 
                     draft.data.unit,
                     draft.data.description,
                     draft.data.options,
-                    location
+                    FieldData.AddressValue(location, region, longitude, latitude)
                 ),
                 draft.timestamp
             )
@@ -215,7 +218,7 @@ fun LocationContent(
     dragging: Boolean,
     toggleLocation: () -> Unit,
     currentCameraPosition: Point,
-    setLocation: (String) -> Unit,
+    setLocation: (String, String, Double, Double) -> Unit,
     onExit: () -> Unit
 ) {
 
@@ -224,6 +227,9 @@ fun LocationContent(
     var searchLoading by remember { mutableStateOf(false) }
 
     var address by remember { mutableStateOf("") }
+    var latitude by remember { mutableStateOf(0.0) }
+    var longitude by remember { mutableStateOf(0.0) }
+    var region by remember { mutableStateOf("") }
 
     Scaffold(containerColor = Color.LightGray, floatingActionButton = {
         if (!searchFocus) {
@@ -384,8 +390,21 @@ fun LocationContent(
                                             ToponymObjectMetadata::class.java) != null }
 
                                     toponym?.let {
-                                        address = it.metadataContainer
-                                            .getItem(ToponymObjectMetadata::class.java).address.formattedAddress
+                                        val geoObj = it.metadataContainer
+                                            .getItem(ToponymObjectMetadata::class.java)
+
+                                        address = geoObj.address.formattedAddress
+                                        latitude = geoObj.balloonPoint.latitude
+                                        longitude = geoObj.balloonPoint.longitude
+                                        region = geoObj?.address?.components?.firstOrNull {
+                                            comp -> comp.kinds.contains(Address.Component.Kind.REGION)
+                                                || comp.kinds.contains(Address.Component.Kind.AREA)
+                                                || comp.kinds.contains(Address.Component.Kind.DISTRICT)
+                                                || comp.kinds.contains(Address.Component.Kind.LOCALITY)
+                                                || comp.kinds.contains(Address.Component.Kind.PROVINCE)
+                                                || comp.kinds.contains(Address.Component.Kind.OTHER)
+                                                || comp.kinds.contains(Address.Component.Kind.UNKNOWN)
+                                        }?.name.toString()
 
                                         Log.d("ReverseGeocode", "Address: $address")
                                     }
@@ -421,7 +440,8 @@ fun LocationContent(
                 ) {
                     Button(
                         onClick = {
-                            setLocation(address)
+                            Log.d("Location", "Setting: $address, $region, $latitude, $longitude")
+                            setLocation(address, region, latitude, longitude)
                             onExit()
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Black),

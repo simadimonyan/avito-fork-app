@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import ru.dimagor555.avito.category.domain.field.FieldData
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.shared.ui.theme.navigationSelected
@@ -43,8 +44,8 @@ sealed class TabItem(val index: Int, val title: String) {
 fun ProfileTabLayoutPreview() {
     ProfileTabLayout(rememberPagerState(pageCount = {2}), mutableListOf(), mutableMapOf(
         "0" to mutableListOf(
-            PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-            PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
+            PostState("", "Легковая машина", PostData(name = "Домик", location = FieldData.AddressValue("Беларусь", "", 0.0, 0.0), price = "100 000", unit = "руб.")),
+            PostState("", "Легковая машина", PostData(name = "Домик", location = FieldData.AddressValue("Россия", "", 0.0, 0.0), price = "100 000", unit = "руб.")),
         ),
     ))
 }

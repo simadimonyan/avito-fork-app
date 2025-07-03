@@ -385,7 +385,7 @@ fun ProfileAuthorized(
                                 ) {
                                     ProfilePublication(
                                         title = field.data.name,
-                                        location = field.data.location,
+                                        location = field.data.location.fullText,
                                         price = field.data.price + " " + field.data.unit,
                                     )
                                 }

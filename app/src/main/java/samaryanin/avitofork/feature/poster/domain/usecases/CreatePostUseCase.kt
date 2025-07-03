@@ -58,9 +58,7 @@ class CreatePostUseCase @Inject constructor(
                 ),
                 FieldValue(
                     fieldId = "base_address",
-                    fieldData = FieldData.StringValue(
-                        value = state.data.location
-                    )
+                    fieldData = state.data.location
                 ),
                 FieldValue(
                     fieldId = "base_image_ids",

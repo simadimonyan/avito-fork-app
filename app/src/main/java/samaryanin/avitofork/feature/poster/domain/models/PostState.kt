@@ -2,6 +2,7 @@ package samaryanin.avitofork.feature.poster.domain.models
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
+import ru.dimagor555.avito.category.domain.field.FieldData
 
 @Serializable
 @Immutable
@@ -36,6 +37,6 @@ data class PostData(
     // ключи характеристик карточки товара
     val options: Map<String, CategoryField> = mutableMapOf(),
 
-    val location: String = "Не установлено"
+    val location: FieldData.AddressValue = FieldData.AddressValue("Не установлено", "null", 0.0, 0.0)
 
 )

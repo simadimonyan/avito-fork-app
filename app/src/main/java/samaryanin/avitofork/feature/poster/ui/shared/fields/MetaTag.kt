@@ -161,7 +161,7 @@ fun MetaTag(
                     is CategoryField.DropdownField -> DropdownField(observer, field.key, field.value, field.options, field.isOnlyOneToChoose)
 
                     is CategoryField.LocationField -> LocationField(
-                        field.key, draft.location, determineLocation,
+                        field.key, draft.location.fullText, determineLocation,
                         isRequiredCheckSubmitted = isRequiredCheckSubmitted,
                         isRequired = field.isRequired,
                         showErrorMessage = showErrorMessage
