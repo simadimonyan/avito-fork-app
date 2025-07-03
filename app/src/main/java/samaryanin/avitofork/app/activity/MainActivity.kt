@@ -48,15 +48,17 @@ class MainActivity : ComponentActivity() {
                         val viewModel: MainViewModel = hiltViewModel()
 
                         Scaffold(
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .background(Color.White)
                                 .windowInsetsPadding(WindowInsets.systemBars)
                         ) { innerPadding ->
 
-                            Box(modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding)
-                                .background(Color.White)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(innerPadding)
+                                    .background(Color.White)
                             ) {
 
                                 // Рекомпозиция только при запуске

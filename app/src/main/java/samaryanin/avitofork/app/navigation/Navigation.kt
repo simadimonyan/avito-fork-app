@@ -151,7 +151,7 @@ fun NestedScreenGraph(
                 ExitTransition.None
             }
         ) {
-            ProfileScreen(profileViewModel, mainViewModel, globalNavController)
+            ProfileScreen(profileViewModel, mainViewModel, globalNavController, globalNavController)
         }
 
 

@@ -50,18 +50,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import samaryanin.avitofork.R
 import samaryanin.avitofork.app.activity.data.AppEvent
 import samaryanin.avitofork.app.activity.data.AppState
 import samaryanin.avitofork.app.activity.data.MainViewModel
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
-import samaryanin.avitofork.feature.poster.domain.models.PostState
+import samaryanin.avitofork.feature.feed.ui.feature.feed.components.ProductCard
 import samaryanin.avitofork.feature.profile.ui.components.profile.AddProfile
 import samaryanin.avitofork.feature.profile.ui.components.profile.DefaultAvatar
 import samaryanin.avitofork.feature.profile.ui.components.profile.ProfileTabLayout
@@ -71,7 +71,6 @@ import samaryanin.avitofork.feature.profile.ui.navigation.settings.SettingsRoute
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileState
 import samaryanin.avitofork.feature.profile.ui.state.profile.ProfileViewModel
 import samaryanin.avitofork.shared.ui.components.placeholders.ProfileEmptyPublication
-import samaryanin.avitofork.shared.ui.components.placeholders.ProfilePublication
 import samaryanin.avitofork.shared.ui.components.utils.space.Space
 import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 import samaryanin.avitofork.shared.ui.theme.alphaLightBlue
@@ -82,11 +81,11 @@ import samaryanin.avitofork.shared.ui.theme.veryLightGray
 /**
  * Функция для предпросмотра макета
  */
-@Preview
-@Composable
-fun ProfilePreview() {
-    ProfileContent({ AppState() }, {}, {}, { AuthState() }) { ProfileState() }
-}
+//@Preview
+//@Composable
+//fun ProfilePreview() {
+//    ProfileContent({ AppState() }, {}, {}, { AuthState() }, { ProfileState() }, globalNavController)
+//}
 
 /**
  * State Hoisting паттерн
@@ -99,7 +98,8 @@ fun ProfilePreview() {
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
     mainViewModel: MainViewModel,
-    globalNavController: NavController
+    globalNavController: NavController,
+    navHostController: NavHostController,
 ) {
 
     val appState by mainViewModel.appStateHolder.appState.collectAsState()
@@ -141,7 +141,7 @@ fun ProfileScreen(
         mainViewModel.handleEvent(AppEvent.ToggleAuthRequest)
     }
 
-    ProfileContent({ appState }, navigateTo, authRequest, { authState }, { profileState })
+    ProfileContent({ appState }, navigateTo, authRequest, { authState }, { profileState }, navHostController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -151,7 +151,8 @@ fun ProfileContent(
     navigateTo: (Int) -> Unit,
     authRequest: () -> Unit,
     authState: () -> AuthState,
-    profileState: () -> ProfileState
+    profileState: () -> ProfileState,
+    navHostController: NavHostController
 ) {
 
     val scrollState = rememberScrollState()
@@ -175,7 +176,7 @@ fun ProfileContent(
         ) {
 
             if (appState().isLoggedIn) {
-                ProfileAuthorized(scrollState, profileState, authState)
+                ProfileAuthorized(scrollState, profileState, authState, navHostController)
             } else {
                 ProfileUnauthorized(authRequest)
             }
@@ -237,24 +238,19 @@ fun ProfileAuthorized(
     scrollState: ScrollState,
     profileState: () -> ProfileState,
     authState: () -> AuthState,
-    //navigateTo: (Int) -> Unit
+    navHostController: NavHostController,
+   // navigateTo: (Int) -> Unit
 ) {
 
     val tabTitles = listOf(TabItem.Publications, TabItem.Archive)
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
     val posts = profileState().posts
+    val vm: ProfileViewModel = hiltViewModel()
 
-    var cards = if (posts.isEmpty()) mutableListOf<PostState>() else posts["0"]!!
+    // var cards = if (posts.isEmpty()) mutableListOf<PostState>() else posts["0"]!!
+    var userAds = vm.userAds.collectAsState(
 
-//    cards = mutableListOf(
-//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-//        PostState("", "Легковая машина", PostData(name = "Домик", location = "Беларусь", price = "100 000", unit = "руб.")),
-//    )
-
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -337,7 +333,7 @@ fun ProfileAuthorized(
 
             if (page == 0) { // таб объявлений
 
-                if (cards.isEmpty()) {
+                if (userAds.value.isEmpty()) {
 
                     Row(
                         modifier = Modifier
@@ -374,7 +370,7 @@ fun ProfileAuthorized(
                         userScrollEnabled = false
                     ) {
 
-                        items(cards) { field ->
+                        items(userAds.value) { userAd ->
 
                             Column {
                                 Surface(
@@ -383,11 +379,18 @@ fun ProfileAuthorized(
                                     shape = RoundedCornerShape(10.dp),
                                     shadowElevation = 2.dp
                                 ) {
-                                    ProfilePublication(
-                                        title = field.data.name,
-                                        location = field.data.location.fullText,
-                                        price = field.data.price + " " + field.data.unit,
+                                    ProductCard(
+                                        ad = userAd,
+                                        isAuthorized = true,
+                                        isFav = true,
+                                        onFavoriteClick = {},
+                                        globalNavController = navHostController
                                     )
+//                                    ProfilePublication(
+//                                        title = field.data.name,
+//                                        location = field.data.location.fullText,
+//                                        price = field.data.price + " " + field.data.unit,
+//                                    )
                                 }
                             }
 

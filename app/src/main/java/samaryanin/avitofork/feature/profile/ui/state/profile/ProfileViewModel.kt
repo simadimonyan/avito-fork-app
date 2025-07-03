@@ -9,10 +9,15 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import samaryanin.avitofork.app.activity.data.AppStateHolder
 import samaryanin.avitofork.feature.auth.ui.state.AuthStateHolder
+import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetUsersAdsUseCase
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.ui.state.CategoryStateHolder
@@ -28,13 +33,16 @@ class ProfileViewModel @Inject constructor(
     val getUsersAdsUseCase: GetUsersAdsUseCase,
     val categoryStateHolder: CategoryStateHolder,
     private val dataStore: DataStore<Preferences>
-): ViewModel() {
+) : ViewModel() {
 
     private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
 
-    init { // загрузка черновиков из кеша
+    private val _userAds = MutableStateFlow<List<Ad>>(emptyList())
+    val userAds: StateFlow<List<Ad>> = _userAds.asStateFlow()
+
+    init {
         safeScope.launch {
-            getUsersAdsUseCase()
+            _userAds.update { getUsersAdsUseCase() }
 
             if (categoryStateHolder.categoryState.value.drafts.isEmpty()) {
 
