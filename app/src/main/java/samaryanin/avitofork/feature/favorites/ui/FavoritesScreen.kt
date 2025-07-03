@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -26,6 +28,7 @@ import kotlinx.coroutines.launch
 import samaryanin.avitofork.feature.favorites.ui.components.EmptyFavoritesMessage
 import samaryanin.avitofork.feature.favorites.ui.components.FavoriteAdCard
 import samaryanin.avitofork.feature.favorites.ui.state.FavoritesScreenViewModel
+import samaryanin.avitofork.shared.ui.components.utils.text.AppTextTitle
 
 @Composable
 fun FavoritesScreen(
@@ -57,9 +60,13 @@ fun FavoritesScreenContent(globalNavController: NavHostController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Favorites", style = MaterialTheme.typography.headlineMedium) }
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                    title = {
+                        AppTextTitle("Избранные")
+                    }
                 )
-            }
+            },
+            containerColor = Color.White
         ) { padding ->
             LazyColumn(
                 modifier = Modifier
