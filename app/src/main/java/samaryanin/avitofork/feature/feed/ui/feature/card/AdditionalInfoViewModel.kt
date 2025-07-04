@@ -8,31 +8,43 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.io.IOException
+import ru.dimagor555.avito.category.domain.field.FieldDefinition
+import ru.dimagor555.avito.category.domain.tree.CategoryTree
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.data.repository.AdRepo
 import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
+import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class AdditionalInfoViewModel @Inject constructor(
     private val adRepo: AdRepo,
+    private val configurationUseCase: ConfigurationUseCase
 ) : ViewModel() {
 
     private val _adById = MutableStateFlow<Ad?>(null)
-    val adById: StateFlow<Ad?> = _adById
+    val adById: StateFlow<Ad?> = _adById.asStateFlow()
 
     private val _latitude = MutableStateFlow<Double?>(null)
-    val latitude: StateFlow<Double?> = _latitude
+    val latitude: StateFlow<Double?> = _latitude.asStateFlow()
 
     private val _longitude = MutableStateFlow<Double?>(null)
-    val longitude: StateFlow<Double?> = _longitude
+    val longitude: StateFlow<Double?> = _longitude.asStateFlow()
+
+    private val _fieldDefinitionsMap = MutableStateFlow<Map<String, FieldDefinition>>(emptyMap())
+    val fieldDefinitionsMap: StateFlow<Map<String, FieldDefinition>> = _fieldDefinitionsMap.asStateFlow()
 
     init {
-        NavigationHolder.id?.let { getAdById(it) }
+        viewModelScope.launch {
+            val categoryTree = configurationUseCase.getCategoryTree()
+            _fieldDefinitionsMap.value = categoryTree.getAllFieldDefinitionsMap()
+            NavigationHolder.id?.let { getAdById(it) }
+        }
     }
 
     fun getAdById(adId: String) {
@@ -56,13 +68,21 @@ class AdditionalInfoViewModel @Inject constructor(
             try {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 val result = geocoder.getFromLocationName(address, 1)
-                result?.firstOrNull()?.let {
-                    Pair(it.latitude, it.longitude)
-                }
+                result?.firstOrNull()?.let { Pair(it.latitude, it.longitude) }
             } catch (e: IOException) {
                 e.printStackTrace()
                 null
             }
         }
+    }
+
+    fun CategoryTree.getAllFieldDefinitionsMap(): Map<String, FieldDefinition> {
+        val map = mutableMapOf<String, FieldDefinition>()
+        all().forEach { category ->
+            category.ownFieldDefinitions.forEach { field ->
+                map[field.id] = field
+            }
+        }
+        return map
     }
 }

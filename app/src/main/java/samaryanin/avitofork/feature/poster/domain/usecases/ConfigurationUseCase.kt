@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import ru.dimagor555.avito.category.domain.Category
 import ru.dimagor555.avito.category.domain.field.DataType
 import ru.dimagor555.avito.category.domain.field.FieldDefinition
+import ru.dimagor555.avito.category.domain.tree.CategoryTree
 import ru.dimagor555.avito.category.domain.tree.CategoryTreeMapper
 import samaryanin.avitofork.feature.poster.data.repository.CategoryRepository
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
@@ -130,6 +131,25 @@ class ConfigurationUseCase @Inject constructor(
             fields = fields
         )
     }
+
+    private var cachedCategoryTree: CategoryTree? = null
+
+    suspend fun getCategoryTree(): CategoryTree {
+        // Если дерево уже загружено, возвращаем кэш
+        cachedCategoryTree?.let { return it }
+
+        // Загружаем категории с сервера
+        val serverCategories = categoryRepository.getAllCategories()
+
+        // Собираем CategoryTree
+        val categoryTree = CategoryTreeMapper(serverCategories).map()
+
+        // Кэшируем
+        cachedCategoryTree = categoryTree
+
+        return categoryTree
+    }
+
 
     // сборка всех полей у родительских категорий
     private fun collectAllFields(category: Category): List<FieldDefinition> {

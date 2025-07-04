@@ -1,5 +1,4 @@
 import java.util.Properties
-import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)
@@ -99,7 +98,7 @@ android {
 dependencies {
 
     // Domain Lib
-    implementation(files("libs/domain-jvm-1.3.2.jar"))
+    implementation(files("libs/domain-jvm-1.3.3.jar"))
 
     // Maps
     implementation (libs.maps.mobile)

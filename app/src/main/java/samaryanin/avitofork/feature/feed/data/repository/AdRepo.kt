@@ -153,7 +153,8 @@ class AdRepo @Inject constructor(
             price = price,
             description = description,
             address = address,
-            imageIds = imageIds
+            imageIds = imageIds,
+            fieldValues = fieldValues
         )
         Log.d("AdRepo", "Ad=${ad}")
 
