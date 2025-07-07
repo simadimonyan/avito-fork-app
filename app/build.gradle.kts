@@ -93,6 +93,13 @@ android {
     }
     buildToolsVersion = "35.0.0"
 
+    kotlin {
+        // для сериализации сложных вложенных объектов
+        sourceSets.all {
+            languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
+        }
+    }
+
 }
 
 dependencies {

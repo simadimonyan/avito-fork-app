@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +36,7 @@ fun FieldsPreview() {
                 CategoryField.TextField("", "", "Описание:", ""),
                 CategoryField.TextField("", "", "Описание 1:", ""),
             ),
+            mutableMapOf(),
             draft = PostData(),
             observer = {},
             uploadPhoto = gap,
@@ -49,6 +48,7 @@ fun FieldsPreview() {
                 CategoryField.NumberField("", "", "Год выпуска:", "", "г"),
                 CategoryField.NumberField("", "", "Объем двигателя:", "", "л")
             ),
+            mutableMapOf(),
             draft = PostData(),
             observer = {},
             uploadPhoto = gap,
@@ -67,6 +67,7 @@ fun FieldsPreview() {
                 ),
                 CategoryField.LocationField("", "", "Местоположение строения")
             ),
+            mutableMapOf(),
             draft = PostData(),
             observer = {},
             uploadPhoto = gap,
@@ -93,7 +94,7 @@ fun MetaTag(
 
     // данные по карточке товара
     fields: List<CategoryField>,
-    params: MutableMap<String, CategoryField> = remember { mutableStateMapOf() },
+    params: MutableMap<String, CategoryField>,
     draft: PostData,
 
     // колбек функции для работы с данными
@@ -103,10 +104,6 @@ fun MetaTag(
     showErrorMessage: (String) -> Unit = {},
     determineLocation: () -> Unit = {}
 ) {
-
-    LaunchedEffect(isRequiredCheckSubmitted) {
-        Log.d("MetaTag", "validateFields triggered, isRequiredCheckSubmitted = $isRequiredCheckSubmitted")
-    }
 
     Box(modifier = Modifier.background(veryLightGray)) {
 

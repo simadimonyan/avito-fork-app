@@ -58,6 +58,10 @@ fun DropdownField(
         }
     }
 
+    LaunchedEffect(value) {
+        mutableValue = value
+    }
+
     Box(
         modifier = Modifier
             .wrapContentHeight()

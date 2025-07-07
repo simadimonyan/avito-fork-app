@@ -2,18 +2,21 @@ package samaryanin.avitofork.feature.poster.ui.state
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import samaryanin.avitofork.feature.poster.domain.models.PostState
 import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
 import samaryanin.avitofork.feature.poster.domain.usecases.CreatePostUseCase
@@ -32,7 +35,41 @@ class CategoryViewModel @Inject constructor(
     private val createPostUseCase: CreatePostUseCase
 ) : ViewModel() {
 
-    private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
+    private val DRAFTS_KEY = stringPreferencesKey("drafts")
+
+    init {
+        safeScope.launch {
+            Log.d("CategoryViewModel", "Init block started...")
+            Log.d("CategoryViewModel", "Checking if drafts are empty...")
+            if (categoryStateHolder.categoryState.value.drafts.isEmpty()) {
+                Log.d("CategoryViewModel", "Drafts are empty. Starting to load from DataStore...")
+
+                val jsonFormatter = Json {
+                    ignoreUnknownKeys = true
+                    classDiscriminator = "type"
+                }
+
+                withContext(Dispatchers.IO) {
+                    Log.d("CategoryViewModel", "Reading drafts from DataStore...")
+                    dataStore.data.collect { preferences ->
+                        val json = preferences[DRAFTS_KEY]
+                        Log.d("CategoryViewModel", "Raw JSON from DataStore: $json")
+                        if (!json.isNullOrEmpty()) {
+                            val state: Map<String, PostState> = try {
+                                jsonFormatter.decodeFromString(json)
+                            } catch (e: Exception) {
+                                Log.e("CategoryViewModel", "Failed to parse JSON", e)
+                                emptyMap()
+                            }
+
+                            categoryStateHolder.updateDrafts(state)
+                            Log.d("CategoryViewModel", "Drafts updated in state holder.")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun handleEvent(event: CategoryEvent) {
         when (event) {
@@ -110,14 +147,16 @@ class CategoryViewModel @Inject constructor(
 
     private fun saveDraftsStateToCache() {
         safeScope.launch {
+            Log.d("CategoryViewModel", "Saving drafts to DataStore...")
 
-            val gson = Gson()
-            val json = gson.toJson(categoryStateHolder.categoryState.value.drafts)
+            val json = Json.encodeToString(categoryStateHolder.categoryState.value.drafts)
+            Log.d("CategoryViewModel", "Serialized JSON to save: $json")
 
             withContext(Dispatchers.IO) {
                 dataStore.edit { preferences ->
-                    preferences[DRAFTS_KEY] = mutableSetOf(json)
+                    preferences[DRAFTS_KEY] = json
                 }
+                Log.d("CategoryViewModel", "Drafts successfully saved to DataStore.")
             }
         }
     }

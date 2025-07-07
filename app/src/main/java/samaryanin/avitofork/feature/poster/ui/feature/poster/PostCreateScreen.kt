@@ -141,11 +141,15 @@ fun PostCreateScreen(
     val draftPost by categoriesViewModel.categoryStateHolder.categoryState.collectAsState()
 
     val onExit = {
+        val nameField = draftPost.tempDraft.data.name
         val priceField = draftPost.tempDraft.data.price
+        val photos = draftPost.tempDraft.data.photos
         val descriptionField = draftPost.tempDraft.data.description
         val optionsField = draftPost.tempDraft.data.options.size
+        val locationField = draftPost.tempDraft.data.location.fullText
 
-        if (priceField != "" || descriptionField != "" || optionsField != 0) {
+        // расширять проверку на сохранение черновика по мере увеличения параметров
+        if (priceField != "" || locationField != "Не установлено" || nameField != "" || photos.isNotEmpty() || descriptionField != "" || optionsField != 0) {
             categoriesViewModel.handleEvent(CategoryEvent.SaveDraft(subcategory.name))
             Toast.makeText(context, "Черновик объявления сохранен", Toast.LENGTH_LONG).show()
         }
@@ -163,6 +167,22 @@ fun PostCreateScreen(
 
     val onPublish: () -> Unit = {
         isPublishTriggered = true
+    }
+
+    val draft = draftPost.tempDraft.data
+
+    LaunchedEffect(draft) {
+        val nameField = draftPost.tempDraft.data.name
+        val priceField = draftPost.tempDraft.data.price
+        val photos = draftPost.tempDraft.data.photos
+        val descriptionField = draftPost.tempDraft.data.description
+        val optionsField = draftPost.tempDraft.data.options.size
+        val locationField = draftPost.tempDraft.data.location.fullText
+
+        // расширять проверку на сохранение черновика по мере увеличения параметров
+        if (priceField != "" || locationField != "Не установлено" || nameField != "" || photos.isNotEmpty() || descriptionField != "" || optionsField != 0) {
+            categoriesViewModel.handleEvent(CategoryEvent.SaveDraft(subcategory.name))
+        }
     }
 
     val updateDraft: (PostData) -> Unit = { data ->
@@ -185,8 +205,6 @@ fun PostCreateScreen(
             restoreState = true
         }
     }
-
-    val draft = draftPost.tempDraft.data
 
     if (subcategory.children.isEmpty()) { // если нет вложенных подкатегорий у подкатегории
         PostCreateContent(
@@ -445,6 +463,7 @@ private fun PostCreateContent(
                             MetaTag(
                                 key = field.key,
                                 fields = field.fields,
+                                params = draft.options.toMutableMap(),
                                 draft = draft,
                                 observer = updateDraft,
                                 uploadPhoto = uploadPhoto,

@@ -31,11 +31,7 @@ class ProfileViewModel @Inject constructor(
     val authStateHolder: AuthStateHolder,
     val profileStateHolder: ProfileStateHolder,
     val getUsersAdsUseCase: GetUsersAdsUseCase,
-    val categoryStateHolder: CategoryStateHolder,
-    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
-
-    private val DRAFTS_KEY = stringSetPreferencesKey("drafts")
 
     private val _userAds = MutableStateFlow<List<Ad>>(emptyList())
     val userAds: StateFlow<List<Ad>> = _userAds.asStateFlow()
@@ -43,29 +39,6 @@ class ProfileViewModel @Inject constructor(
     init {
         safeScope.launch {
             _userAds.update { getUsersAdsUseCase() }
-
-            if (categoryStateHolder.categoryState.value.drafts.isEmpty()) {
-
-                val gson = Gson()
-
-                withContext(Dispatchers.IO) {
-                    dataStore.data.collect { preferences ->
-                        val jsonSet = preferences[DRAFTS_KEY] ?: emptySet()
-
-                        if (jsonSet.isNotEmpty()) {
-                            val type = object : TypeToken<Map<String, PostState>>() {}.type
-
-                            val state: Map<String, PostState> = try {
-                                gson.fromJson(jsonSet.first(), type)
-                            } catch (e: Exception) {
-                                mutableMapOf()
-                            }
-
-                            categoryStateHolder.updateDrafts(state)
-                        }
-                    }
-                }
-            }
         }
     }
 
