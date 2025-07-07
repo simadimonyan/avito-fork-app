@@ -11,21 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.input.VisualTransformation
 import samaryanin.avitofork.feature.poster.domain.models.CategoryField
 import samaryanin.avitofork.feature.poster.domain.models.PostData
 import samaryanin.avitofork.shared.ui.components.utils.space.Divider
 import samaryanin.avitofork.shared.ui.theme.veryLightGray
-import kotlin.collections.forEach
-import kotlin.collections.set
 
 @Preview
 @Composable
@@ -96,7 +93,7 @@ fun MetaTag(
 
     // данные по карточке товара
     fields: List<CategoryField>,
-    params: SnapshotStateMap<String, CategoryField> = remember { mutableStateMapOf() },
+    params: MutableMap<String, CategoryField> = remember { mutableStateMapOf() },
     draft: PostData,
 
     // колбек функции для работы с данными
@@ -158,7 +155,17 @@ fun MetaTag(
                         }
                     }
 
-                    is CategoryField.DropdownField -> DropdownField(observer, field.key, field.value, field.options, field.isOnlyOneToChoose)
+                    is CategoryField.DropdownField -> DropdownField(
+                        // draft.options[field.key] - поиск значения поля по ключу поля
+                        field.key, (draft.options[field.key] as? CategoryField.DropdownField)?.value ?: field.value, field.options, field.isOnlyOneToChoose,
+                        isRequired = field.isRequired,
+                        isRequiredCheckSubmitted = isRequiredCheckSubmitted,
+                        showErrorMessage = showErrorMessage
+                    ) {
+                        val updatedField = field.copy(value = it)
+                        params[field.key] = updatedField
+                        observer(draft.copy(options = params))
+                    }
 
                     is CategoryField.LocationField -> LocationField(
                         field.key, draft.location.fullText, determineLocation,

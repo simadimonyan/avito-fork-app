@@ -168,7 +168,7 @@ sealed class CategoryField : ApiForm {
         override val semanticType: String = "null",
 
         val key: String,
-        val value: String,
+        val value: String = "Не выбрано",
         val options: List<String>,
         val isOnlyOneToChoose: Boolean,
         val isRequired: Boolean = false

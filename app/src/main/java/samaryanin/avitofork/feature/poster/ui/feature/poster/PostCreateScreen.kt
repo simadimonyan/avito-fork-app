@@ -141,7 +141,6 @@ fun PostCreateScreen(
     val draftPost by categoriesViewModel.categoryStateHolder.categoryState.collectAsState()
 
     val onExit = {
-
         val priceField = draftPost.tempDraft.data.price
         val descriptionField = draftPost.tempDraft.data.description
         val optionsField = draftPost.tempDraft.data.options.size
@@ -527,6 +526,7 @@ private fun PostCreateContent(
                     containerColor = Color.White
                 )
             }
+
         }
 
     }
