@@ -3,7 +3,6 @@ package samaryanin.avitofork.feature.feed.ui.feature.card
 import android.content.Context
 import android.location.Geocoder
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,17 +15,20 @@ import ru.dimagor555.avito.category.domain.field.FieldData
 import ru.dimagor555.avito.category.domain.field.FieldDefinition
 import ru.dimagor555.avito.category.domain.tree.CategoryTree
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
+import samaryanin.avitofork.feature.favorites.domain.usecases.PostSetViewUseCase
 import samaryanin.avitofork.feature.feed.data.repository.AdRepo
 import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
 import samaryanin.avitofork.feature.poster.domain.usecases.ConfigurationUseCase
+import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class AdditionalInfoViewModel @Inject constructor(
     private val adRepo: AdRepo,
-    private val configurationUseCase: ConfigurationUseCase
-) : ViewModel() {
+    private val configurationUseCase: ConfigurationUseCase,
+    private val postSetViewUseCase: PostSetViewUseCase,
+    ) : ViewModel() {
 
     private val _adById = MutableStateFlow<Ad?>(null)
     val adById: StateFlow<Ad?> = _adById.asStateFlow()
@@ -40,22 +42,24 @@ class AdditionalInfoViewModel @Inject constructor(
     private val _fieldDefinitionsMap = MutableStateFlow<Map<String, FieldDefinition>>(emptyMap())
     val fieldDefinitionsMap: StateFlow<Map<String, FieldDefinition>> = _fieldDefinitionsMap.asStateFlow()
 
-    // ✅ Добавляем переменную для адреса
     private val _baseAddress = MutableStateFlow<String?>(null)
     val baseAddress: StateFlow<String?> = _baseAddress.asStateFlow()
 
     val ignoredFields = setOf("Изображения", "Заголовок", "Описание","Адрес")
 
     init {
-        viewModelScope.launch {
+        safeScope.launch {
             val categoryTree = configurationUseCase.getCategoryTree()
             _fieldDefinitionsMap.value = categoryTree.getAllFieldDefinitionsMap()
-            NavigationHolder.id?.let { getAdById(it) }
+            NavigationHolder.id?.let {
+                getAdById(it)
+                postSetViewUseCase(it)
+            }
         }
     }
 
-    fun getAdById(adId: String) {
-        viewModelScope.launch {
+    private fun getAdById(adId: String) {
+        safeScope.launch {
             val ad = adRepo.getAdById(adId)
             _adById.value = ad
 
@@ -72,7 +76,7 @@ class AdditionalInfoViewModel @Inject constructor(
     }
 
     fun loadLatLon(context: Context, address: String) {
-        viewModelScope.launch {
+        safeScope.launch {
             val coords = geocodeAddress(context, address)
             coords?.let { (lat, lon) ->
                 _latitude.value = lat

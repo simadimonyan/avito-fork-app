@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import ru.dimagor555.avito.ad.dto.AdDto
 import ru.dimagor555.avito.ad.request.GetAdsByIdsRequestDto
 import ru.dimagor555.avito.ad.request.GetFilteredAdsRequestDto
+import ru.dimagor555.avito.ad.request.ViewAdRequestDto
 import ru.dimagor555.avito.category.domain.field.FieldData
 import ru.dimagor555.avito.category.dto.CategoryDto
 import ru.dimagor555.avito.user.request.ToggleFavouriteRequestDto
@@ -50,16 +51,6 @@ class AdRepo @Inject constructor(
         .body<List<AdDto>>()
         .map { it.toDomain() }
 
-    suspend fun getAdsByIds(
-        adsIds: List<String>
-    ): List<Ad> = httpClient
-        .post("ad/byIds") {
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-            setBody(GetAdsByIdsRequestDto(adsIds))
-        }
-        .body<List<AdDto>>()
-        .map { it.toDomain() }
-
     suspend fun getFilteredAds(
         categoryIds: List<String>,
     ): List<Ad> = httpClient
@@ -69,19 +60,6 @@ class AdRepo @Inject constructor(
         }
         .body<List<AdDto>>()
         .map { it.toDomain() }
-
-//    suspend fun safePostAdFavourite(categoryIds: List<String>): List<Ad>? {
-//        return retryOnTimeout {
-//            httpClient
-//                .post("ad/all") {
-//                    header(HttpHeaders.ContentType, ContentType.Application.Json)
-//                    setBody(GetFilteredAdsRequestDto(categoryIds = categoryIds.ifEmpty { null }))
-//                }
-//                .body<List<AdDto>>()
-//                .map { it.toDomain() }
-//            }
-//        }
-
 
     suspend fun getSearchedAds(
         searchText: String
@@ -103,6 +81,11 @@ class AdRepo @Inject constructor(
     suspend fun toggleFavouriteAd(adId: String, isFavorite: Boolean) = httpClient
         .post("user/toggleFavouriteAd") {
             setBody(ToggleFavouriteRequestDto(adId = adId, isFavourite = isFavorite))
+        }
+
+    suspend fun setView(adId: String) = httpClient
+        .post("ad/view") {
+            setBody(ViewAdRequestDto(adId = adId))
         }
 
     suspend fun getAllCategories(): List<Category> = httpClient
@@ -154,7 +137,8 @@ class AdRepo @Inject constructor(
             description = description,
             address = address,
             imageIds = imageIds,
-            fieldValues = fieldValues
+            fieldValues = fieldValues,
+            viewsCount = views,
         )
         Log.d("AdRepo", "Ad=${ad}")
 

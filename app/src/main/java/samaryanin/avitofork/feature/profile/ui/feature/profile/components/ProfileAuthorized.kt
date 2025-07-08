@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import samaryanin.avitofork.feature.auth.ui.state.AuthState
-import samaryanin.avitofork.feature.feed.ui.feature.feed.components.ProductCard
 import samaryanin.avitofork.feature.profile.ui.components.profile.AddProfile
 import samaryanin.avitofork.feature.profile.ui.components.profile.DefaultAvatar
 import samaryanin.avitofork.feature.profile.ui.components.profile.ProfileTabLayout
@@ -62,10 +61,8 @@ fun ProfileAuthorized(
     val posts = profileState().posts
     val vm: ProfileViewModel = hiltViewModel()
 
-    // var cards = if (posts.isEmpty()) mutableListOf<PostState>() else posts["0"]!!
-    var userAds = vm.userAds.collectAsState(
+    var userAds = vm.userAds.collectAsState()
 
-    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -194,10 +191,9 @@ fun ProfileAuthorized(
                                     shape = RoundedCornerShape(10.dp),
                                     shadowElevation = 2.dp
                                 ) {
-                                    ProductCard(
+                                    UserAdsCard(
                                         ad = userAd,
                                         isAuthorized = true,
-                                        isFav = true,
                                         onFavoriteClick = {},
                                         globalNavController = navHostController
                                     )

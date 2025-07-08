@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -64,6 +65,9 @@ fun ProfileScreen(
     val authState by profileViewModel.authStateHolder.authState.collectAsState()
     val profileState by profileViewModel.profileStateHolder.profileState.collectAsState()
     val viewModel: ProfileViewModel = hiltViewModel()
+
+    //сделать pullrefresh и продумать правильное обновление списка
+    LaunchedEffect(Unit) { viewModel.refresh() }
 
     val navigateTo = { index: Int ->
         when (index) {

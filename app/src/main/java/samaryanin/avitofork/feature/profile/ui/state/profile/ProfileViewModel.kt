@@ -1,26 +1,18 @@
 package samaryanin.avitofork.feature.profile.ui.state.profile
 
 import androidx.compose.runtime.Stable
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import samaryanin.avitofork.app.activity.data.AppStateHolder
 import samaryanin.avitofork.feature.auth.ui.state.AuthStateHolder
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetUsersAdsUseCase
 import samaryanin.avitofork.feature.poster.domain.models.PostState
-import samaryanin.avitofork.feature.poster.ui.state.CategoryStateHolder
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject
 
@@ -37,6 +29,12 @@ class ProfileViewModel @Inject constructor(
     val userAds: StateFlow<List<Ad>> = _userAds.asStateFlow()
 
     init {
+        safeScope.launch {
+            _userAds.update { getUsersAdsUseCase() }
+        }
+    }
+
+    fun refresh(){
         safeScope.launch {
             _userAds.update { getUsersAdsUseCase() }
         }
