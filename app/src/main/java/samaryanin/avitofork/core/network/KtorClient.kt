@@ -113,7 +113,7 @@ class KtorClient @Inject constructor(
                     Log.d("Ktor", message)
                 }
             }
-            level = LogLevel.INFO
+            level = LogLevel.ALL
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
 
         }
