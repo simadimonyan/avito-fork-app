@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import samaryanin.avitofork.feature.feed.ui.feature.card.components.toDisplayString
 import samaryanin.avitofork.feature.feed.ui.feature.map.ui.MiniMapView
 import samaryanin.avitofork.feature.poster.ui.navigation.PostRoutes
+import samaryanin.avitofork.shared.extensions.formatPrice
 import samaryanin.avitofork.shared.ui.components.RemoteImage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +48,8 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
     val lon by viewModel.longitude.collectAsState()
     val fieldMap by viewModel.fieldDefinitionsMap.collectAsState()
 
+    val baseAddress by viewModel.baseAddress.collectAsState()
+
     val context = LocalContext.current
 
     LaunchedEffect(ad?.address) {
@@ -56,20 +59,21 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Объявление") },
+                title = { Text("Объявление", fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = { globalNavController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
                     }
                 }
             )
-        }
+        },
+        containerColor = Color.White
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
         ) {
             item {
                 ad?.let { ad ->
@@ -79,58 +83,124 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(1.5f)
-                            .clip(RoundedCornerShape(8.dp)),
+                            .clip(RoundedCornerShape(12.dp)),
                         contentScale = ContentScale.Crop
                     )
+
                     Spacer(Modifier.height(16.dp))
-                    Text(text = ad.title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+
+                    Text(
+                        text = ad.title,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
                     Spacer(Modifier.height(8.dp))
-                    Text(text = ad.address, fontSize = 14.sp, color = Color.Gray)
+
+                    Text(
+                        text = ad.address,
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+
                     Spacer(Modifier.height(8.dp))
-                    Text(text = "${ad.price} ₽", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(16.dp))
-                    Text(text = "Описание", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                    Spacer(Modifier.height(4.dp))
-                    Text(text = ad.description, fontSize = 14.sp)
-                    Spacer(Modifier.height(16.dp))
+
+                    Text(
+                        text = ad.price.formatPrice(),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Spacer(Modifier.height(20.dp))
+
+                    Text(
+                        text = "Описание",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                    Spacer(Modifier.height(6.dp))
+
+                    Text(
+                        text = ad.description,
+                        fontSize = 15.sp
+                    )
+
+                    Spacer(Modifier.height(20.dp))
                     Divider()
-                    Spacer(Modifier.height(16.dp))
-                    Text(text = "Характеристики", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(20.dp))
 
-                    ad.fieldValues.forEach { fieldValue ->
-                        val fieldName = fieldMap[fieldValue.fieldId]?.name ?: fieldValue.fieldId
-                        val valueText = fieldValue.fieldData.toDisplayString()
-                        Text(
-                            text = "$fieldName: $valueText",
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(vertical = 2.dp)
-                        )
-                    }
 
-                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Местоположение",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "$baseAddress",
+                        fontSize = 16.sp,
+                    )
+
+                    Spacer(Modifier.height(12.dp))
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                if (lat != null && lon != null) {
-                                    globalNavController.navigate(PostRoutes.Map.withArgs(lat!!, lon!!))
+                            .clickable(enabled = lat != null && lon != null) {
+                                lat?.let { la ->
+                                    lon?.let { lo ->
+                                        globalNavController.navigate(PostRoutes.Map.withArgs(la, lo))
+                                    }
                                 }
                             }
                     ) {
-                        Text(
-                            text = "Местоположение",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(Modifier.height(8.dp))
                         if (lat != null && lon != null) {
-                            MiniMapView(latitude = lat!!, longitude = lon!!) {
-                                globalNavController.navigate(PostRoutes.Map.withArgs(lat!!, lon!!))
-                            }
+                            MiniMapView(
+                                latitude = lat!!,
+                                longitude = lon!!,
+                                onClick = {
+                                    globalNavController.navigate(PostRoutes.Map.withArgs(lat!!, lon!!))
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                            )
+                        } else {
+                            Text(
+                                text = "Не удалось загрузить карту",
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
                         }
                     }
+
+
+                    Text(
+                        text = "Характеристики",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
+                    ad.fieldValues
+                        .filter { fieldValue ->
+                            val fieldName = fieldMap[fieldValue.fieldId]?.name ?: fieldValue.fieldId
+                            fieldName !in viewModel.ignoredFields
+                        }
+                        .forEach { fieldValue ->
+                            val fieldName = fieldMap[fieldValue.fieldId]?.name ?: fieldValue.fieldId
+                            val valueText = fieldValue.fieldData.toDisplayString()
+                            Text(
+                                text = "$fieldName: $valueText",
+                                fontSize = 15.sp,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                        }
+
+
+                    Spacer(Modifier.height(24.dp))
                 }
             }
         }

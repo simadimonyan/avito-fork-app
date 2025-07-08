@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.io.IOException
+import ru.dimagor555.avito.category.domain.field.FieldData
 import ru.dimagor555.avito.category.domain.field.FieldDefinition
 import ru.dimagor555.avito.category.domain.tree.CategoryTree
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
@@ -39,6 +40,12 @@ class AdditionalInfoViewModel @Inject constructor(
     private val _fieldDefinitionsMap = MutableStateFlow<Map<String, FieldDefinition>>(emptyMap())
     val fieldDefinitionsMap: StateFlow<Map<String, FieldDefinition>> = _fieldDefinitionsMap.asStateFlow()
 
+    // ✅ Добавляем переменную для адреса
+    private val _baseAddress = MutableStateFlow<String?>(null)
+    val baseAddress: StateFlow<String?> = _baseAddress.asStateFlow()
+
+    val ignoredFields = setOf("Изображения", "Заголовок", "Описание","Адрес")
+
     init {
         viewModelScope.launch {
             val categoryTree = configurationUseCase.getCategoryTree()
@@ -49,7 +56,18 @@ class AdditionalInfoViewModel @Inject constructor(
 
     fun getAdById(adId: String) {
         viewModelScope.launch {
-            _adById.value = adRepo.getAdById(adId)
+            val ad = adRepo.getAdById(adId)
+            _adById.value = ad
+
+            if (ad != null) {
+                ad.fieldValues.firstOrNull { it.fieldId == "base_address" }?.let { fieldValue ->
+                    val addressValue = fieldValue.fieldData as? FieldData.AddressValue
+                    _baseAddress.value = addressValue?.fullText
+
+                    _latitude.value = addressValue?.latitude
+                    _longitude.value = addressValue?.longitude
+                }
+            }
         }
     }
 
@@ -76,7 +94,7 @@ class AdditionalInfoViewModel @Inject constructor(
         }
     }
 
-    fun CategoryTree.getAllFieldDefinitionsMap(): Map<String, FieldDefinition> {
+    private fun CategoryTree.getAllFieldDefinitionsMap(): Map<String, FieldDefinition> {
         val map = mutableMapOf<String, FieldDefinition>()
         all().forEach { category ->
             category.ownFieldDefinitions.forEach { field ->

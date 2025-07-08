@@ -19,7 +19,7 @@ fun Category.toCategoryUI(): CategoryUI {
             "Недвижимость" -> R.drawable.deal
             "Услуги" -> R.drawable.service
             "Электроника" -> R.drawable.smartphone
-            else -> R.drawable.testimg
+            else -> R.drawable.service
         }
     )
 }
