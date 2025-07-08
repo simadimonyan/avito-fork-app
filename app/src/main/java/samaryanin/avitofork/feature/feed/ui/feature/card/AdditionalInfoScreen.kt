@@ -191,7 +191,7 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
                         }
                         .forEach { fieldValue ->
                             val fieldName = fieldMap[fieldValue.fieldId]?.name ?: fieldValue.fieldId
-                            val valueText = fieldValue.fieldData.toDisplayString()
+                            val valueText = fieldValue.fieldData.toDisplayString(fieldValue.fieldId)
                             Text(
                                 text = "$fieldName: $valueText",
                                 fontSize = 15.sp,
