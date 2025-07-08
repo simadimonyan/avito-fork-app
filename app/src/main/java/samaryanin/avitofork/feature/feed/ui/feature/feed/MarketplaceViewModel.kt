@@ -53,12 +53,12 @@ class MarketplaceViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     init {
-        viewModelScope.launch {
+        safeScope.launch {
             val data = getAllCategoriesUseCase()
             _categories.emitIfChanged(data)
         }
 
-        viewModelScope.launch {
+        safeScope.launch {
             selectedCategoryIds
                 .debounce(250.milliseconds)
                 .collectLatest { ids ->
@@ -66,13 +66,13 @@ class MarketplaceViewModel @Inject constructor(
                 }
         }
 
-        viewModelScope.launch {
+        safeScope.launch {
             favoriteManager.syncWithServer()
             loadAds { getFilteredAdsUseCase(selectedCategoryIds.value) }
         }
     }
 
-    fun refresh() = viewModelScope.launch {
+    fun refresh() = safeScope.launch {
         loadAds { getFilteredAdsUseCase(selectedCategoryIds.value) }
     }
 
@@ -83,7 +83,7 @@ class MarketplaceViewModel @Inject constructor(
             refresh(); return
         }
 
-        searchJob = viewModelScope.launch {
+        searchJob = safeScope.launch {
             loadAds {
                 delay(500)
                 getSearchedAdUseCase(text)
@@ -95,7 +95,7 @@ class MarketplaceViewModel @Inject constructor(
         favoriteManager.syncWithServer()
     }
 
-    fun toggleFavoriteAd(id: String) = viewModelScope.launch {
+    fun toggleFavoriteAd(id: String) = safeScope.launch {
         favoriteManager.toggleFavorite(id)
     }
 

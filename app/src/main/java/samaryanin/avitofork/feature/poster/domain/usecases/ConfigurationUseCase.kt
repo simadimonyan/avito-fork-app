@@ -100,6 +100,7 @@ class ConfigurationUseCase @Inject constructor(
                     is DataType.IntNumber -> NumberField(field.id, "int_value", field.name, "", "", field.isRequired)
                     is DataType.DoubleNumber -> NumberField(field.id, "double_value", field.name, "", "", field.isRequired)
                     is DataType.SingleOption -> DropdownField(field.id, "list_value", field.name, "", (field.semantic.dataType as DataType.SingleOption).options, true, field.isRequired)
+                    //is DataType.ListType -> DropdownField(field.id, "list_value", field.name, "", (field.semantic.dataType as DataType.ListType), true, field.isRequired)
                     else -> null
                 }
             } else null
