@@ -90,33 +90,23 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
                     Spacer(Modifier.height(16.dp))
 
                     Text(
-                        text = ad.title,
-                        fontSize = 22.sp,
+                        text = ad.price.formatPrice(),
+                        fontSize = 26.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(Modifier.height(8.dp))
-
                     Text(
-                        text = ad.address,
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Text(
-                        text = ad.price.formatPrice(),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
+                        text = ad.title,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Normal
                     )
 
                     Spacer(Modifier.height(20.dp))
 
                     Text(
                         text = "Описание",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
 
                     Spacer(Modifier.height(6.dp))
@@ -133,12 +123,12 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
 
                     Text(
                         text = "Местоположение",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "$baseAddress",
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
                     )
 
                     Spacer(Modifier.height(12.dp))
@@ -149,7 +139,12 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
                             .clickable(enabled = lat != null && lon != null) {
                                 lat?.let { la ->
                                     lon?.let { lo ->
-                                        globalNavController.navigate(PostRoutes.Map.withArgs(la, lo))
+                                        globalNavController.navigate(
+                                            PostRoutes.Map.withArgs(
+                                                la,
+                                                lo
+                                            )
+                                        )
                                     }
                                 }
                             }
@@ -159,7 +154,12 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
                                 latitude = lat!!,
                                 longitude = lon!!,
                                 onClick = {
-                                    globalNavController.navigate(PostRoutes.Map.withArgs(lat!!, lon!!))
+                                    globalNavController.navigate(
+                                        PostRoutes.Map.withArgs(
+                                            lat!!,
+                                            lon!!
+                                        )
+                                    )
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -169,7 +169,7 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
                         } else {
                             Text(
                                 text = "Не удалось загрузить карту",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 color = Color.Gray
                             )
                         }
@@ -178,8 +178,8 @@ fun AdditionalInfoScreen(globalNavController: NavHostController) {
 
                     Text(
                         text = "Характеристики",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
 
                     Spacer(Modifier.height(12.dp))

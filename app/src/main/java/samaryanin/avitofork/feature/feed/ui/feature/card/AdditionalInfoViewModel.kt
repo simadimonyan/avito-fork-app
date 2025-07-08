@@ -45,7 +45,7 @@ class AdditionalInfoViewModel @Inject constructor(
     private val _baseAddress = MutableStateFlow<String?>(null)
     val baseAddress: StateFlow<String?> = _baseAddress.asStateFlow()
 
-    val ignoredFields = setOf("Изображения", "Заголовок", "Описание","Адрес")
+    val ignoredFields = setOf("Изображения", "Заголовок", "Описание","Адрес", "Цена")
 
     init {
         safeScope.launch {
