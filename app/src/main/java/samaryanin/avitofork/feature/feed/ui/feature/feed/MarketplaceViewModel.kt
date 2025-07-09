@@ -2,7 +2,6 @@ package samaryanin.avitofork.feature.feed.ui.feature.feed
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,6 +19,7 @@ import samaryanin.avitofork.feature.favorites.domain.models.Category
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetAllCategoriesUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetFilteredAdsUseCase
 import samaryanin.avitofork.feature.favorites.domain.usecases.GetSearchedAdUseCase
+import samaryanin.avitofork.feature.favorites.domain.usecases.PostSetViewUseCase
 import samaryanin.avitofork.shared.extensions.emitIfChanged
 import samaryanin.avitofork.shared.extensions.exceptions.safeScope
 import javax.inject.Inject

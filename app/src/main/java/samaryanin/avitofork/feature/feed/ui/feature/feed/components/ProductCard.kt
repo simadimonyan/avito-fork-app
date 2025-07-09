@@ -38,6 +38,7 @@ import samaryanin.avitofork.R
 import samaryanin.avitofork.feature.favorites.domain.models.Ad
 import samaryanin.avitofork.feature.feed.ui.navigation.FeedRoutes
 import samaryanin.avitofork.feature.feed.ui.navigation.NavigationHolder
+import samaryanin.avitofork.shared.extensions.formatPrice
 import samaryanin.avitofork.shared.ui.components.RemoteImage
 
 @Composable
@@ -90,7 +91,7 @@ fun ProductCard(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = ad.price,
+                        text = ad.price.formatPrice(),
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

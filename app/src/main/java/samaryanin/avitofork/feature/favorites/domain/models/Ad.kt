@@ -12,4 +12,5 @@ data class Ad(
     val address: String = "",
     val imageIds: List<String>,
     val fieldValues: List<FieldValue>,
+    val viewsCount: Long,
     )
