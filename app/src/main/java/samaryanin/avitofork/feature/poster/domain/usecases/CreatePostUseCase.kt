@@ -97,9 +97,7 @@ class CreatePostUseCase @Inject constructor(
                         }
                         is CategoryField.DropdownField -> FieldValue(
                             fieldId = field.baseId,
-                            fieldData = FieldData.ListValue(
-                                items = listOf(FieldData.StringValue(field.value))
-                            )
+                            fieldData = FieldData.StringValue(field.value)
                         )
                         else -> null
                     }
