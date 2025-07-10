@@ -39,13 +39,13 @@ fun FavoritesScreen(
 @Composable
 fun FavoritesScreenContent(globalNavController: NavHostController) {
     val viewModel: FavoritesScreenViewModel = hiltViewModel()
-    val favorites by viewModel.favorites.collectAsState()
+    val favorites by viewModel.ads.collectAsState()
     val isRefreshing by viewModel.isLoading.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val refreshState = rememberPullToRefreshState()
 
     LaunchedEffect(Unit) {
-        viewModel.refresh()
+        viewModel.syncFavorites()
     }
 
     PullToRefreshBox(

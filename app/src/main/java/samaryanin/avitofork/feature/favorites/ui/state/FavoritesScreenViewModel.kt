@@ -21,31 +21,45 @@ class FavoritesScreenViewModel @Inject constructor(
     private val favoriteManager: FavoriteManager,
 ) : ViewModel() {
 
-    private val _favorites = MutableStateFlow<List<Ad>>(emptyList())
-    val favorites: StateFlow<List<Ad>> = _favorites.asStateFlow()
+    private val _ads = MutableStateFlow<List<Ad>>(emptyList())
+    val ads: StateFlow<List<Ad>> = _ads.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     init {
         safeScope.launch {
-            favoriteManager.initialize()
-            refresh()
+            favoriteManager.syncWithServer()
+            loadFavorites(showLoading = false)
         }
+    }
+
+    fun refresh() = safeScope.launch {
+        loadFavorites(showLoading = true)
+    }
+
+    fun syncFavorites() = safeScope.launch {
+        favoriteManager.syncWithServer()
+        loadFavorites(showLoading = false)
     }
 
     fun toggleFavorite(ad: Ad) = safeScope.launch {
         favoriteManager.toggleFavorite(ad.id)
         favoriteManager.syncWithServer()
-        refresh()
+        loadFavorites(showLoading = false)
     }
 
-    fun refresh() {
-        safeScope.launch {
-            _isLoading.value = true
-            val newFavorites = adRepo.getFavoriteAds()
-            _favorites.emitIfChanged(newFavorites)
-            _isLoading.value = false
+    private suspend fun loadFavorites(showLoading: Boolean) {
+        if (showLoading) _isLoading.value = true
+
+        val favoriteIds = favoriteManager.favorites.value.toList()
+        val newFavorites = if (favoriteIds.isEmpty()) {
+            emptyList()
+        } else {
+            adRepo.getFavoriteAds()
         }
+
+        _ads.emitIfChanged(newFavorites)
+        if (showLoading) _isLoading.value = false
     }
 }

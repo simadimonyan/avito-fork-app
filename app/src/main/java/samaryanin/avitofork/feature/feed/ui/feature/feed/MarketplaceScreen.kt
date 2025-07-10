@@ -58,7 +58,6 @@ fun MarketplaceScreen(globalNavController: NavHostController) {
 
 
         LaunchedEffect(Unit) {
-            vm.refresh()
             vm.syncFavorites()
         }
 
